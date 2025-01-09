@@ -10,10 +10,6 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Data
 public class Route extends AbstractBaseEntity {
-    @Lob
-    @Comment("Arrays Id of lesson and test")
-    private String route = "";  // Lưu mảng Id các bài học, bài kiểm tra trong lộ trình
-
     @Column(nullable = false)
     @Comment("Image url for Route")
     private String image;

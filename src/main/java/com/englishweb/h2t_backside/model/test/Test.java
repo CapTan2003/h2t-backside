@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.model;
+package com.englishweb.h2t_backside.model.test;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
@@ -27,11 +27,10 @@ public class Test extends AbstractBaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    @Comment("Type of the Test (Competition, Reading, Listening, etc.)")
-    @ColumnDefault("'COMPETITION'")
-    private TestTypeEnum type = TestTypeEnum.COMPETITION;
+    @Comment("Type of the Test (Mixing, Reading, Listening, etc.)")
+    @ColumnDefault("'MIXING'")
+    private TestTypeEnum type = TestTypeEnum.MIXING;
 
-    @Lob
     @Column(nullable = false)
     @Comment("Id part of the Test")
     @ColumnDefault("''")
