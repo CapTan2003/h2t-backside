@@ -2,7 +2,9 @@ package com.englishweb.h2t_backside.model.lesson;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
@@ -17,4 +19,8 @@ public class Writing extends AbstractLessonEntity {
     private String file; // Luu file cho nguoi dung doc ve chu de
     @Lob
     private String tips; // Exmaple data: "["Tip 1", "Tip 2", "Tip 3"]"
+
+    @OneToOne
+    @JoinColumn(name = "preparation_id")
+    private Preparation preparation;
 }
