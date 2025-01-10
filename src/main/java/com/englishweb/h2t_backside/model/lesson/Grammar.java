@@ -1,11 +1,9 @@
 package com.englishweb.h2t_backside.model.lesson;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
 import org.hibernate.annotations.Comment;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -13,10 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic extends AbstractLessonEntity {
-    @Comment("Questions related to the Topic")
+public class Grammar extends AbstractLessonEntity {
+    private String file;
+    private String definition;
+    private String example;
+    @Comment("Questions related to the Grammar")
     private String questions = "";
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vocabulary> vocabularies;
 }
