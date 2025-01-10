@@ -1,10 +1,10 @@
 package com.englishweb.h2t_backside.model.lesson;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,4 +19,7 @@ public class Speaking extends AbstractLessonEntity {
     @OneToOne
     @JoinColumn(name = "preparation_id")
     private Preparation preparation;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    List<SpeakingConversation> conversations;
 }

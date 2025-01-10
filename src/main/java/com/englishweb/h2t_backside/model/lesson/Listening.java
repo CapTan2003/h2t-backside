@@ -16,8 +16,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 public class Listening extends AbstractLessonEntity {
     private String audio;
-    @Lob
-    private String transcript;
+    private String transcript; // file docx
     @Comment("Questions related to the Listening")
     private String questions = "";
 
