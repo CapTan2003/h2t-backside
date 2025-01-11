@@ -14,17 +14,36 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Writing extends AbstractLessonEntity {
+
+    @Column(nullable = false)
+    @Comment("Topic of the writing lesson")
     private String topic;
-    private String file; // Luu file cho nguoi dung doc ve chu de
+
+    @Column(nullable = false)
+    @Comment("Url to docx file for writing")
+    private String file;
+
     @Lob
-    private String tips; // Exmaple data: "["Tip 1", "Tip 2", "Tip 3"]"
-    @Lob
+    @Column(nullable = false)
+    @Comment("Paragraph content related to the writing lesson")
     private String paragraph;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "writing_id", nullable = false)
+    @Comment("List of answers related to the writing lesson")
     private List<WritingAnswer> answers;
 
     @OneToOne
-    @JoinColumn(name = "preparation_id")
+    @JoinColumn(name = "preparation_id", nullable = false)
+    @Comment("Preparation object associated with this writing lesson")
     private Preparation preparation;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "writing_tips",
+            joinColumns = @JoinColumn(name = "writing_id")
+    )
+    @Column(name = "tip", nullable = false)
+    @Comment("List of tips for writing skill")
+    private List<String> tips;
 }

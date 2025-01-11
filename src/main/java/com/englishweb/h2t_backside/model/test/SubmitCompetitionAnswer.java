@@ -1,9 +1,18 @@
 package com.englishweb.h2t_backside.model.test;
 
+import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.*;
 
-public class SubmitCompetitionAnswer {
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SubmitCompetitionAnswer extends AbstractBaseEntity {
     @ManyToOne
     @JoinColumn(name = "submit_competition_id")
     private SubmitCompetition submitCompetition;

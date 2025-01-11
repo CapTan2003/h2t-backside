@@ -15,12 +15,19 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Listening extends AbstractLessonEntity {
+
+    @Comment("Audio file URL or path associated with the lesson")
     private String audio;
-    private String transcript; // file docx
-    @Comment("Questions related to the Listening")
+
+    @Lob
+    @Comment("Transcript of the audio, stored as a DOCX file")
+    private String transcript;
+
+    @Comment("Questions related to the Listening section")
     private String questions = "";
 
     @OneToOne
-    @JoinColumn(name = "preparation_id")
+    @JoinColumn(name = "preparation_id", nullable = false)
+    @Comment("Preparation object associated with this listening lesson")
     private Preparation preparation;
 }

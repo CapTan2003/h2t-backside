@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.model.lesson;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -11,7 +12,13 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WritingAnswer extends AbstractLessonEntity {
+
+    @Column(nullable = false)
+    @Comment("Missing index of the answer")
     private int missingIndex;
+
+    @Column(nullable = false)
+    @Comment("Correct answer of this question")
     private String correctAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
