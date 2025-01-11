@@ -1,14 +1,23 @@
 package com.englishweb.h2t_backside.model.test;
 
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.*;
+import org.hibernate.annotations.Comment;
 
-import java.time.LocalDateTime;
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SubmitCompetition extends AbstractBaseEntity {
 
-public class SubmitCompetition {
+    @Comment("Score of submit")
     private Integer score;
-    private LocalDateTime submitTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

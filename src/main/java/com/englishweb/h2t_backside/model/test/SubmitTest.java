@@ -1,15 +1,19 @@
 package com.englishweb.h2t_backside.model.test;
 
 import com.englishweb.h2t_backside.model.User;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.time.LocalDateTime;
-
-public class SubmitTest {
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SubmitTest extends AbstractBaseEntity {
+    @Column(nullable = false)
     private Integer score;
-    private LocalDateTime submitTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
