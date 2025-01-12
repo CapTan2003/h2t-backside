@@ -4,6 +4,7 @@ public class ErrorApiCodeContent {
     private ErrorApiCodeContent() {}
 
     // Lỗi liên quan đến người dùng và xác thực
+    public static final String USER_CREATED_FAIL = "101"; // Không tìm thấy user
     public static final String USER_NOT_FOUND = "104"; // Không tìm thấy user
 
     // Lỗi liên quan đến bài học
