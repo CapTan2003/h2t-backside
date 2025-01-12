@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -57,9 +58,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
     @Override
     protected void createError(UserDTO dto, Exception ex) {
         log.error("Error creating entity: {}", ex.getMessage());
+        String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
+
+        if(dto.getEmail().isEmpty()) {
+            errorMessage = "Email is null or empty";
+        } else if (dto.getName().isEmpty()){
+            errorMessage = "Name is null or empty";
+        } else if (!repository.findAllByEmail(dto.getEmail()).isEmpty()) {
+            errorMessage = "Email already exists";
+        }
 
         ErrorDTO errorDTO = ErrorDTO.builder()
-                .message(ex.getMessage())
+                .message(errorMessage)
                 .errorCode(ErrorApiCodeContent.USER_CREATED_FAIL)
                 .timestamp(LocalDateTime.now())
                 .data(dto)
