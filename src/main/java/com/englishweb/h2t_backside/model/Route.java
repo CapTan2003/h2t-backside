@@ -2,13 +2,15 @@ package com.englishweb.h2t_backside.model;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Route extends AbstractBaseEntity {
     @Column(nullable = false)
     @Comment("Image url for Route")
