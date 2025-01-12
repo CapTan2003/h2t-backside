@@ -35,6 +35,11 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(
+            method = "POST",
+            summary = "Create user",
+            description = "Create a new user"
+    )
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = service.create(userDTO);
