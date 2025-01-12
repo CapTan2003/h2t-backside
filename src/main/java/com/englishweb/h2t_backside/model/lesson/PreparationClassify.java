@@ -17,7 +17,7 @@ public class PreparationClassify extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @Comment("Group name or category for the preparation classify")
-    private String group;
+    private String groupName;
 
     @ElementCollection
     @CollectionTable(

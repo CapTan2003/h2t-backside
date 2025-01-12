@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -19,6 +21,10 @@ public class Route extends AbstractBaseEntity {
     @Column(nullable = false)
     @Comment("Description for route")
     private String description;
+
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Comment("List of lessons associated with this route")
+    private List<RouteNode> routeNodes;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
