@@ -18,7 +18,6 @@ public class ToeicPart3_4 extends AbstractBaseEntity {
     @Column(nullable = false)
     private String audio;
 
-    @Column(nullable = false)
     private String image;
 
     @Column(nullable = false)

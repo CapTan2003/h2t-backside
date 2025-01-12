@@ -1,4 +1,0 @@
-package com.englishweb.h2t_backside.repository.specifications;
-
-public interface UserRepository {
-}

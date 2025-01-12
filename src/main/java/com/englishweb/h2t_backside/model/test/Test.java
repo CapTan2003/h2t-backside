@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.model.test;
 
+import com.englishweb.h2t_backside.model.RouteNode;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import jakarta.persistence.*;
@@ -35,4 +36,9 @@ public class Test extends AbstractBaseEntity {
     @Comment("Id part of the Test")
     @ColumnDefault("''")
     private String parts = ""; // Lưu mảng Id các phần trong bài kiểm tra.
+
+    @OneToOne
+    @JoinColumn(name = "route_node_id")
+    @Comment("Associated Route node for the Test")
+    private RouteNode routeNode;
 }

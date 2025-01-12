@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.model.lesson;
 
-import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
+import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -11,7 +11,7 @@ import org.hibernate.annotations.Comment;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WritingAnswer extends AbstractLessonEntity {
+public class WritingAnswer extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @Comment("Missing index of the answer")

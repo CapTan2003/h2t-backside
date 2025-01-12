@@ -1,10 +1,7 @@
 package com.englishweb.h2t_backside.model.abstractmodel;
 
-import com.englishweb.h2t_backside.model.Route;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
+import com.englishweb.h2t_backside.model.RouteNode;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -15,15 +12,15 @@ import org.hibernate.annotations.Comment;
 @Setter
 public abstract class AbstractLessonEntity extends AbstractBaseEntity{
     @Column(nullable = false)
-    @Comment("Title of the Topic")
+    @Comment("Title of the Lesson")
     private String title;
 
     @Column(nullable = false)
-    @Comment("Image associated with the Topic")
+    @Comment("Image associated with the Lesson")
     private String image;
 
     @Column(nullable = false)
-    @Comment("Description of the Topic")
+    @Comment("Description of the Lesson")
     private String description;
 
     @Column(nullable = false)
@@ -31,8 +28,8 @@ public abstract class AbstractLessonEntity extends AbstractBaseEntity{
     @Comment("Number of views for Lesson")
     private Long views = 0L;
 
-    @ManyToOne
-    @JoinColumn(name = "route_id")
-    @Comment("Associated Route for the Topic")
-    private Route route;
+    @OneToOne
+    @JoinColumn(name = "route_node_id")
+    @Comment("Associated Route node for the Lesson")
+    private RouteNode routeNode;
 }

@@ -24,7 +24,7 @@ public class Vocabulary extends AbstractBaseEntity {
     private String image;
 
     @Column(nullable = false)
-    @Comment("Word itself (e.g., 'house', 'run')")
+    @Comment("Word itself (e.g., house, run)")
     private String word;
 
     @Column(nullable = false)

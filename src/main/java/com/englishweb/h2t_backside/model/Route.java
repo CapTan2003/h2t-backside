@@ -2,13 +2,17 @@ package com.englishweb.h2t_backside.model;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.List;
+
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Route extends AbstractBaseEntity {
     @Column(nullable = false)
     @Comment("Image url for Route")
@@ -17,6 +21,10 @@ public class Route extends AbstractBaseEntity {
     @Column(nullable = false)
     @Comment("Description for route")
     private String description;
+
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Comment("List of lessons associated with this route")
+    private List<RouteNode> routeNodes;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

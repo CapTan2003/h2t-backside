@@ -20,8 +20,7 @@ public class Topic extends AbstractLessonEntity {
     @ColumnDefault("''")
     private String questions = "";
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "topic_id", nullable = false)
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     @Comment("List of vocabularies associated with this topic")
     private List<Vocabulary> vocabularies;
 }
