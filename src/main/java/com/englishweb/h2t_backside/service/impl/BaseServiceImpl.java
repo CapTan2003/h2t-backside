@@ -35,7 +35,17 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public DTO create(DTO dto) {
-        return null;
+        log.info("Creating new entity with DTO");
+        try {
+            Entity entity = convertToEntity(dto);
+            entity.setId(null);
+            DTO savedDTO = convertToDTO(repository.save(entity));
+            log.info("Created entity with ID: {}", savedDTO.getId());
+            return savedDTO;
+        } catch (Exception e) {
+            this.createError(dto, e);
+            return null;
+        }
     }
 
     @Override
@@ -58,4 +68,6 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
     protected abstract DTO convertToDTO(Entity entity);
 
     protected abstract void findByIdError(Long id);
+
+    protected abstract void createError(DTO dto, Exception e);
 }
