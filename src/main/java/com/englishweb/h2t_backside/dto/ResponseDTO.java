@@ -1,12 +1,16 @@
 package com.englishweb.h2t_backside.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-public class ResponseDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResponseDTO<T> {
     ResponseStatusEnum status;  // Success || Fail
-    Object data;                // Payload
+    T data;                // Payload
     String message;             // Message
 }

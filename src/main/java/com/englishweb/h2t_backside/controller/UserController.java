@@ -1,5 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
+import com.englishweb.h2t_backside.dto.ResponseDTO;
+import com.englishweb.h2t_backside.dto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.service.UserService;
 
@@ -25,14 +27,23 @@ public class UserController {
             description = "Retrieve a user by their unique ID"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDTO<UserDTO>> findById(@PathVariable Long id) {
         UserDTO user = service.findById(id);
         if (user == null) {
             log.warn("User with ID {} not found", id);
-            return ResponseEntity.notFound().build();
+            ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("User not found")
+                    .build();
+            return ResponseEntity.status(404).body(response);
         }
 
-        return ResponseEntity.ok(user);
+        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(user)
+                .message("User retrieved successfully")
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     @Operation(
@@ -41,9 +52,22 @@ public class UserController {
             description = "Create a new user"
     )
     @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<ResponseDTO<UserDTO>> create(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = service.create(userDTO);
-        return ResponseEntity.ok(createdUser);
+        if (createdUser == null) {
+            ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Failed to create user")
+                    .build();
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(createdUser)
+                .message("User created successfully")
+                .build();
+        return ResponseEntity.ok(response);
     }
 }
 
