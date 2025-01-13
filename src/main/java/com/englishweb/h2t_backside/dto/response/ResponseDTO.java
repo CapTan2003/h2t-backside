@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.dto.response;
 
+import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Builder;

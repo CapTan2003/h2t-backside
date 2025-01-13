@@ -1,12 +1,13 @@
 package com.englishweb.h2t_backside.controller;
 
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.dto.response.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class UserController {
             description = "Create a new user"
     )
     @PostMapping
-    public ResponseEntity<ResponseDTO<UserDTO>> create(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<ResponseDTO<UserDTO>> create(@Valid @RequestBody UserDTO userDTO) {
         UserDTO createdUser = service.create(userDTO);
         if (createdUser == null) {
             ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
