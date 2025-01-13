@@ -1,7 +1,6 @@
 package com.englishweb.h2t_backside.service.impl;
 
-import com.englishweb.h2t_backside.dto.ErrorDTO;
-import com.englishweb.h2t_backside.dto.UserDTO;
+import com.englishweb.h2t_backside.dto.response.ErrorDTO;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
