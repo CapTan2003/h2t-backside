@@ -77,16 +77,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
     }
 
     @Override
-    protected User convertToEntity(UserDTO userDTO) {
+    protected User convertToEntity(UserDTO dto) {
         return User.builder()
-                .id(userDTO.getId())
-                .name(userDTO.getName())
-                .avatar(userDTO.getAvatar())
-                .email(userDTO.getEmail())
+                .id(dto.getId())
+                .name(dto.getName())
+                .avatar(dto.getAvatar())
+                .email(dto.getEmail())
                 .password("123")
-                .levelEnum(userDTO.getLevelEnum())
-                .roleEnum(userDTO.getRoleEnum())
-                .status(userDTO.getStatus() != null ? userDTO.getStatus() : StatusEnum.ACTIVE)
+                .levelEnum(dto.getLevelEnum())
+                .roleEnum(dto.getRoleEnum())
+                .status(dto.getStatus() != null ? dto.getStatus() : StatusEnum.ACTIVE)
                 .build();
     }
 
