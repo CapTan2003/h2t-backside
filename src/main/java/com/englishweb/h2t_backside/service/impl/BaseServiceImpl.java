@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.dto.interfacedto.BaseDTO;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
 import com.englishweb.h2t_backside.service.BaseService;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
         implements BaseService<DTO> {
     protected R repository;
     protected DiscordNotifier discordNotifier;
+    protected ObjectMapper objectMapper;
 
     @Override
     public DTO findById(Long id) {

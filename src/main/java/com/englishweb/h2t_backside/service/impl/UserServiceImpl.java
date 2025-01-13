@@ -19,13 +19,11 @@ import java.time.LocalDateTime;
 @Slf4j
 public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserRepository> implements UserService {
 
-    private final DiscordNotifier discordNotifier;
-    private final ObjectMapper objectMapper;
-
     public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, ObjectMapper objectMapper) {
         this.repository = repository;
         this.discordNotifier = discordNotifier;
         this.objectMapper = objectMapper;
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     @Override
@@ -46,7 +44,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
                 .build();
 
         try {
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             String discordPayload = objectMapper.writeValueAsString(errorDTO);
             discordNotifier.sendNotification("```json\n" + discordPayload + "\n```");
         } catch (Exception e) {
@@ -75,7 +72,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
                 .build();
 
         try {
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             String discordPayload = objectMapper.writeValueAsString(errorDTO);
             discordNotifier.sendNotification("```json\n" + discordPayload + "\n```");
         } catch (Exception e) {
