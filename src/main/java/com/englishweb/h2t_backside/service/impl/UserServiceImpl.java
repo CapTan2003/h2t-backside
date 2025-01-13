@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.service.impl;
 
-import com.englishweb.h2t_backside.dto.ErrorDTO;
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.model.User;
@@ -8,22 +7,18 @@ import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.englishweb.h2t_backside.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserRepository> implements UserService {
 
-    public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, ObjectMapper objectMapper) {
+    public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier) {
         this.repository = repository;
         this.discordNotifier = discordNotifier;
-        this.objectMapper = objectMapper;
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     @Override
@@ -36,52 +31,49 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String errorMessage = String.format("User with ID '%d' not found.", id);
         log.warn(errorMessage);
 
-        ErrorDTO errorDTO = ErrorDTO.builder()
-                .message(errorMessage)
-                .errorCode(ErrorApiCodeContent.USER_NOT_FOUND)
-                .timestamp(LocalDateTime.now())
-                .data(id)
-                .build();
-
-        try {
-            String discordPayload = objectMapper.writeValueAsString(errorDTO);
-            discordNotifier.sendNotification("```json\n" + discordPayload + "\n```");
-        } catch (Exception e) {
-            log.error("Error converting ErrorDTO to JSON: ", e);
-        }
+        this.discordNotifier.buildErrorAndSend(id, errorMessage, ErrorApiCodeContent.USER_NOT_FOUND);
     }
 
     @Override
     protected void createError(UserDTO dto, Exception ex) {
         log.error("Error creating entity: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
+        String errorCode = ErrorApiCodeContent.USER_CREATED_FAIL;
 
         if(dto.getEmail().isEmpty()) {
             errorMessage = "Email is null or empty";
+            errorCode = ErrorApiCodeContent.USER_EMAIL_EMPTY;
         } else if (dto.getName().isEmpty()){
             errorMessage = "Name is null or empty";
+            errorCode = ErrorApiCodeContent.USER_NAME_EMPTY;
         } else if (!repository.findAllByEmail(dto.getEmail()).isEmpty()) {
             errorMessage = "Email already exists";
+            errorCode = ErrorApiCodeContent.USER_EMAIL_EXIST;
         }
 
-        ErrorDTO errorDTO = ErrorDTO.builder()
-                .message(errorMessage)
-                .errorCode(ErrorApiCodeContent.USER_CREATED_FAIL)
-                .timestamp(LocalDateTime.now())
-                .data(dto)
-                .build();
-
-        try {
-            String discordPayload = objectMapper.writeValueAsString(errorDTO);
-            discordNotifier.sendNotification("```json\n" + discordPayload + "\n```");
-        } catch (Exception e) {
-            log.error("Error converting ErrorDTO to JSON: ", e);
-        }
+        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
     }
 
     @Override
-    protected void updateError(UserDTO dto, Long id, Exception e) {
+    protected void updateError(UserDTO dto, Long id, Exception ex) {
+        log.error("Error update entity: {}", ex.getMessage());
+        String errorMessage = "Unexpected error updating entity: " + ex.getMessage();
+        String errorCode = ErrorApiCodeContent.USER_UPDATED_FAIL;
+        // Kiem tra email da ton tai hay chua
+        User exitsUser = repository.findAllByEmail(dto.getEmail()).get(0);
 
+        if(dto.getEmail().isEmpty()) {
+            errorMessage = "Email is null or empty";
+            errorCode = ErrorApiCodeContent.USER_EMAIL_EMPTY;
+        } else if (dto.getName().isEmpty()){
+            errorMessage = "Name is null or empty";
+            errorCode = ErrorApiCodeContent.USER_NAME_EMPTY;
+        } else if (!Objects.equals(exitsUser.getId(), id)) {
+            errorMessage = "Email already exists";
+            errorCode = ErrorApiCodeContent.USER_EMAIL_EXIST;
+        }
+
+        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
     }
 
     @Override
