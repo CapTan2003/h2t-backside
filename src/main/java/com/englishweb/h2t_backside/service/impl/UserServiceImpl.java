@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -84,6 +83,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         }
     }
 
+    @Override
+    protected void updateError(UserDTO dto, Long id, Exception e) {
+
+    }
 
     @Override
     protected User convertToEntity(UserDTO userDTO) {

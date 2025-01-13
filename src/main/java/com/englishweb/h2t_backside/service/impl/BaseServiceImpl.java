@@ -50,17 +50,35 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public DTO update(DTO dto, Long id) {
-        return null;
+        log.info("Updating entity with DTO");
+        try{
+            Entity entity = convertToEntity(dto);
+            entity.setId(id);
+            DTO savedDTO = convertToDTO(repository.save(entity));
+            log.info("Updated entity with ID: {}", savedDTO.getId());
+            return savedDTO;
+        } catch (Exception e) {
+            this.updateError(dto, id, e);
+            return null;
+        }
     }
 
     @Override
     public void delete(Long id) {
-
+        log.info("Deleting entity with ID: {}", id);
+        Optional<Entity> entityOptional = repository.findById(id);
+        if (entityOptional.isEmpty()) {
+            this.findByIdError(id);
+            return;
+        }
+        repository.deleteById(id);
+        log.info("Deleted entity with ID: {}", id);
     }
 
     @Override
     public boolean isExist(Long id) {
-        return false;
+        Optional<Entity> entityOptional = repository.findById(id);
+        return entityOptional.isPresent();
     }
 
     protected abstract Entity convertToEntity(DTO dto);
@@ -70,4 +88,6 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
     protected abstract void findByIdError(Long id);
 
     protected abstract void createError(DTO dto, Exception e);
+
+    protected abstract void updateError(DTO dto, Long id, Exception e);
 }
