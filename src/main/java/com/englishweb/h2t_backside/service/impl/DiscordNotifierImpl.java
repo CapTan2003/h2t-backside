@@ -1,7 +1,11 @@
 package com.englishweb.h2t_backside.service.impl;
 
+import com.englishweb.h2t_backside.dto.ErrorDTO;
+import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -47,6 +53,26 @@ public class DiscordNotifierImpl implements DiscordNotifier {
             log.error("An error occurred while sending notification to Discord: {}", ex.getMessage(), ex);
         } catch (Exception ex) {
             log.error("An unexpected error occurred: {}", ex.getMessage(), ex);
+        }
+    }
+
+    public <DTO> void buildErrorAndSend(DTO dto, String errorMessage, String errorCode) {
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .errorCode(errorCode)
+                .timestamp(LocalDateTime.now())
+                .data(dto)
+                .build();
+
+        try {
+            String discordPayload = objectMapper.writeValueAsString(errorDTO);
+            this.sendNotification("```json\n" + discordPayload + "\n```");
+        } catch (Exception e) {
+            log.error("Error converting ErrorDTO to JSON: ", e);
         }
     }
 
