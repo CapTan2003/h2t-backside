@@ -2,14 +2,20 @@ package com.englishweb.h2t_backside.model.abstractmodel;
 
 import com.englishweb.h2t_backside.model.RouteNode;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 @MappedSuperclass
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class AbstractLessonEntity extends AbstractBaseEntity{
     @Column(nullable = false)
     @Comment("Title of the Lesson")

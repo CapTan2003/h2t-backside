@@ -81,13 +81,13 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
         return entityOptional.isPresent();
     }
 
-    protected abstract Entity convertToEntity(DTO dto);
-
-    protected abstract DTO convertToDTO(Entity entity);
-
     protected abstract void findByIdError(Long id);
 
     protected abstract void createError(DTO dto, Exception ex);
 
     protected abstract void updateError(DTO dto, Long id, Exception ex);
+
+    protected abstract Entity convertToEntity(DTO dto);
+
+    protected abstract DTO convertToDTO(Entity entity);
 }
