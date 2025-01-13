@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.dto;
+package com.englishweb.h2t_backside.dto.response;
 
 import lombok.*;
 

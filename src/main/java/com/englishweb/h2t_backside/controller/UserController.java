@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
-import com.englishweb.h2t_backside.dto.ResponseDTO;
-import com.englishweb.h2t_backside.dto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.dto.response.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.service.UserService;
 
