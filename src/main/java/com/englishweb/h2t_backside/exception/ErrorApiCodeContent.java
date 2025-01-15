@@ -13,6 +13,7 @@ public class ErrorApiCodeContent {
 
     // Lỗi liên quan đến bài học
     public static final String LESSON_CREATED_FAIL = "101"; // Tao moi bai hoc that bai
+    public static final String LESSON_UPDATED_FAIL = "101";
     public static final String LESSON_NOT_FOUND = "204"; // Không tìm thấy bài học
 
     // Lỗi liên quan đến bài kiểm tra

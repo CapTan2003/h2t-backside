@@ -64,15 +64,16 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         log.info("Deleting entity with ID: {}", id);
         Optional<Entity> entityOptional = repository.findById(id);
         if (entityOptional.isEmpty()) {
             this.findByIdError(id);
-            return;
+            return false;
         }
         repository.deleteById(id);
         log.info("Deleted entity with ID: {}", id);
+        return true;
     }
 
     @Override
