@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
+import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.englishweb.h2t_backside.service.GrammarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, GrammarRepository> implements GrammarService {
+
+    public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier) {
+        this.repository = repository;
+        this.discordNotifier = discordNotifier;
+    }
 
     @Override
     protected void findByIdError(Long id) {
@@ -27,11 +33,16 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
         String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
+        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
     }
 
     @Override
     protected void updateError(GrammarDTO dto, Long id, Exception ex) {
+        log.error("Error updating entity: {}", ex.getMessage());
+        String errorMessage = "Unexpected error updating entity: " + ex.getMessage();
+        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
+        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
     }
 
     @Override

@@ -8,7 +8,7 @@ public interface BaseService<DTO> {
 
     DTO update(DTO dto, Long id);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
     boolean isExist(Long id);
 }
