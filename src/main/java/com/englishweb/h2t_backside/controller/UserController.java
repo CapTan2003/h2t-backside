@@ -5,8 +5,6 @@ import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.service.UserService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -16,17 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "User API", description = "Endpoints for user management")
 @AllArgsConstructor
 public class UserController {
 
     private final UserService service;
 
-    @Operation(
-            method = "GET",
-            summary = "Get user by ID",
-            description = "Retrieve a user by their unique ID"
-    )
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<UserDTO>> findById(@PathVariable Long id) {
         UserDTO user = service.findById(id);
@@ -47,11 +39,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            method = "POST",
-            summary = "Create user",
-            description = "Create a new user"
-    )
     @PostMapping
     public ResponseEntity<ResponseDTO<UserDTO>> create(@Valid @RequestBody UserDTO userDTO) {
         UserDTO createdUser = service.create(userDTO);
