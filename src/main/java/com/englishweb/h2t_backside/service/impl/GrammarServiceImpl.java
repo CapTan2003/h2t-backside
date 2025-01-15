@@ -23,6 +23,9 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
     @Override
     protected void createError(GrammarDTO dto, Exception ex) {
+        log.error("Error creating entity: {}", ex.getMessage());
+        String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
+        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
     }
 

@@ -12,6 +12,7 @@ public class ErrorApiCodeContent {
     public static final String USER_UPDATED_FAIL = "106"; // Cap nhat user that bai
 
     // Lỗi liên quan đến bài học
+    public static final String LESSON_CREATED_FAIL = "101"; // Tao moi bai hoc that bai
     public static final String LESSON_NOT_FOUND = "204"; // Không tìm thấy bài học
 
     // Lỗi liên quan đến bài kiểm tra
@@ -20,5 +21,5 @@ public class ErrorApiCodeContent {
     // Lỗi liên quan đến gọi api bên ngoài
 
     // Các lỗi khác
-
+    public static final String ARGUMENT_DTO_INVALID = "501";
 }

@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.dto;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,8 +13,13 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO extends AbstractBaseDTO {
+
+    @NotBlank(message = "Name of user cannot empty")
     private String name;
+
+    @NotBlank(message = "Email of user cannot empty")
     private String email;
+
     private String avatar;
     private RoleEnum roleEnum;
     private LevelEnum levelEnum;
