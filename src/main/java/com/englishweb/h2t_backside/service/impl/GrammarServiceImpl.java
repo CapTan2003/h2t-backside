@@ -57,7 +57,36 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
     @Override
     protected void patchEntityFromDTO(GrammarDTO dto, Grammar entity) {
-
+        if (dto.getTitle() != null) {
+            entity.setTitle(dto.getTitle());
+        }
+        if (dto.getImage() != null) {
+            entity.setImage(dto.getImage());
+        }
+        if (dto.getDescription() != null) {
+            entity.setDescription(dto.getDescription());
+        }
+        if (dto.getViews() != null) {
+            entity.setViews(dto.getViews());
+        }
+        if (dto.getRouteNode() != null) {
+            entity.setRouteNode(dto.getRouteNode());
+        }
+        if (dto.getFile() != null) {
+            entity.setFile(dto.getFile());
+        }
+        if (dto.getDefinition() != null) {
+            entity.setDefinition(dto.getDefinition());
+        }
+        if (dto.getExample() != null) {
+            entity.setExample(dto.getExample());
+        }
+        if (dto.getQuestions() != null) {
+            entity.setQuestions(dto.getQuestions());
+        }
+        if (dto.getStatus() != null) {
+            entity.setStatus(dto.getStatus());
+        }
     }
 
     @Override
