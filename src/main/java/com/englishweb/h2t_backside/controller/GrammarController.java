@@ -21,14 +21,6 @@ public class GrammarController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<GrammarDTO>> findById(@PathVariable Long id) {
         GrammarDTO grammar = service.findById(id);
-        if (grammar == null) {
-            log.warn("Grammar with ID {} not found", id);
-            ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Grammar not found")
-                    .build();
-            return ResponseEntity.status(404).body(response);
-        }
 
         ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
@@ -41,13 +33,6 @@ public class GrammarController {
     @PostMapping
     public ResponseEntity<ResponseDTO<GrammarDTO>> create(@Valid @RequestBody GrammarDTO grammarDTO) {
         GrammarDTO createdGrammar = service.create(grammarDTO);
-        if (createdGrammar == null) {
-            ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Failed to create grammar")
-                    .build();
-            return ResponseEntity.badRequest().body(response);
-        }
 
         ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
@@ -60,13 +45,6 @@ public class GrammarController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO<GrammarDTO>> update(@PathVariable Long id, @Valid @RequestBody GrammarDTO grammarDTO) {
         GrammarDTO updatedGrammar = service.update(grammarDTO, id);
-        if (updatedGrammar == null) {
-            ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Failed to update grammar")
-                    .build();
-            return ResponseEntity.badRequest().body(response);
-        }
 
         ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
@@ -75,6 +53,19 @@ public class GrammarController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseDTO<GrammarDTO>> patch(@PathVariable Long id, @RequestBody GrammarDTO grammarDTO) {
+        GrammarDTO patchedGrammar = service.patch(grammarDTO, id);
+
+        ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(patchedGrammar)
+                .message("Grammar updated with patch successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
