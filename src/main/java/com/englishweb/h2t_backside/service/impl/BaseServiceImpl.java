@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.impl;
 
 import com.englishweb.h2t_backside.dto.interfacedto.BaseDTO;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
 import com.englishweb.h2t_backside.service.BaseService;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
@@ -64,6 +65,24 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
     }
 
     @Override
+    public DTO patch(DTO dto, Long id) {
+        log.info("Updating with patch entity with DTO");
+        try{
+            Entity existingEntity = repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(id, "Resource not found"));
+
+            patchEntityFromDTO(dto, existingEntity);
+            Entity savedEntity = repository.save(existingEntity);
+            DTO savedDTO = convertToDTO(savedEntity);
+            log.info("Updated with patch entity with ID: {}", savedDTO.getId());
+            return savedDTO;
+        } catch (Exception e) {
+            this.updateError(dto, id, e);
+            return null;
+        }
+    }
+
+    @Override
     public boolean delete(Long id) {
         log.info("Deleting entity with ID: {}", id);
         Optional<Entity> entityOptional = repository.findById(id);
@@ -81,6 +100,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
         Optional<Entity> entityOptional = repository.findById(id);
         return entityOptional.isPresent();
     }
+    protected abstract void patchEntityFromDTO(DTO dto, Entity entity);
 
     protected abstract void findByIdError(Long id);
 
@@ -91,4 +111,5 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
     protected abstract Entity convertToEntity(DTO dto);
 
     protected abstract DTO convertToDTO(Entity entity);
+
 }

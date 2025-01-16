@@ -8,6 +8,8 @@ public interface BaseService<DTO> {
 
     DTO update(DTO dto, Long id);
 
+    DTO patch(DTO dto, Long id);
+
     boolean delete(Long id);
 
     boolean isExist(Long id);

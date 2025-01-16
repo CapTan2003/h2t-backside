@@ -76,6 +76,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
     }
 
     @Override
+    protected void patchEntityFromDTO(UserDTO dto, User entity) {
+
+    }
+
+    @Override
     protected User convertToEntity(UserDTO dto) {
         return User.builder()
                 .id(dto.getId())

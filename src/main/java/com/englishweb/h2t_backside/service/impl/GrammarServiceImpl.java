@@ -56,6 +56,11 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     }
 
     @Override
+    protected void patchEntityFromDTO(GrammarDTO dto, Grammar entity) {
+
+    }
+
+    @Override
     protected Grammar convertToEntity(GrammarDTO dto) {
         return Grammar.builder()
                 .id(dto.getId())
