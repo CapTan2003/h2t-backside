@@ -24,7 +24,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Service
 @Slf4j
@@ -80,29 +79,19 @@ public class DiscordNotifierImpl implements DiscordNotifier {
         }
     }
 
-    public <DTO> void buildErrorAndSend(DTO dto, String errorMessage, String errorCode) {
-        final LocalDateTime errorTime = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
-
-        ErrorLogDTO errorLogDTO = ErrorLogDTO.builder()
-                .message(errorMessage)
-                .errorCode(errorCode)
-                .timestamp(errorTime)
-                .build();
-
-        ErrorDTO errorDTO = ErrorDTO.builder()
-                .message(errorMessage)
-                .errorCode(errorCode)
-                .timestamp(errorTime)
-                .data(dto)
-                .build();
-
+    public void buildErrorAndSend(ErrorDTO errorDTO) {
         try {
             String discordPayload = objectMapper.writeValueAsString(errorDTO);
             // Send the notification with formatted JSON
             this.sendNotification("```json\n" + discordPayload + "\n```");
             // Persist the error log
+            ErrorLogDTO errorLogDTO = ErrorLogDTO.builder()
+                    .message(errorDTO.getMessage())
+                    .errorCode(errorDTO.getErrorCode())
+                    .timestamp(errorDTO.getTimestamp())
+                    .build();
             errorLogService.create(errorLogDTO);
-        } catch (JsonProcessingException e) { // Catch specific exception
+        } catch (JsonProcessingException e) {
             log.error("Error converting ErrorDTO to JSON: {}", e.getMessage(), e);
         }
     }

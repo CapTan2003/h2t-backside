@@ -2,10 +2,7 @@ package com.englishweb.h2t_backside.model.abstractmodel;
 
 import com.englishweb.h2t_backside.model.RouteNode;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
@@ -32,6 +29,7 @@ public abstract class AbstractLessonEntity extends AbstractBaseEntity{
     @Column(nullable = false)
     @ColumnDefault("0")
     @Comment("Number of views for Lesson")
+    @Builder.Default
     private Long views = 0L;
 
     @OneToOne

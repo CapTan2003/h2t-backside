@@ -23,6 +23,7 @@ public abstract class AbstractBaseEntity implements BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
+    @Builder.Default
     private StatusEnum status = StatusEnum.ACTIVE;
 
     @CreationTimestamp

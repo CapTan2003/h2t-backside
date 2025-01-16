@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompetitionTest extends AbstractBaseEntity {
@@ -36,5 +37,6 @@ public class CompetitionTest extends AbstractBaseEntity {
     @Column(nullable = false)
     @Comment("Id part of the Competition")
     @ColumnDefault("''")
+    @Builder.Default
     private String parts = "";
 }

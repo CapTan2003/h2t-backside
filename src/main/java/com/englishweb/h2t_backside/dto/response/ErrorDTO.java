@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,10 +10,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorDTO {
-    private String message;
-    private String errorCode;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
-    private LocalDateTime timestamp;
-    private Object data;
+    private String message;     // Tiêu đề ngắn gọn về lỗi
+    private int status;         // Mã trạng thái HTTP
+    private String detail;      // Mô tả chi tiết về lỗi
+    private String instance;    // URI của yêu cầu gây ra lỗi
+    private LocalDateTime timestamp; // Thời gian xảy ra lỗi
+    private String errorCode;   // Mã lỗi tùy chỉnh
+    private Object data;        // Dữ liệu liên quan (nếu có)
 }

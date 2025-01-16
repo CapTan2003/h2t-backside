@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.enummodel.ActionEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateLog {
@@ -41,5 +42,6 @@ public class UpdateLog {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Comment("Action performed: CREATE, UPDATE, DELETE")
+    @Builder.Default
     private ActionEnum action = ActionEnum.CREATE;          // Hành động được thực hiện: CREATE, UPDATE, DELETE
 }

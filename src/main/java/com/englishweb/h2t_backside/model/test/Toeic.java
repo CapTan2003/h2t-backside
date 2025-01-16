@@ -4,12 +4,13 @@ import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Toeic extends AbstractBaseEntity {
@@ -18,29 +19,36 @@ public class Toeic extends AbstractBaseEntity {
     private String title;
 
     @Column(nullable = false)
+    @Builder.Default
     private int duration = 120;
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    private String questionsPart1;
+    @Builder.Default
+    private String questionsPart1 = "";
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    private String questionsPart2;
+    @Builder.Default
+    private String questionsPart2 = "";
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    private String questionsPart3_4;
+    @Builder.Default
+    private String questionsPart3_4 = "";
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    private String questionsPart5;
+    @Builder.Default
+    private String questionsPart5 = "";
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    private String questionsPart6;
+    @Builder.Default
+    private String questionsPart6 = "";
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    private String questionsPart7;
+    @Builder.Default
+    private String questionsPart7 = "";
 }
