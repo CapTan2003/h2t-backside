@@ -6,12 +6,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Listening extends AbstractLessonEntity {
@@ -24,6 +25,7 @@ public class Listening extends AbstractLessonEntity {
     private String transcript;
 
     @Comment("Questions related to the Listening section")
+    @Builder.Default
     private String questions = "";
 
     @OneToOne

@@ -30,5 +30,6 @@ public class Grammar extends AbstractLessonEntity {
 
     @Comment("Questions related to the Grammar")
     @ColumnDefault("''")
+    @Builder.Default
     private String questions = "";
 }

@@ -1,13 +1,17 @@
 package com.englishweb.h2t_backside.service.impl;
 
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.englishweb.h2t_backside.service.GrammarService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +28,7 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
         String errorMessage = String.format("Grammar with ID '%d' not found.", id);
         log.warn(errorMessage);
 
-        this.discordNotifier.buildErrorAndSend(id, errorMessage, ErrorApiCodeContent.LESSON_NOT_FOUND);
+        throw new ResourceNotFoundException(id, errorMessage);
     }
 
     @Override
@@ -33,16 +37,22 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
         String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
-        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
     protected void updateError(GrammarDTO dto, Long id, Exception ex) {
         log.error("Error updating entity: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating entity: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
+        if (!this.isExist(id)){
+            errorMessage = String.format("Grammar with ID '%d' not found.", id);
+            status = HttpStatus.NOT_FOUND;
+        }
+
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
     }
 
     @Override

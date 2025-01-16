@@ -4,12 +4,13 @@ import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.WordTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Vocabulary extends AbstractBaseEntity {
@@ -38,6 +39,7 @@ public class Vocabulary extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Comment("Type of the word (e.g., Noun, Verb, etc.)")
+    @Builder.Default
     private WordTypeEnum wordType = WordTypeEnum.NOUN;
 
     @ManyToOne(fetch = FetchType.LAZY)

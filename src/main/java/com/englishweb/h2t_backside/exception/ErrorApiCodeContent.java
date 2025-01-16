@@ -23,4 +23,5 @@ public class ErrorApiCodeContent {
 
     // Các lỗi khác
     public static final String ARGUMENT_DTO_INVALID = "501";
+    public static final String RESOURCE_NOT_FOUND = "404";
 }

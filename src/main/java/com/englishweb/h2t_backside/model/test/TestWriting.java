@@ -4,11 +4,12 @@ import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestWriting extends AbstractBaseEntity {
@@ -17,8 +18,10 @@ public class TestWriting extends AbstractBaseEntity {
     private String topic;
 
     @Column(nullable = false)
+    @Builder.Default
     private int maxWords = 200;
 
     @Column(nullable = false)
+    @Builder.Default
     private int minWords = 20;
 }

@@ -36,6 +36,7 @@ public class User extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     @Comment("Role of the User (Admin, Student, or Teacher)")
+    @Builder.Default
     private RoleEnum roleEnum = RoleEnum.STUDENT;
 
     @Enumerated(EnumType.STRING)

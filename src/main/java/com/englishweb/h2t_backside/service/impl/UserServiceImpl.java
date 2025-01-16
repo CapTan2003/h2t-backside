@@ -1,13 +1,17 @@
 package com.englishweb.h2t_backside.service.impl;
 
 import com.englishweb.h2t_backside.dto.UserDTO;
+import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.englishweb.h2t_backside.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -31,7 +35,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String errorMessage = String.format("User with ID '%d' not found.", id);
         log.warn(errorMessage);
 
-        this.discordNotifier.buildErrorAndSend(id, errorMessage, ErrorApiCodeContent.USER_NOT_FOUND);
+        throw new ResourceNotFoundException(id, errorMessage);
     }
 
     @Override
@@ -39,19 +43,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         log.error("Error creating entity: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.USER_CREATED_FAIL;
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        if(dto.getEmail().isEmpty()) {
-            errorMessage = "Email is null or empty";
-            errorCode = ErrorApiCodeContent.USER_EMAIL_EMPTY;
-        } else if (dto.getName().isEmpty()){
-            errorMessage = "Name is null or empty";
-            errorCode = ErrorApiCodeContent.USER_NAME_EMPTY;
-        } else if (!repository.findAllByEmail(dto.getEmail()).isEmpty()) {
+        if (!repository.findAllByEmail(dto.getEmail()).isEmpty()) {
             errorMessage = "Email already exists";
             errorCode = ErrorApiCodeContent.USER_EMAIL_EXIST;
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
+        throw new CreateResourceException(dto, errorMessage, errorCode, status);
     }
 
     @Override
@@ -59,21 +59,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         log.error("Error update entity: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating entity: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.USER_UPDATED_FAIL;
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         // Kiem tra email da ton tai hay chua
         User exitsUser = repository.findAllByEmail(dto.getEmail()).get(0);
 
-        if(dto.getEmail().isEmpty()) {
-            errorMessage = "Email is null or empty";
-            errorCode = ErrorApiCodeContent.USER_EMAIL_EMPTY;
-        } else if (dto.getName().isEmpty()){
-            errorMessage = "Name is null or empty";
-            errorCode = ErrorApiCodeContent.USER_NAME_EMPTY;
+        if (!this.isExist(id)){
+            errorMessage = String.format("User with ID '%d' not found.", id);
+            status =  HttpStatus.NOT_FOUND;
         } else if (!Objects.equals(exitsUser.getId(), id)) {
             errorMessage = "Email already exists";
             errorCode = ErrorApiCodeContent.USER_EMAIL_EXIST;
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        this.discordNotifier.buildErrorAndSend(dto, errorMessage, errorCode);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
     }
 
     @Override
