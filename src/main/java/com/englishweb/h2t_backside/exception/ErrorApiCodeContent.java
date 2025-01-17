@@ -22,6 +22,9 @@ public class ErrorApiCodeContent {
     // Lỗi liên quan đến gọi api bên ngoài
 
     // Các lỗi khác
-    public static final String ARGUMENT_DTO_INVALID = "501";
     public static final String RESOURCE_NOT_FOUND = "404";
+    public static final String ARGUMENT_DTO_INVALID = "601";
+    public static final String PAGE_INDEX_INVALID = "602";
+    public static final String PAGE_SIZE_INVALID = "603";
+    public static final String SORT_FIELD_INVALID = "604";
 }

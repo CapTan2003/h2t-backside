@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
                 .message("Validation Failed")
                 .status(HttpStatus.BAD_REQUEST.value())
                 .detail(errorMessage)
-                .instance(request.getRequestURI())
+                .instance(request.getMethod() + " " + request.getRequestURI())
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.ARGUMENT_DTO_INVALID)
                 .data(ex.getBindingResult().getTarget())
@@ -54,12 +54,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResponseDTO<String>> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
         log.warn("Resource not found: {}", ex.getMessage());
+        String errorMessage = "Resource Not Found";
 
         ErrorDTO errorDTO = ErrorDTO.builder()
-                .message("Resource Not Found")
+                .message(errorMessage)
                 .status(HttpStatus.NOT_FOUND.value())
                 .detail(ex.getMessage())
-                .instance(request.getRequestURI())
+                .instance(request.getMethod() + " " + request.getRequestURI())
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.RESOURCE_NOT_FOUND)
                 .data(ex.getResourceId())
@@ -68,7 +69,7 @@ public class GlobalExceptionHandler {
         ResponseDTO<String> response = ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .data(ex.getMessage())
-                .message("Resource not found")
+                .message(errorMessage)
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -77,40 +78,27 @@ public class GlobalExceptionHandler {
     // Loi khoi tao tai nguyen
     @ExceptionHandler(CreateResourceException.class)
     public ResponseEntity<ResponseDTO<String>> handleCreateResourceException(CreateResourceException ex, HttpServletRequest request) {
-        log.warn("Failed to create resource: {}", ex.getMessage());
-
-        ErrorDTO errorDTO = ErrorDTO.builder()
-                .message("Failed to Create Resource")
-                .status(ex.getStatus().value())
-                .detail(ex.getMessage())
-                .instance(request.getRequestURI())
-                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
-                .errorCode(ex.getErrorCode())
-                .data(ex.getData())
-                .build();
-
-        // Gửi thông báo lỗi đến Discord
-        discordNotifier.buildErrorAndSend(errorDTO);
-
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
-                .status(ResponseStatusEnum.FAIL)
-                .message("Failed to create resource")
-                .data(ex.getMessage())
-                .build();
-
-        return new ResponseEntity<>(response, ex.getStatus());
+        return handleResourceException(ex.getStatus(), ex.getMessage(), ex.getErrorCode(), ex.getData(), request, "Failed to Create Resource");
     }
 
     // Loi cap nhat tai nguyen
     @ExceptionHandler(UpdateResourceException.class)
     public ResponseEntity<ResponseDTO<String>> handleUpdateResourceException(UpdateResourceException ex, HttpServletRequest request) {
-        log.warn("Failed to update resource: {}", ex.getMessage());
+        return handleResourceException(ex.getStatus(), ex.getMessage(), ex.getErrorCode(), ex.getData(), request, "Failed to Update Resource");
+    }
+
+
+    // Loi tham so khong hop le
+    @ExceptionHandler(InvalidArgumentException.class)
+    public ResponseEntity<ResponseDTO<String>> handleInvalidArgumentException(InvalidArgumentException ex, HttpServletRequest request) {
+        log.warn("Invalid argument: {}", ex.getMessage());
+        String errorMessage = "Invalid Argument";
 
         ErrorDTO errorDTO = ErrorDTO.builder()
-                .message("Failed to Update Resource")
-                .status(ex.getStatus().value())
+                .message(errorMessage)
+                .status(HttpStatus.BAD_REQUEST.value())
                 .detail(ex.getMessage())
-                .instance(request.getRequestURI())
+                .instance(request.getMethod() + " " + request.getRequestURI())
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ex.getErrorCode())
                 .data(ex.getData())
@@ -120,10 +108,35 @@ public class GlobalExceptionHandler {
         discordNotifier.buildErrorAndSend(errorDTO);
         ResponseDTO<String> response = ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
-                .message("Failed to update resource")
+                .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
 
-        return new ResponseEntity<>(response, ex.getStatus());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<ResponseDTO<String>> handleResourceException(HttpStatus status, String message, String errorCode, Object data, HttpServletRequest request, String errorMessage) {
+        log.warn("{}: {}", errorMessage, message);
+
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(status.value())
+                .detail(message)
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(errorCode)
+                .data(data)
+                .build();
+
+        // Gửi thông báo lỗi đến Discord
+        discordNotifier.buildErrorAndSend(errorDTO);
+
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(message)
+                .build();
+
+        return new ResponseEntity<>(response, status);
     }
 }
