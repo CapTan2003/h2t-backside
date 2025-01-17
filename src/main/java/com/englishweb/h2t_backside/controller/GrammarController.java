@@ -7,8 +7,11 @@ import com.englishweb.h2t_backside.service.GrammarService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -74,6 +77,28 @@ public class GrammarController {
         ResponseDTO<String> response = ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Grammar deleted successfully" : "Failed to delete grammar")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO<Page<GrammarDTO>>> searchWithFilters(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) LocalDateTime startCreatedAt,
+            @RequestParam(required = false) LocalDateTime endCreatedAt,
+            @RequestParam(required = false) LocalDateTime startUpdatedAt,
+            @RequestParam(required = false) LocalDateTime endUpdatedAt,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields) {
+
+        Page<GrammarDTO> grammars = service.searchWithFilters(
+                title, startCreatedAt, endCreatedAt, startUpdatedAt, endUpdatedAt, page, size, sortFields);
+
+        ResponseDTO<Page<GrammarDTO>> response = ResponseDTO.<Page<GrammarDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(grammars)
+                .message("Grammars retrieved successfully with filters")
                 .build();
         return ResponseEntity.ok(response);
     }

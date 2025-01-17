@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.model.abstractmodel;
 
 import com.englishweb.h2t_backside.model.RouteNode;
+import com.englishweb.h2t_backside.model.interfacemodel.LessonEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +14,7 @@ import org.hibernate.annotations.Comment;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class AbstractLessonEntity extends AbstractBaseEntity{
+public abstract class AbstractLessonEntity extends AbstractBaseEntity implements LessonEntity {
     @Column(nullable = false)
     @Comment("Title of the Lesson")
     private String title;
