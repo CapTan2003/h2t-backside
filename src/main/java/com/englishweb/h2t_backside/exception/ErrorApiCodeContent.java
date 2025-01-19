@@ -27,4 +27,5 @@ public class ErrorApiCodeContent {
     public static final String PAGE_INDEX_INVALID = "602";
     public static final String PAGE_SIZE_INVALID = "603";
     public static final String SORT_FIELD_INVALID = "604";
+    public static final String ARGUMENT_TYPE_MISMATCH = "605";
 }

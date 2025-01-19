@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.repository.specifications;
 
+import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -41,5 +42,10 @@ public class BaseEntitySpecification {
 
             return criteriaBuilder.lessThanOrEqualTo(root.get("updatedAt"), endDay);
         };
+    }
+
+
+    public static <T extends BaseEntity> Specification<T> hasStatus(StatusEnum status){
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
     }
 }

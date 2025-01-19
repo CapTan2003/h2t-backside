@@ -9,7 +9,4 @@ public class LessonSpecification {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
-    public static <T extends LessonEntity> Specification<T> hasStatus(StatusEnum status){
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
-    }
 }
