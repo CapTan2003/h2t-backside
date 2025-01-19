@@ -134,7 +134,7 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
                 .build();
     }
 
-    public Page<GrammarDTO> searchWithFilters(String title, LocalDateTime startCreatedAt, LocalDateTime endCreatedAt, LocalDateTime startUpdatedAt, LocalDateTime endUpdatedAt, int page, int size, String sortFields) {
+    public Page<GrammarDTO> searchWithFilters(String title, LocalDateTime startCreatedAt, LocalDateTime endCreatedAt, LocalDateTime startUpdatedAt, LocalDateTime endUpdatedAt, int page, int size, String sortFields, StatusEnum status) {
         if (page < 0) {
             throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
         }
@@ -147,6 +147,10 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
         if (title != null && !title.isEmpty()) {
             specification = specification.and(LessonSpecification.findByName(title));
+        }
+
+        if (status != null) {
+            specification = specification.and(BaseEntitySpecification.hasStatus(status));
         }
 
         if (startCreatedAt != null || endCreatedAt != null) {

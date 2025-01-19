@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.controller;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.service.GrammarService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -88,12 +89,13 @@ public class GrammarController {
             @RequestParam(required = false) LocalDateTime endCreatedAt,
             @RequestParam(required = false) LocalDateTime startUpdatedAt,
             @RequestParam(required = false) LocalDateTime endUpdatedAt,
+            @RequestParam(required = false) StatusEnum status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields) {
 
         Page<GrammarDTO> grammars = service.searchWithFilters(
-                title, startCreatedAt, endCreatedAt, startUpdatedAt, endUpdatedAt, page, size, sortFields);
+                title, startCreatedAt, endCreatedAt, startUpdatedAt, endUpdatedAt, page, size, sortFields, status);
 
         ResponseDTO<Page<GrammarDTO>> response = ResponseDTO.<Page<GrammarDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
