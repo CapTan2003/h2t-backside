@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
@@ -84,18 +85,13 @@ public class GrammarController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<Page<GrammarDTO>>> searchWithFilters(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) LocalDateTime startCreatedAt,
-            @RequestParam(required = false) LocalDateTime endCreatedAt,
-            @RequestParam(required = false) LocalDateTime startUpdatedAt,
-            @RequestParam(required = false) LocalDateTime endUpdatedAt,
-            @RequestParam(required = false) StatusEnum status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String sortFields) {
+            @RequestParam(defaultValue = "") String sortFields,
+            @RequestParam(required = false) LessonFilterDTO filter) {
 
         Page<GrammarDTO> grammars = service.searchWithFilters(
-                title, startCreatedAt, endCreatedAt, startUpdatedAt, endUpdatedAt, page, size, sortFields, status);
+                page, size, sortFields, filter);
 
         ResponseDTO<Page<GrammarDTO>> response = ResponseDTO.<Page<GrammarDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)

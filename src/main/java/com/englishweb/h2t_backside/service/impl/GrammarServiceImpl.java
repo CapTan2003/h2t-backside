@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.impl;
 
+import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.exception.*;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
@@ -134,7 +135,7 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
                 .build();
     }
 
-    public Page<GrammarDTO> searchWithFilters(String title, LocalDateTime startCreatedAt, LocalDateTime endCreatedAt, LocalDateTime startUpdatedAt, LocalDateTime endUpdatedAt, int page, int size, String sortFields, StatusEnum status) {
+    public Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
         if (page < 0) {
             throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
         }
@@ -145,20 +146,20 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
         Specification<Grammar> specification = Specification.where(null);
 
-        if (title != null && !title.isEmpty()) {
-            specification = specification.and(LessonSpecification.findByName(title));
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            specification = specification.and(LessonSpecification.findByName(filter.getTitle()));
         }
 
-        if (status != null) {
-            specification = specification.and(BaseEntitySpecification.hasStatus(status));
+        if (filter.getStatus() != null) {
+            specification = specification.and(BaseEntitySpecification.hasStatus(filter.getStatus()));
         }
 
-        if (startCreatedAt != null || endCreatedAt != null) {
-            specification = specification.and(BaseEntitySpecification.findByCreatedAtRange(startCreatedAt, endCreatedAt));
+        if (filter.getStartCreatedAt() != null || filter.getEndCreatedAt() != null) {
+            specification = specification.and(BaseEntitySpecification.findByCreatedAtRange(filter.getStartCreatedAt(), filter.getEndCreatedAt()));
         }
 
-        if (startUpdatedAt != null || endUpdatedAt != null) {
-            specification = specification.and(BaseEntitySpecification.findByUpdatedAtRange(startUpdatedAt, endUpdatedAt));
+        if (filter.getStartCreatedAt() != null || filter.getEndUpdatedAt() != null) {
+            specification = specification.and(BaseEntitySpecification.findByUpdatedAtRange(filter.getStartCreatedAt(), filter.getEndUpdatedAt()));
         }
 
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
