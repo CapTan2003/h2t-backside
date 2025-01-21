@@ -1,16 +1,17 @@
 package com.englishweb.h2t_backside.service.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
-import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.dto.lesson.TopicDTO;
 import com.englishweb.h2t_backside.exception.*;
-import com.englishweb.h2t_backside.mapper.GrammarMapper;
+import com.englishweb.h2t_backside.mapper.TopicMapper;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
-import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
+import com.englishweb.h2t_backside.model.lesson.Topic;
+import com.englishweb.h2t_backside.repository.lesson.TopicRepository;
 import com.englishweb.h2t_backside.repository.specifications.BaseEntitySpecification;
 import com.englishweb.h2t_backside.repository.specifications.LessonSpecification;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
-import com.englishweb.h2t_backside.service.GrammarService;
+import com.englishweb.h2t_backside.service.TopicService;
 import com.englishweb.h2t_backside.utils.ParseData;
 import com.englishweb.h2t_backside.utils.ValidationData;
 import lombok.extern.slf4j.Slf4j;
@@ -26,25 +27,25 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, GrammarRepository> implements GrammarService {
-    private final GrammarMapper mapper;
+public class TopicServiceImpl extends BaseServiceImpl<TopicDTO, Topic, TopicRepository> implements TopicService {
+    private final TopicMapper mapper;
 
-    public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier, GrammarMapper mapper) {
-        this.mapper = mapper;
+    public TopicServiceImpl(TopicRepository repository, DiscordNotifier discordNotifier,TopicMapper mapper) {
         this.repository = repository;
         this.discordNotifier = discordNotifier;
+        this.mapper = mapper;
     }
 
     @Override
     protected void findByIdError(Long id) {
-        String errorMessage = String.format("Grammar with ID '%d' not found.", id);
+        String errorMessage = String.format("Topic with ID '%d' not found.", id);
         log.warn(errorMessage);
 
         throw new ResourceNotFoundException(id, errorMessage);
     }
 
     @Override
-    protected void createError(GrammarDTO dto, Exception ex) {
+    protected void createError(TopicDTO dto, Exception ex) {
         log.error("Error creating entity: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating entity: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
@@ -53,14 +54,14 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     }
 
     @Override
-    protected void updateError(GrammarDTO dto, Long id, Exception ex) {
+    protected void updateError(TopicDTO dto, Long id, Exception ex) {
         log.error("Error updating entity: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating entity: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)){
-            errorMessage = String.format("Grammar with ID '%d' not found.", id);
+            errorMessage = String.format("Topic with ID '%d' not found.", id);
             status = HttpStatus.NOT_FOUND;
         }
 
@@ -68,13 +69,13 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     }
 
     @Override
-    protected void patchEntityFromDTO(GrammarDTO dto, Grammar entity) {
-        this.mapper.patchEntityFromDTO(dto, entity);
+    protected void patchEntityFromDTO(TopicDTO dto, Topic entity) {
+        mapper.patchEntityFromDTO(dto, entity);
     }
 
     @Override
-    protected Grammar convertToEntity(GrammarDTO dto) {
-        return Grammar.builder()
+    protected Topic convertToEntity(TopicDTO dto) {
+        return Topic.builder()
                 .id(dto.getId())
                 .status(dto.getStatus() != null ? dto.getStatus() : StatusEnum.ACTIVE)
                 .title(dto.getTitle())
@@ -83,15 +84,12 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
                 .views(dto.getViews() != null ? dto.getViews() : 0L)
                 .routeNode(dto.getRouteNode())
                 .questions(dto.getQuestions())
-                .definition(dto.getDefinition())
-                .example(dto.getExample())
-                .file(dto.getFile())
                 .build();
     }
 
     @Override
-    protected GrammarDTO convertToDTO(Grammar entity) {
-        return GrammarDTO.builder()
+    protected TopicDTO convertToDTO(Topic entity) {
+        return TopicDTO.builder()
                 .id(entity.getId())
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
@@ -102,13 +100,12 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
                 .views(entity.getViews())
                 .routeNode(entity.getRouteNode())
                 .questions(entity.getQuestions())
-                .definition(entity.getDefinition())
-                .example(entity.getExample())
-                .file(entity.getFile())
                 .build();
     }
 
-    public Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
+
+    @Override
+    public Page<TopicDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
         if (page < 0) {
             throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
         }
@@ -117,7 +114,7 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
             throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID);
         }
 
-        Specification<Grammar> specification = Specification.where(null);
+        Specification<Topic> specification = Specification.where(null);
 
         if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
             specification = specification.and(LessonSpecification.findByName(filter.getTitle()));

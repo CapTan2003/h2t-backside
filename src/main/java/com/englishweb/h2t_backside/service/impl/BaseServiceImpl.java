@@ -100,13 +100,14 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
         Optional<Entity> entityOptional = repository.findById(id);
         return entityOptional.isPresent();
     }
-    protected abstract void patchEntityFromDTO(DTO dto, Entity entity);
 
     protected abstract void findByIdError(Long id);
 
     protected abstract void createError(DTO dto, Exception ex);
 
     protected abstract void updateError(DTO dto, Long id, Exception ex);
+
+    protected abstract void patchEntityFromDTO(DTO dto, Entity entity);
 
     protected abstract Entity convertToEntity(DTO dto);
 
