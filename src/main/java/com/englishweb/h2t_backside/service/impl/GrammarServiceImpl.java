@@ -2,27 +2,21 @@ package com.englishweb.h2t_backside.service.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
-import com.englishweb.h2t_backside.exception.*;
+import com.englishweb.h2t_backside.exception.CreateResourceException;
+import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.GrammarMapper;
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
-import com.englishweb.h2t_backside.repository.specifications.BaseEntitySpecification;
-import com.englishweb.h2t_backside.repository.specifications.LessonSpecification;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
 import com.englishweb.h2t_backside.service.GrammarService;
-import com.englishweb.h2t_backside.utils.ParseData;
-import com.englishweb.h2t_backside.utils.ValidationData;
+import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -69,82 +63,21 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
     @Override
     protected void patchEntityFromDTO(GrammarDTO dto, Grammar entity) {
-        this.mapper.patchEntityFromDTO(dto, entity);
+        mapper.patchEntityFromDTO(dto, entity);
     }
 
     @Override
     protected Grammar convertToEntity(GrammarDTO dto) {
-        return Grammar.builder()
-                .id(dto.getId())
-                .status(dto.getStatus() != null ? dto.getStatus() : StatusEnum.ACTIVE)
-                .title(dto.getTitle())
-                .image(dto.getImage())
-                .description(dto.getDescription())
-                .views(dto.getViews() != null ? dto.getViews() : 0L)
-                .routeNode(dto.getRouteNode())
-                .questions(dto.getQuestions())
-                .definition(dto.getDefinition())
-                .example(dto.getExample())
-                .file(dto.getFile())
-                .build();
+        return mapper.convertToEntity(dto);
     }
 
     @Override
     protected GrammarDTO convertToDTO(Grammar entity) {
-        return GrammarDTO.builder()
-                .id(entity.getId())
-                .status(entity.getStatus())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .title(entity.getTitle())
-                .image(entity.getImage())
-                .description(entity.getDescription())
-                .views(entity.getViews())
-                .routeNode(entity.getRouteNode())
-                .questions(entity.getQuestions())
-                .definition(entity.getDefinition())
-                .example(entity.getExample())
-                .file(entity.getFile())
-                .build();
+        return mapper.convertToDTO(entity);
     }
 
     public Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        if (page < 0) {
-            throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
-        }
-
-        if (size <= 0) {
-            throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID);
-        }
-
         Specification<Grammar> specification = Specification.where(null);
-
-        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
-            specification = specification.and(LessonSpecification.findByName(filter.getTitle()));
-        }
-
-        if (filter.getStatus() != null) {
-            specification = specification.and(BaseEntitySpecification.hasStatus(filter.getStatus()));
-        }
-
-        if (filter.getStartCreatedAt() != null || filter.getEndCreatedAt() != null) {
-            specification = specification.and(BaseEntitySpecification.findByCreatedAtRange(filter.getStartCreatedAt(), filter.getEndCreatedAt()));
-        }
-
-        if (filter.getStartCreatedAt() != null || filter.getEndUpdatedAt() != null) {
-            specification = specification.and(BaseEntitySpecification.findByUpdatedAtRange(filter.getStartCreatedAt(), filter.getEndUpdatedAt()));
-        }
-
-        List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
-
-        if(!ValidationData.isValidFieldInSortList(Grammar.class, orders)){
-            throw new InvalidArgumentException("Invalid sort field.", sortFields, ErrorApiCodeContent.SORT_FIELD_INVALID);
-        }
-
-        Sort sort = Sort.by(orders);
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        return repository.findAll(specification, pageable).map(this::convertToDTO);
+        return LessonPagination.searchWithFiltersGeneric(page, size, sortFields, filter, repository, specification, Grammar.class).map(this::convertToDTO);
     }
 }
