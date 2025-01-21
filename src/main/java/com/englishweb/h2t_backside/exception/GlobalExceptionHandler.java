@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -165,4 +166,29 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ResponseDTO<String>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        log.warn("HttpMessageNotReadableException: {}", ex.getMessage());
+        String errorMessage = "Invalid input data format";
+
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.BAD_REQUEST.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.ARGUMENT_TYPE_MISMATCH)
+                .data(ex.getMessage())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 }
