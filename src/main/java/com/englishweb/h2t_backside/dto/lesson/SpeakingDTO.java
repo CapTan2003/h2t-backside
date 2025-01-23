@@ -8,26 +8,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @Getter
 @Setter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WritingDTO extends AbstractLessonDTO {
+public class SpeakingDTO extends AbstractLessonDTO {
 
     @NotBlank(message = "Topic for writing cannot be empty")
     private String topic;
 
-    @NotBlank(message = "File for writing cannot be empty")
-    private String file;
-
-    @NotBlank(message = "Paragraph for writing cannot be empty")
-    private String paragraph;
-
-    @NotBlank(message = "Tips cannot be empty")
-    private List<String> tips;
+    @NotBlank(message = "Duration for speaking cannot be empty")
+    private Integer duration;
 
     private PreparationDTO preparation;
 }

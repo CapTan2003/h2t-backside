@@ -1,0 +1,29 @@
+package com.englishweb.h2t_backside.dto.lesson;
+
+import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
+import com.englishweb.h2t_backside.model.enummodel.PreparationEnum;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PreparationDTO extends AbstractBaseDTO {
+
+    @NotBlank(message = "Title cannot be empty")
+    private String title;
+
+    @NotBlank(message = "Tip cannot be empty")
+    private String tip;
+
+    private String questions;
+
+    @NotBlank(message = "Type cannot be empty")
+    private PreparationEnum type;
+}

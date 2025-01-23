@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.model.lesson;
 
-import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
+import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +13,7 @@ import org.hibernate.annotations.Comment;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListenAndWriteAWord extends AbstractLessonEntity {
+public class ListenAndWriteAWord extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @Comment("Serial of the question")
