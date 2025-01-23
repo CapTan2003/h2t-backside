@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.model.lesson;
 
-import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
+import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -11,7 +11,7 @@ import org.hibernate.annotations.Comment;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpeakingConversation extends AbstractLessonEntity {
+public class SpeakingConversation extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @Comment("Name of person in the conversation")
