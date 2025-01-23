@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.service.impl;
+package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.TopicDTO;
@@ -10,8 +10,9 @@ import com.englishweb.h2t_backside.mapper.lesson.TopicMapper;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Topic;
 import com.englishweb.h2t_backside.repository.lesson.TopicRepository;
-import com.englishweb.h2t_backside.service.DiscordNotifier;
-import com.englishweb.h2t_backside.service.TopicService;
+import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.lesson.TopicService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

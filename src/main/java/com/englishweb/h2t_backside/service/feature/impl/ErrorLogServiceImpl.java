@@ -1,9 +1,9 @@
-package com.englishweb.h2t_backside.service.impl;
+package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.ErrorLogDTO;
 import com.englishweb.h2t_backside.model.log.ErrorLog;
 import com.englishweb.h2t_backside.repository.ErrorLogRepository;
-import com.englishweb.h2t_backside.service.ErrorLogService;
+import com.englishweb.h2t_backside.service.feature.ErrorLogService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

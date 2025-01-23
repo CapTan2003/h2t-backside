@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.service.impl;
+package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -8,8 +8,8 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
-import com.englishweb.h2t_backside.service.DiscordNotifier;
-import com.englishweb.h2t_backside.service.UserService;
+import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import com.englishweb.h2t_backside.service.feature.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

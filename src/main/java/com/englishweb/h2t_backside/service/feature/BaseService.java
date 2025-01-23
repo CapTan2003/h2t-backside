@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.service;
+package com.englishweb.h2t_backside.service.feature;
 
 public interface BaseService<DTO> {
 
