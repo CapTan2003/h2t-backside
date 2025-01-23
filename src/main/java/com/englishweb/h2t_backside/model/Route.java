@@ -14,6 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Route extends AbstractBaseEntity {
+
+    @Column(nullable = false)
+    @Comment("Title for Route")
+    private String title;
+
     @Column(nullable = false)
     @Comment("Image url for Route")
     private String image;

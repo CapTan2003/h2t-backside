@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ParseData {
 
@@ -18,6 +19,13 @@ public class ParseData {
             }
         }
         return list;
+    }
+
+    public static String parseLongListToString(List<Long> list) {
+        if (list == null || list.isEmpty()) return null;
+        return list.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
     }
 
     public static List<Sort.Order> parseStringToSortOrderList(String sortFields) {

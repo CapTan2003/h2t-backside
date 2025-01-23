@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -22,7 +24,7 @@ public class PreparationDTO extends AbstractBaseDTO {
     @NotBlank(message = "Tip cannot be empty")
     private String tip;
 
-    private String questions;
+    private List<Long> questions;
 
     @NotBlank(message = "Type cannot be empty")
     private PreparationEnum type;

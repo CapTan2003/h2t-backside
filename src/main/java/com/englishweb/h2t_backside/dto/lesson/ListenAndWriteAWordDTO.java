@@ -33,5 +33,5 @@ public class ListenAndWriteAWordDTO extends AbstractBaseDTO {
     private String correctAnswer;
 
     @NotBlank(message = "Listening id cannot be empty")
-    private String listeningId;
+    private Long listeningId;
 }

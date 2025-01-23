@@ -6,7 +6,7 @@ import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
-import com.englishweb.h2t_backside.mapper.TopicMapper;
+import com.englishweb.h2t_backside.mapper.lesson.TopicMapper;
 import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Topic;
 import com.englishweb.h2t_backside.repository.lesson.TopicRepository;

@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.dto.abstractdto;
 
-import com.englishweb.h2t_backside.model.RouteNode;
+import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -28,5 +28,5 @@ public abstract class AbstractLessonDTO extends AbstractBaseDTO{
     @Positive(message = "Views number must be greater than 0")
     private Long views;
 
-    private RouteNode routeNode;
+    private RouteNodeDTO routeNode;
 }
