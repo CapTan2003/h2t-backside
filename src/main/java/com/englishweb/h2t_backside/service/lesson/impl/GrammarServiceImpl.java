@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.service.impl;
+package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
@@ -9,8 +9,9 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.GrammarMapper;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
-import com.englishweb.h2t_backside.service.DiscordNotifier;
-import com.englishweb.h2t_backside.service.GrammarService;
+import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.lesson.GrammarService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -3,7 +3,7 @@ package com.englishweb.h2t_backside.controller;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
-import com.englishweb.h2t_backside.service.UserService;
+import com.englishweb.h2t_backside.service.feature.UserService;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

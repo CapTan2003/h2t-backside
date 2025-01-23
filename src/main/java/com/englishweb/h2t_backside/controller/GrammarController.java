@@ -4,7 +4,7 @@ import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.service.GrammarService;
+import com.englishweb.h2t_backside.service.lesson.GrammarService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -3,7 +3,7 @@ package com.englishweb.h2t_backside.exception;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ErrorDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.service.DiscordNotifier;
+import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

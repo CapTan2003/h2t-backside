@@ -1,10 +1,10 @@
-package com.englishweb.h2t_backside.service.impl;
+package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.interfacedto.BaseDTO;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
-import com.englishweb.h2t_backside.service.BaseService;
-import com.englishweb.h2t_backside.service.DiscordNotifier;
+import com.englishweb.h2t_backside.service.feature.BaseService;
+import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
