@@ -1,14 +1,18 @@
-package com.englishweb.h2t_backside.mapper;
+package com.englishweb.h2t_backside.mapper.lesson;
 
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(
+        componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = RouteNodeMapper.class
+)
 public interface GrammarMapper {
 
     @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")

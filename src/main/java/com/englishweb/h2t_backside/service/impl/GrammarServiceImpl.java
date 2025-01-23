@@ -6,7 +6,7 @@ import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
-import com.englishweb.h2t_backside.mapper.GrammarMapper;
+import com.englishweb.h2t_backside.mapper.lesson.GrammarMapper;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
 import com.englishweb.h2t_backside.service.DiscordNotifier;
