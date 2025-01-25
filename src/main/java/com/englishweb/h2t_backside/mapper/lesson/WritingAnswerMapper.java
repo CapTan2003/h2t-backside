@@ -7,7 +7,8 @@ import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        builder = @Builder(disableBuilder = true)
 )
 public interface WritingAnswerMapper {
 
@@ -39,10 +40,10 @@ public interface WritingAnswerMapper {
 
     // Custom mapping methods
     @Named("mapWritingIdToEntity")
-    default Writing mapWritingIdToEntity(String writingId) {
-        if (writingId == null || writingId.isEmpty()) return null;
+    default Writing mapWritingIdToEntity(Long writingId) {
+        if (writingId == null) return null;
         Writing writing = new Writing();
-        writing.setId(Long.parseLong(writingId));
+        writing.setId(writingId);
         return writing;
     }
 }

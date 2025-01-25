@@ -3,9 +3,14 @@ package com.englishweb.h2t_backside.dto;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RouteNodeDTO extends AbstractBaseDTO {
 
     @NotBlank(message = "Node id cannot be empty")

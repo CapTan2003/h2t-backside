@@ -7,7 +7,8 @@ import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        builder = @Builder(disableBuilder = true)
 )
 public interface VocabularyMapper {
 
@@ -51,10 +52,10 @@ public interface VocabularyMapper {
 
     // Custom mapping methods
     @Named("mapTopicIdToTopic")
-    default Topic mapTopicIdToTopic(String topicId) {
-        if (topicId == null || topicId.isEmpty()) return null;
+    default Topic mapTopicIdToTopic(Long topicId) {
+        if (topicId == null) return null;
         Topic topic = new Topic();
-        topic.setId(Long.parseLong(topicId));
+        topic.setId(topicId);
         return topic;
     }
 }

@@ -4,8 +4,12 @@ import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.model.lesson.LessonQuestion;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = LessonAnswerMapper.class)
+@Mapper(
+        componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = LessonAnswerMapper.class,
+        builder = @Builder(disableBuilder = true)
+)
 public interface LessonQuestionMapper {
 
     @Mapping(target = "id", source = "dto.id")

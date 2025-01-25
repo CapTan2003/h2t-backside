@@ -8,7 +8,8 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {RouteNodeMapper.class}
+        uses = {RouteNodeMapper.class},
+        builder = @Builder(disableBuilder = true)
 )
 public interface RouteMapper {
 

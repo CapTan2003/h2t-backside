@@ -8,7 +8,8 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {PreparationMapper.class, RouteNodeMapper.class}
+        uses = {PreparationMapper.class, RouteNodeMapper.class},
+        builder = @Builder(disableBuilder = true)
 )
 public interface ReadingMapper {
 

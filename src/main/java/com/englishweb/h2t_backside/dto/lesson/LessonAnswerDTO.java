@@ -22,5 +22,5 @@ public class LessonAnswerDTO extends AbstractBaseDTO {
     private boolean correct;
 
     @NotBlank(message = "Question id cannot be empty")
-    private String questionId;
+    private Long questionId;
 }

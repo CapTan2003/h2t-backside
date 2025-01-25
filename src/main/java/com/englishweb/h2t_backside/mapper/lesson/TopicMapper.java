@@ -3,16 +3,14 @@ package com.englishweb.h2t_backside.mapper.lesson;
 import com.englishweb.h2t_backside.dto.lesson.TopicDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.lesson.Topic;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = RouteNodeMapper.class
+        uses = RouteNodeMapper.class,
+        builder = @Builder(disableBuilder = true)
 )
 public interface TopicMapper {
 
