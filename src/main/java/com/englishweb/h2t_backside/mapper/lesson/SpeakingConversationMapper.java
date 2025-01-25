@@ -7,7 +7,8 @@ import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        builder = @Builder(disableBuilder = true)
 )
 public interface SpeakingConversationMapper {
 
@@ -41,10 +42,10 @@ public interface SpeakingConversationMapper {
     void patchEntityFromDTO(SpeakingConversationDTO dto, @MappingTarget SpeakingConversation entity);
 
     @Named("mapSpeakingIdToEntity")
-    default Speaking mapSpeakingIdToEntity(String speakingId) {
-        if (speakingId == null || speakingId.isEmpty()) return null;
+    default Speaking mapSpeakingIdToEntity(Long speakingId) {
+        if (speakingId == null) return null;
         Speaking speaking = new Speaking();
-        speaking.setId(Long.parseLong(speakingId));
+        speaking.setId(speakingId);
         return speaking;
     }
 }

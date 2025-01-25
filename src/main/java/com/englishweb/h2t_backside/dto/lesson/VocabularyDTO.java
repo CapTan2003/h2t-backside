@@ -35,5 +35,5 @@ public class VocabularyDTO extends AbstractBaseDTO {
     private WordTypeEnum wordType;
 
     @NotBlank(message = "Topic id cannot be empty")
-    private String topicId;
+    private Long topicId;
 }

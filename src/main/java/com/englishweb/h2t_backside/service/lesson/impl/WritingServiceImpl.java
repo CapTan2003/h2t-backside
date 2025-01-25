@@ -1,17 +1,17 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
-import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.dto.lesson.WritingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
-import com.englishweb.h2t_backside.mapper.lesson.GrammarMapper;
-import com.englishweb.h2t_backside.model.lesson.Grammar;
-import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
+import com.englishweb.h2t_backside.mapper.lesson.WritingMapper;
+import com.englishweb.h2t_backside.model.lesson.Writing;
+import com.englishweb.h2t_backside.repository.lesson.WritingRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
-import com.englishweb.h2t_backside.service.lesson.GrammarService;
+import com.englishweb.h2t_backside.service.lesson.WritingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,41 +21,40 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, GrammarRepository> implements GrammarService {
-    private final GrammarMapper mapper;
+public class WritingServiceImpl extends BaseServiceImpl<WritingDTO, Writing, WritingRepository> implements WritingService {
 
-    public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier, GrammarMapper mapper) {
-        this.mapper = mapper;
+    private final WritingMapper mapper;
+
+    public WritingServiceImpl(WritingRepository repository, DiscordNotifier discordNotifier, WritingMapper mapper) {
         this.repository = repository;
         this.discordNotifier = discordNotifier;
+        this.mapper = mapper;
     }
 
     @Override
     protected void findByIdError(Long id) {
-        String errorMessage = String.format("Grammar with ID '%d' not found.", id);
+        String errorMessage = String.format("Writing with ID '%d' not found.", id);
         log.warn(errorMessage);
-
         throw new ResourceNotFoundException(id, errorMessage);
     }
 
     @Override
-    protected void createError(GrammarDTO dto, Exception ex) {
-        log.error("Error creating grammar: {}", ex.getMessage());
-        String errorMessage = "Unexpected error creating grammar: " + ex.getMessage();
+    protected void createError(WritingDTO dto, Exception ex) {
+        log.error("Error creating writing: {}", ex.getMessage());
+        String errorMessage = "Unexpected error creating writing: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
-
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
-    protected void updateError(GrammarDTO dto, Long id, Exception ex) {
-        log.error("Error updating grammar: {}", ex.getMessage());
-        String errorMessage = "Unexpected error updating grammar: " + ex.getMessage();
+    protected void updateError(WritingDTO dto, Long id, Exception ex) {
+        log.error("Error updating writing: {}", ex.getMessage());
+        String errorMessage = "Unexpected error updating writing: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        if (!this.isExist(id)){
-            errorMessage = String.format("Grammar with ID '%d' not found.", id);
+        if (!this.isExist(id)) {
+            errorMessage = String.format("Writing with ID '%d' not found.", id);
             status = HttpStatus.NOT_FOUND;
         }
 
@@ -63,24 +62,25 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     }
 
     @Override
-    protected void patchEntityFromDTO(GrammarDTO dto, Grammar entity) {
+    protected void patchEntityFromDTO(WritingDTO dto, Writing entity) {
         mapper.patchEntityFromDTO(dto, entity);
     }
 
     @Override
-    protected Grammar convertToEntity(GrammarDTO dto) {
+    protected Writing convertToEntity(WritingDTO dto) {
         return mapper.convertToEntity(dto);
     }
 
     @Override
-    protected GrammarDTO convertToDTO(Grammar entity) {
+    protected WritingDTO convertToDTO(Writing entity) {
         return mapper.convertToDTO(entity);
     }
 
-    public Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Grammar> specification = Specification.where(null);
+    @Override
+    public Page<WritingDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
+        Specification<Writing> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Grammar.class
+                page, size, sortFields, filter, repository, specification, Writing.class
         ).map(this::convertToDTO);
     }
 }
