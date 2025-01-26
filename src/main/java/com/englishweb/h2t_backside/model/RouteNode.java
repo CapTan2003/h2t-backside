@@ -21,6 +21,9 @@ public class RouteNode extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     private RouteNodeEnum type;
 
+    @Column(nullable = false)
+    private int serial;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
     private Route route;

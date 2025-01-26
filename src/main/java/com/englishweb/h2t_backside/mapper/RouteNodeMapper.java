@@ -17,6 +17,7 @@ public interface RouteNodeMapper {
     @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
     @Mapping(target = "nodeId", source = "dto.nodeId")
     @Mapping(target = "type", source = "dto.type")
+    @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "route", source = "dto.routeId", qualifiedByName = "mapRouteIdToRoute")
     RouteNode convertToEntity(RouteNodeDTO dto);
 
@@ -27,6 +28,7 @@ public interface RouteNodeMapper {
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     @Mapping(target = "nodeId", source = "entity.nodeId")
     @Mapping(target = "type", source = "entity.type")
+    @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "routeId", source = "entity.route.id")
     RouteNodeDTO convertToDTO(RouteNode entity);
 
@@ -35,6 +37,7 @@ public interface RouteNodeMapper {
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "nodeId", source = "dto.nodeId")
     @Mapping(target = "type", source = "dto.type")
+    @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "route", source = "dto.routeId", qualifiedByName = "mapRouteIdToRoute")
     void patchEntityFromDTO(RouteNodeDTO dto, @MappingTarget RouteNode entity);
 

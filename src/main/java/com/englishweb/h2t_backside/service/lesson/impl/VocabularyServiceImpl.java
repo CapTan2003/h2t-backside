@@ -2,28 +2,25 @@ package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.VocabularyFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.VocabularyDTO;
-import com.englishweb.h2t_backside.exception.*;
+import com.englishweb.h2t_backside.exception.CreateResourceException;
+import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.VocabularyMapper;
 import com.englishweb.h2t_backside.model.lesson.Vocabulary;
 import com.englishweb.h2t_backside.repository.lesson.VocabularyRepository;
-import com.englishweb.h2t_backside.repository.specifications.BaseEntitySpecification;
 import com.englishweb.h2t_backside.repository.specifications.VocabularySpecification;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.VocabularyService;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
-import com.englishweb.h2t_backside.utils.ValidationData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Slf4j

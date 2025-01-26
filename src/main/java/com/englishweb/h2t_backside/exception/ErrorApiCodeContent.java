@@ -17,6 +17,10 @@ public class ErrorApiCodeContent {
     public static final String LESSON_NOT_FOUND = "204"; // Không tìm thấy bài học
     public static final String VOCABULARY_CREATED_FAIL = "205"; // Tao moi tu vung that bai
     public static final String VOCABULARY_UPDATED_FAIL = "206"; // Cap nhat tu vung that bai
+    public static final String ROUTE_CREATED_FAIL = "207"; // Tao moi tu vung that bai
+    public static final String ROUTE_UPDATED_FAIL = "208"; // Cap nhat tu vung that bai
+    public static final String ROUTE_NODE_CREATED_FAIL = "209"; // Tao moi tu vung that bai
+    public static final String ROUTE_NODE_UPDATED_FAIL = "210"; // Cap nhat tu vung that bai
 
     // Lỗi liên quan đến bài kiểm tra
     public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học
