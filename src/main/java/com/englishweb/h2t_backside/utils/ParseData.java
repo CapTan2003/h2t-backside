@@ -1,5 +1,9 @@
 package com.englishweb.h2t_backside.utils;
 
+import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
+import com.englishweb.h2t_backside.exception.InvalidArgumentException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.LinkedList;
@@ -41,5 +45,22 @@ public class ParseData {
             }
         }
         return orders;
+    }
+
+    public static <T> Pageable parsePageArgs(int page, int size, String sortFields, Class<T> entityClass) {
+        if (page < 0) {
+            throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
+        }
+
+        if (size <= 0) {
+            throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID);
+        }
+
+        List<Sort.Order> orders = parseStringToSortOrderList(sortFields);
+
+        if (!ValidationData.isValidFieldInSortList(entityClass, orders)) {
+            throw new InvalidArgumentException("Invalid sort field.", sortFields, ErrorApiCodeContent.SORT_FIELD_INVALID);
+        }
+        return PageRequest.of(page, size, Sort.by(orders));
     }
 }

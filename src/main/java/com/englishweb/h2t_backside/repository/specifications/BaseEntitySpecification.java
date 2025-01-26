@@ -44,7 +44,6 @@ public class BaseEntitySpecification {
         };
     }
 
-
     public static <T extends BaseEntity> Specification<T> hasStatus(StatusEnum status){
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
     }

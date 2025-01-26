@@ -94,22 +94,7 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
 
     @Override
     public Page<VocabularyDTO> searchWithFilters(int page, int size, String sortFields, VocabularyFilterDTO filter) {
-        if (page < 0) {
-            throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
-        }
-
-        if (size <= 0) {
-            throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID);
-        }
-
-        List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
-
-        if (!ValidationData.isValidFieldInSortList(Vocabulary.class, orders)) {
-            throw new InvalidArgumentException("Invalid sort field.", sortFields, ErrorApiCodeContent.SORT_FIELD_INVALID);
-        }
-
-        Sort sort = Sort.by(orders);
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Vocabulary.class);
 
         Specification<Vocabulary> specification = Specification.where(BaseFilterSpecification.applyBaseFilters(filter));
 
@@ -120,6 +105,15 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
         if (filter.getWordType() != null) {
             specification = specification.and(VocabularySpecification.findByWordType(filter.getWordType()));
         }
+
+        return repository.findAll(specification, pageable).map(this::convertToDTO);
+    }
+
+    @Override
+    public Page<VocabularyDTO> searchWithTopicId(int page, int size, String sortFields, Long topicId) {
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Vocabulary.class);
+
+        Specification<Vocabulary> specification = Specification.where(VocabularySpecification.findByTopicId(topicId));
 
         return repository.findAll(specification, pageable).map(this::convertToDTO);
     }
