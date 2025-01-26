@@ -12,4 +12,8 @@ public class VocabularySpecification {
     public static Specification<Vocabulary> findByWordType(WordTypeEnum wordType) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("wordType"), wordType);
     }
+
+    public static Specification<Vocabulary> findByTopicId(Long topicId) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("topic").get("id"), topicId);
+    }
 }
