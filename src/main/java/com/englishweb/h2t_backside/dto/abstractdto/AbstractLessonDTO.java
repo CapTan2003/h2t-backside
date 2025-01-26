@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.dto.abstractdto;
 
 import com.englishweb.h2t_backside.dto.RouteNodeDTO;
+import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class AbstractLessonDTO extends AbstractBaseDTO{
+public abstract class AbstractLessonDTO extends AbstractBaseDTO implements LessonDTO {
 
     @NotBlank(message = "Title cannot be empty")
     private String title;
