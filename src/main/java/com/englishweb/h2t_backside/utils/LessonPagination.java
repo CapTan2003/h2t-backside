@@ -4,7 +4,6 @@ import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.InvalidArgumentException;
 import com.englishweb.h2t_backside.model.interfacemodel.LessonEntity;
-import com.englishweb.h2t_backside.repository.specifications.BaseEntitySpecification;
 import com.englishweb.h2t_backside.repository.specifications.LessonSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +19,7 @@ public class LessonPagination {
 
     public static <T extends LessonEntity, R extends JpaRepository<T, Long> & JpaSpecificationExecutor<T>> Page<T> searchWithFiltersGeneric(
             int page, int size, String sortFields, LessonFilterDTO filter,
-            R repository, Specification<T> specification, Class<T> entityClass) {
+            R repository, Class<T> entityClass) {
 
         if (page < 0) {
             throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
@@ -30,20 +29,10 @@ public class LessonPagination {
             throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID);
         }
 
+        Specification<T> specification = Specification.where(BaseFilterSpecification.applyBaseFilters(filter));
+
         if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
             specification = specification.and(LessonSpecification.findByName(filter.getTitle()));
-        }
-
-        if (filter.getStatus() != null) {
-            specification = specification.and(BaseEntitySpecification.hasStatus(filter.getStatus()));
-        }
-
-        if (filter.getStartCreatedAt() != null || filter.getEndCreatedAt() != null) {
-            specification = specification.and(BaseEntitySpecification.findByCreatedAtRange(filter.getStartCreatedAt(), filter.getEndCreatedAt()));
-        }
-
-        if (filter.getStartCreatedAt() != null || filter.getEndUpdatedAt() != null) {
-            specification = specification.and(BaseEntitySpecification.findByUpdatedAtRange(filter.getStartCreatedAt(), filter.getEndUpdatedAt()));
         }
 
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);

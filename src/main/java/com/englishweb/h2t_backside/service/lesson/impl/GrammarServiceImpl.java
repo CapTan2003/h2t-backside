@@ -78,9 +78,8 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     }
 
     public Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Grammar> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Grammar.class
+                page, size, sortFields, filter, repository, Grammar.class
         ).map(this::convertToDTO);
     }
 }

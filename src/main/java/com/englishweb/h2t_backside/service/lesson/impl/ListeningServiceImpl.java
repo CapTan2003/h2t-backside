@@ -80,9 +80,8 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
 
     @Override
     public Page<ListeningDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Listening> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Listening.class
+                page, size, sortFields, filter, repository, Listening.class
         ).map(this::convertToDTO);
     }
 }

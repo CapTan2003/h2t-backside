@@ -7,7 +7,6 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.TopicMapper;
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.lesson.Topic;
 import com.englishweb.h2t_backside.repository.lesson.TopicRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -81,9 +80,8 @@ public class TopicServiceImpl extends BaseServiceImpl<TopicDTO, Topic, TopicRepo
 
     @Override
     public Page<TopicDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Topic> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Topic.class
+                page, size, sortFields, filter, repository, Topic.class
         ).map(this::convertToDTO);
     }
 }

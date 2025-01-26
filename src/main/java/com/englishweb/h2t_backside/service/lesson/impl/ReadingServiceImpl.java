@@ -78,9 +78,8 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
 
     @Override
     public Page<ReadingDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Reading> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Reading.class
+                page, size, sortFields, filter, repository, Reading.class
         ).map(this::convertToDTO);
     }
 }

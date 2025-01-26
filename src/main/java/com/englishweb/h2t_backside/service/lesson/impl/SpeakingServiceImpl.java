@@ -78,9 +78,8 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
 
     @Override
     public Page<SpeakingDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Speaking> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Speaking.class
+                page, size, sortFields, filter, repository, Speaking.class
         ).map(this::convertToDTO);
     }
 }
