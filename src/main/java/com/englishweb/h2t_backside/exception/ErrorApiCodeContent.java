@@ -12,9 +12,11 @@ public class ErrorApiCodeContent {
     public static final String USER_UPDATED_FAIL = "106"; // Cap nhat user that bai
 
     // Lỗi liên quan đến bài học
-    public static final String LESSON_CREATED_FAIL = "101"; // Tao moi bai hoc that bai
-    public static final String LESSON_UPDATED_FAIL = "101";
+    public static final String LESSON_CREATED_FAIL = "201"; // Tao moi bai hoc that bai
+    public static final String LESSON_UPDATED_FAIL = "202"; // Cap nhat bai hoc that bai
     public static final String LESSON_NOT_FOUND = "204"; // Không tìm thấy bài học
+    public static final String VOCABULARY_CREATED_FAIL = "205"; // Tao moi tu vung that bai
+    public static final String VOCABULARY_UPDATED_FAIL = "206"; // Cap nhat tu vung that bai
 
     // Lỗi liên quan đến bài kiểm tra
     public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học

@@ -78,9 +78,8 @@ public class WritingServiceImpl extends BaseServiceImpl<WritingDTO, Writing, Wri
 
     @Override
     public Page<WritingDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
-        Specification<Writing> specification = Specification.where(null);
         return LessonPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, specification, Writing.class
+                page, size, sortFields, filter, repository, Writing.class
         ).map(this::convertToDTO);
     }
 }
