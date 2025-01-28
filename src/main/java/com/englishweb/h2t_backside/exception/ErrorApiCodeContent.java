@@ -21,6 +21,8 @@ public class ErrorApiCodeContent {
     public static final String ROUTE_UPDATED_FAIL = "208"; // Cap nhat tu vung that bai
     public static final String ROUTE_NODE_CREATED_FAIL = "209"; // Tao moi tu vung that bai
     public static final String ROUTE_NODE_UPDATED_FAIL = "210"; // Cap nhat tu vung that bai
+    public static final String PREPARATION_CREATED_FAIL = "211"; // Thêm mới phần chuẩn bị thất bại
+    public static final String PREPARATION_UPDATED_FAIL = "211"; // Cập nhật phần chuẩn bị thất bại
 
     // Lỗi liên quan đến bài kiểm tra
     public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học
