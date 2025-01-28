@@ -23,6 +23,10 @@ public class ErrorApiCodeContent {
     public static final String ROUTE_NODE_UPDATED_FAIL = "210"; // Cap nhat tu vung that bai
     public static final String PREPARATION_CREATED_FAIL = "211"; // Thêm mới phần chuẩn bị thất bại
     public static final String PREPARATION_UPDATED_FAIL = "211"; // Cập nhật phần chuẩn bị thất bại
+    public static final String LESSON_ANSWER_CREATED_FAIL = "212"; // Thêm mới câu trả lời cho bài học thất bại
+    public static final String LESSON_ANSWER_UPDATED_FAIL = "213"; // Cập nhật câu trả lời cho bài học thất bại
+    public static final String LESSON_QUESTION_CREATED_FAIL = "214"; // Thêm mới câu hoi cho bài học thất bại
+    public static final String LESSON_QUESTION_UPDATED_FAIL = "215"; // Cập nhật câu hoi cho bài học thất bại
 
     // Lỗi liên quan đến bài kiểm tra
     public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học
