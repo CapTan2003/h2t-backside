@@ -28,7 +28,7 @@ public interface RouteNodeMapper {
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     @Mapping(target = "nodeId", source = "entity.nodeId")
     @Mapping(target = "type", source = "entity.type")
-    @Mapping(target = "serial", source = "dto.serial")
+    @Mapping(target = "serial", source = "entity.serial")
     @Mapping(target = "routeId", source = "entity.route.id")
     RouteNodeDTO convertToDTO(RouteNode entity);
 
