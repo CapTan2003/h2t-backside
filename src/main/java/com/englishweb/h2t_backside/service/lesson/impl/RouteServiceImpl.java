@@ -22,8 +22,7 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
     RouteMapper mapper;
 
     public RouteServiceImpl(RouteRepository repository, RouteMapper mapper, DiscordNotifier discordNotifier) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 

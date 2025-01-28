@@ -25,8 +25,7 @@ public class TopicServiceImpl extends BaseServiceImpl<TopicDTO, Topic, TopicRepo
     private final TopicMapper mapper;
 
     public TopicServiceImpl(TopicRepository repository, DiscordNotifier discordNotifier,TopicMapper mapper) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 

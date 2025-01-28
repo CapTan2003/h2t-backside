@@ -5,14 +5,15 @@ import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
 import com.englishweb.h2t_backside.service.feature.BaseService;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
 @Slf4j
+@AllArgsConstructor
 public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEntity, R extends JpaRepository<Entity, Long>>
         implements BaseService<DTO> {
     protected R repository;

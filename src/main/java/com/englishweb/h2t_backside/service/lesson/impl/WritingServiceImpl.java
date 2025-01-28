@@ -26,8 +26,7 @@ public class WritingServiceImpl extends BaseServiceImpl<WritingDTO, Writing, Wri
     private final WritingMapper mapper;
 
     public WritingServiceImpl(WritingRepository repository, DiscordNotifier discordNotifier, WritingMapper mapper) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 
