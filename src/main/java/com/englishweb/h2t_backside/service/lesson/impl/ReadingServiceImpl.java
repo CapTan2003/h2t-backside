@@ -26,8 +26,7 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
     private final ReadingMapper mapper;
 
     public ReadingServiceImpl(ReadingRepository repository, DiscordNotifier discordNotifier, ReadingMapper mapper) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 

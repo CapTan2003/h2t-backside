@@ -41,8 +41,7 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
     private final TestService testService;
 
     public RouteNodeServiceImpl(RouteNodeRepository repository, DiscordNotifier discordNotifier, RouteNodeMapper mapper, RouteService routeService, TopicService topicService, GrammarService grammarService, ReadingService readingService, WritingService writingService, SpeakingService speakingService, ListeningService listeningService, TestService testService) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
         this.routeService = routeService;
         this.topicService = topicService;

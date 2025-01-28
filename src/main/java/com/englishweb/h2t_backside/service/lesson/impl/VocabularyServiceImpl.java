@@ -31,8 +31,7 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
     public VocabularyServiceImpl(VocabularyRepository repository,
                                  DiscordNotifier discordNotifier,
                                  VocabularyMapper mapper) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 

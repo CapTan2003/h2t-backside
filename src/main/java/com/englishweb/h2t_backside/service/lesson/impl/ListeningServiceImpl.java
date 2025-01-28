@@ -26,8 +26,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
     private final ListeningMapper mapper;
 
     public ListeningServiceImpl(ListeningRepository repository, DiscordNotifierImpl discordNotifier, ListeningMapper mapper) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 

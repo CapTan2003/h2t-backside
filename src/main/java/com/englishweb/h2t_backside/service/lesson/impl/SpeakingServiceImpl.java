@@ -26,8 +26,7 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
     private final SpeakingMapper mapper;
 
     public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, SpeakingMapper mapper) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
         this.mapper = mapper;
     }
 

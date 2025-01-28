@@ -25,9 +25,8 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     private final GrammarMapper mapper;
 
     public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier, GrammarMapper mapper) {
+        super(repository, discordNotifier);
         this.mapper = mapper;
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
     }
 
     @Override
