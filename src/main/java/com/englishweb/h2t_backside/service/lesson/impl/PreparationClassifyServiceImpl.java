@@ -8,12 +8,15 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.PreparationClassifyMapper;
 import com.englishweb.h2t_backside.model.lesson.PreparationClassify;
 import com.englishweb.h2t_backside.repository.lesson.PreparationClassifyRepository;
-import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.lesson.PreparationClassifyService;
-import org.springframework.http.HttpStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -69,5 +72,14 @@ public class PreparationClassifyServiceImpl extends BaseServiceImpl<PreparationC
     @Override
     protected PreparationClassifyDTO convertToDTO(PreparationClassify entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public List<PreparationClassifyDTO> findByIds(List<Long> ids) {
+        List<PreparationClassifyDTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
     }
 }

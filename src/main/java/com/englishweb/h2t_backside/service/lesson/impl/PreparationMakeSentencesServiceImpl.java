@@ -8,11 +8,14 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.PreparationMakeSentencesMapper;
 import com.englishweb.h2t_backside.model.lesson.PreparationMakeSentences;
 import com.englishweb.h2t_backside.repository.lesson.PreparationMakeSentencesRepository;
-import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.lesson.PreparationMakeSentencesService;
-import org.springframework.http.HttpStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Slf4j
 public class PreparationMakeSentencesServiceImpl extends BaseServiceImpl<PreparationMakeSentencesDTO, PreparationMakeSentences, PreparationMakeSentencesRepository> implements PreparationMakeSentencesService {
@@ -67,5 +70,14 @@ public class PreparationMakeSentencesServiceImpl extends BaseServiceImpl<Prepara
     @Override
     protected PreparationMakeSentencesDTO convertToDTO(PreparationMakeSentences entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public List<PreparationMakeSentencesDTO> findByIds(List<Long> ids) {
+        List<PreparationMakeSentencesDTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
     }
 }

@@ -21,8 +21,7 @@ import java.util.Objects;
 public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserRepository> implements UserService {
 
     public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier) {
-        this.repository = repository;
-        this.discordNotifier = discordNotifier;
+        super(repository, discordNotifier);
     }
 
     @Override

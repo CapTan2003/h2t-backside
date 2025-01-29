@@ -11,9 +11,12 @@ import com.englishweb.h2t_backside.repository.lesson.SpeakingConversationReposit
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.lesson.SpeakingConversationService;
+import com.englishweb.h2t_backside.service.lesson.SpeakingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,12 +25,14 @@ public class SpeakingConversationServiceImpl
         implements SpeakingConversationService {
 
     private final SpeakingConversationMapper mapper;
+    private final SpeakingService speakingService;
 
     public SpeakingConversationServiceImpl(SpeakingConversationRepository repository,
                                            DiscordNotifierImpl discordNotifier,
-                                           SpeakingConversationMapper mapper) {
+                                           SpeakingConversationMapper mapper, SpeakingService speakingService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.speakingService = speakingService;
     }
 
     @Override
@@ -73,5 +78,13 @@ public class SpeakingConversationServiceImpl
     @Override
     protected SpeakingConversationDTO convertToDTO(SpeakingConversation entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public List<SpeakingConversationDTO> findBySpeakingId(Long speakingId) {
+        if(!speakingService.isExist(speakingId)) {
+            throw new ResourceNotFoundException(speakingId, String.format("Speaking with ID '%d' not found.", speakingId));
+        }
+        return repository.findBySpeaking_Id(speakingId).stream().map(this::convertToDTO).toList();
     }
 }
