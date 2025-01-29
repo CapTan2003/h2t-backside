@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -12,21 +13,27 @@ import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.GrammarService;
+import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, GrammarRepository> implements GrammarService {
     private final GrammarMapper mapper;
+    private final LessonQuestionService lessonQuestionService;
 
-    public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier, GrammarMapper mapper) {
+    public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier, GrammarMapper mapper, LessonQuestionService lessonQuestionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.lessonQuestionService = lessonQuestionService;
     }
 
     @Override
@@ -76,9 +83,21 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
         return mapper.convertToDTO(entity);
     }
 
+    @Override
     public Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter) {
         return LessonPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, Grammar.class
         ).map(this::convertToDTO);
+    }
+
+    @Override
+    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
+        try {
+            List<Long> listQuestion = ParseData.parseStringToLongList(findById(lessonId).getQuestions());
+            return lessonQuestionService.findByIds(listQuestion);
+        } catch (ResourceNotFoundException ex) {
+            String errorMessage = String.format("Error finding questions for grammar with ID '%d': %s", lessonId, ex.getMessage());
+            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
+        }
     }
 }

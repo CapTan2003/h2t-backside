@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.lesson.ReadingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -11,23 +12,29 @@ import com.englishweb.h2t_backside.model.lesson.Reading;
 import com.englishweb.h2t_backside.repository.lesson.ReadingRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.service.lesson.ReadingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, ReadingRepository> implements ReadingService {
 
     private final ReadingMapper mapper;
+    private final LessonQuestionService lessonQuestionService;
 
-    public ReadingServiceImpl(ReadingRepository repository, DiscordNotifier discordNotifier, ReadingMapper mapper) {
+    public ReadingServiceImpl(ReadingRepository repository, DiscordNotifier discordNotifier, ReadingMapper mapper, LessonQuestionService lessonQuestionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.lessonQuestionService = lessonQuestionService;
     }
 
     @Override
@@ -80,5 +87,16 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
         return LessonPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, Reading.class
         ).map(this::convertToDTO);
+    }
+
+    @Override
+    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
+        try {
+            List<Long> listQuestion = ParseData.parseStringToLongList(findById(lessonId).getQuestions());
+            return lessonQuestionService.findByIds(listQuestion);
+        } catch (ResourceNotFoundException ex) {
+            String errorMessage = String.format("Error finding questions for reading with ID '%d': %s", lessonId, ex.getMessage());
+            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
+        }
     }
 }

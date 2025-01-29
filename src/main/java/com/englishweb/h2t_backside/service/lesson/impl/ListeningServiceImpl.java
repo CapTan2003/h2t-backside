@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.lesson.ListeningDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -11,23 +12,29 @@ import com.englishweb.h2t_backside.model.lesson.Listening;
 import com.englishweb.h2t_backside.repository.lesson.ListeningRepository;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
+import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.service.lesson.ListeningService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listening, ListeningRepository> implements ListeningService {
 
     private final ListeningMapper mapper;
+    private final LessonQuestionService lessonQuestionService;
 
-    public ListeningServiceImpl(ListeningRepository repository, DiscordNotifierImpl discordNotifier, ListeningMapper mapper) {
+    public ListeningServiceImpl(ListeningRepository repository, DiscordNotifierImpl discordNotifier, ListeningMapper mapper, LessonQuestionService lessonQuestionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.lessonQuestionService = lessonQuestionService;
     }
 
     @Override
@@ -82,5 +89,16 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
         return LessonPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, Listening.class
         ).map(this::convertToDTO);
+    }
+
+    @Override
+    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
+        try {
+            List<Long> listQuestion = ParseData.parseStringToLongList(findById(lessonId).getQuestions());
+            return lessonQuestionService.findByIds(listQuestion);
+        } catch (ResourceNotFoundException ex) {
+            String errorMessage = String.format("Error finding questions for listening with ID '%d': %s", lessonId, ex.getMessage());
+            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
+        }
     }
 }
