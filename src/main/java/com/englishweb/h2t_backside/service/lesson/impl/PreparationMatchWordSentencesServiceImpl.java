@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 @Slf4j
 public class PreparationMatchWordSentencesServiceImpl
@@ -73,5 +76,14 @@ public class PreparationMatchWordSentencesServiceImpl
     @Override
     protected PreparationMatchWordSentencesDTO convertToDTO(PreparationMatchWordSentences entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public List<PreparationMatchWordSentencesDTO> findByIds(List<Long> ids) {
+        List<PreparationMatchWordSentencesDTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
     }
 }

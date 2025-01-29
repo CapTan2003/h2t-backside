@@ -11,9 +11,12 @@ import com.englishweb.h2t_backside.repository.lesson.ListenAndWriteAWordReposito
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.lesson.ListenAndWriteAWordService;
+import com.englishweb.h2t_backside.service.lesson.ListeningService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,12 +25,14 @@ public class ListenAndWriteAWordServiceImpl
         implements ListenAndWriteAWordService {
 
     private final ListenAndWriteAWordMapper mapper;
+    private final ListeningService listeningService;
 
     public ListenAndWriteAWordServiceImpl(ListenAndWriteAWordRepository repository,
                                           DiscordNotifierImpl discordNotifier,
-                                          ListenAndWriteAWordMapper mapper) {
+                                          ListenAndWriteAWordMapper mapper, ListeningService listeningService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.listeningService = listeningService;
     }
 
     @Override
@@ -73,5 +78,13 @@ public class ListenAndWriteAWordServiceImpl
     @Override
     protected ListenAndWriteAWordDTO convertToDTO(ListenAndWriteAWord entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public List<ListenAndWriteAWordDTO> findByListeningId(Long listeningId) {
+        if (!listeningService.isExist(listeningId)) {
+            throw new ResourceNotFoundException(listeningId, String.format("Listening with ID '%d' not found.", listeningId));
+        }
+        return repository.findByListening_Id(listeningId).stream().map(this::convertToDTO).toList();
     }
 }
