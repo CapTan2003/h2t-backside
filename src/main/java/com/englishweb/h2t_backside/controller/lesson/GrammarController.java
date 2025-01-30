@@ -1,8 +1,9 @@
-package com.englishweb.h2t_backside.controller;
+package com.englishweb.h2t_backside.controller.lesson;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.lesson.GrammarService;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -94,6 +97,17 @@ public class GrammarController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(grammars)
                 .message("Grammars retrieved successfully with filters")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/questions")
+    public ResponseEntity<ResponseDTO<List<LessonQuestionDTO>>> findQuestionByGrammarId(@RequestParam Long grammarId) {
+        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(grammarId);
+        ResponseDTO<List<LessonQuestionDTO>> response = ResponseDTO.<List<LessonQuestionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(questions)
+                .message("Questions retrieved successfully")
                 .build();
         return ResponseEntity.ok(response);
     }
