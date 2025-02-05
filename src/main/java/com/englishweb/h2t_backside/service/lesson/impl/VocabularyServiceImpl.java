@@ -88,11 +88,11 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
         return mapper.convertToDTO(entity);
     }
 
-    @Override
-    public Page<VocabularyDTO> searchWithFilters(int page, int size, String sortFields, VocabularyFilterDTO filter) {
+    public Page<VocabularyDTO> searchWithFiltersTopicId(int page, int size, String sortFields, VocabularyFilterDTO filter, Long topicId) {
         Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Vocabulary.class);
 
-        Specification<Vocabulary> specification = Specification.where(BaseFilterSpecification.applyBaseFilters(filter));
+        Specification<Vocabulary> specification = Specification.where(VocabularySpecification.findByTopicId(topicId))
+                .and(BaseFilterSpecification.applyBaseFilters(filter));
 
         if (filter.getWord() != null && !filter.getWord().isEmpty()) {
             specification = specification.and(VocabularySpecification.findByWord(filter.getWord()));
@@ -101,15 +101,6 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
         if (filter.getWordType() != null) {
             specification = specification.and(VocabularySpecification.findByWordType(filter.getWordType()));
         }
-
-        return repository.findAll(specification, pageable).map(this::convertToDTO);
-    }
-
-    @Override
-    public Page<VocabularyDTO> searchWithTopicId(int page, int size, String sortFields, Long topicId) {
-        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Vocabulary.class);
-
-        Specification<Vocabulary> specification = Specification.where(VocabularySpecification.findByTopicId(topicId));
 
         return repository.findAll(specification, pageable).map(this::convertToDTO);
     }

@@ -7,7 +7,5 @@ import org.springframework.data.domain.Page;
 
 public interface VocabularyService extends BaseService<VocabularyDTO> {
 
-    Page<VocabularyDTO> searchWithTopicId(int page, int size, String sortFields, Long topicId);
-
-    Page<VocabularyDTO> searchWithFilters(int page, int size, String sortFields, VocabularyFilterDTO filter);
+    Page<VocabularyDTO> searchWithFiltersTopicId(int page, int size, String sortFields, VocabularyFilterDTO filter, Long topicId);
 }
