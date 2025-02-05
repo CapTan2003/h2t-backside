@@ -35,9 +35,11 @@ public class ErrorApiCodeContent {
 
     // Các lỗi khác
     public static final String RESOURCE_NOT_FOUND = "404";
+    public static final String UNEXPECTED_ERROR = "500";
     public static final String ARGUMENT_DTO_INVALID = "601";
     public static final String PAGE_INDEX_INVALID = "602";
     public static final String PAGE_SIZE_INVALID = "603";
     public static final String SORT_FIELD_INVALID = "604";
     public static final String ARGUMENT_TYPE_MISMATCH = "605";
+    public static final String MISSING_REQUEST_PARAMETER = "606";
 }

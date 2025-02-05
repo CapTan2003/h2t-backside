@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.dto.lesson;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.WordTypeEnum;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,9 +32,9 @@ public class VocabularyDTO extends AbstractBaseDTO {
     @NotBlank(message = "Phonetic cannot be empty")
     private String phonetic;
 
-    @NotBlank(message = "Word type cannot be empty")
+    @NotNull(message = "Word type cannot be empty")
     private WordTypeEnum wordType;
 
-    @NotBlank(message = "Topic id cannot be empty")
+    @NotNull(message = "Topic id cannot be empty")
     private Long topicId;
 }
