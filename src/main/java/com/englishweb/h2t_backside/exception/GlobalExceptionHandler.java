@@ -197,7 +197,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ResponseDTO<String>> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpServletRequest request) {
         log.warn("Missing Servlet Request Parameter Exception: {}", ex.getMessage());
-        String errorMessage = "Missing Servlet Request Parameter Exception";
+        String errorMessage = "Missing Request Parameter";
 
         ErrorDTO errorDTO = ErrorDTO.builder()
                 .message(errorMessage)
