@@ -42,4 +42,5 @@ public class ErrorApiCodeContent {
     public static final String SORT_FIELD_INVALID = "604";
     public static final String ARGUMENT_TYPE_MISMATCH = "605";
     public static final String MISSING_REQUEST_PARAMETER = "606";
+    public static final String IO_EXCEPTION = "607";
 }
