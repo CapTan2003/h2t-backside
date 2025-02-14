@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -43,4 +44,11 @@ public class User extends AbstractBaseEntity {
     @Column(length = 20)
     @Comment("Level of the User (e.g. Bachelor, Doctor, Master, or Professor)")
     private LevelEnum levelEnum;
+
+    @Column(unique = true, length = 10)
+    @Comment("Phone number of the User")
+    private String phoneNumber;
+
+    @Comment("Date of Birth of the User")
+    private LocalDate dateOfBirth;
 }

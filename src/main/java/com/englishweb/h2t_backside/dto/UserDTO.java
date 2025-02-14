@@ -6,6 +6,7 @@ import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -23,4 +24,6 @@ public class UserDTO extends AbstractBaseDTO {
     private String avatar;
     private RoleEnum roleEnum;
     private LevelEnum levelEnum;
+    private String phoneNumber;
+    private LocalDate dateOfBirth;
 }

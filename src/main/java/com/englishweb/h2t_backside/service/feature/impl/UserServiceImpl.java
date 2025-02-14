@@ -89,6 +89,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
                 .password("123")
                 .levelEnum(dto.getLevelEnum())
                 .roleEnum(dto.getRoleEnum())
+                .phoneNumber(dto.getPhoneNumber())
+                .dateOfBirth(dto.getDateOfBirth())
                 .status(dto.getStatus() != null ? dto.getStatus() : StatusEnum.ACTIVE)
                 .build();
     }
@@ -102,6 +104,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
                 .email(entity.getEmail())
                 .levelEnum(entity.getLevelEnum())
                 .roleEnum(entity.getRoleEnum())
+                .phoneNumber(entity.getPhoneNumber())
+                .dateOfBirth(entity.getDateOfBirth())
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
