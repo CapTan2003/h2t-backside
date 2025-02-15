@@ -5,13 +5,15 @@ import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
+import com.englishweb.h2t_backside.mapper.UserMapper;
 import com.englishweb.h2t_backside.model.User;
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -19,9 +21,13 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserRepository> implements UserService {
-
-    public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier) {
+    private final UserMapper mapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, UserMapper mapper, PasswordEncoder passwordEncoder) {
         super(repository, discordNotifier);
+        this.passwordEncoder = passwordEncoder;
+        this.mapper = mapper;
     }
 
     @Override
@@ -75,40 +81,19 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
     }
 
     @Override
-    protected void patchEntityFromDTO(UserDTO dto, User entity) {
+    public UserDTO create(UserDTO userDTO) {
+        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodedPassword);
 
+        return super.create(userDTO);
     }
 
     @Override
-    protected User convertToEntity(UserDTO dto) {
-        return User.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .avatar(dto.getAvatar())
-                .email(dto.getEmail())
-                .password("123")
-                .levelEnum(dto.getLevelEnum())
-                .roleEnum(dto.getRoleEnum())
-                .phoneNumber(dto.getPhoneNumber())
-                .dateOfBirth(dto.getDateOfBirth())
-                .status(dto.getStatus() != null ? dto.getStatus() : StatusEnum.ACTIVE)
-                .build();
-    }
+    protected void patchEntityFromDTO(UserDTO dto, User entity) { mapper.patchEntityFromDTO(dto, entity); }
 
     @Override
-    protected UserDTO convertToDTO(User entity) {
-        return UserDTO.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .avatar(entity.getAvatar())
-                .email(entity.getEmail())
-                .levelEnum(entity.getLevelEnum())
-                .roleEnum(entity.getRoleEnum())
-                .phoneNumber(entity.getPhoneNumber())
-                .dateOfBirth(entity.getDateOfBirth())
-                .status(entity.getStatus())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .build();
-    }
+    protected User convertToEntity(UserDTO dto) { return mapper.convertToEntity(dto); }
+
+    @Override
+    protected UserDTO convertToDTO(User entity) { return mapper.convertToDTO(entity); }
 }

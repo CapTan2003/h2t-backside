@@ -1,5 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
+import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
+import com.englishweb.h2t_backside.dto.lesson.LessonAnswerDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
@@ -54,6 +56,41 @@ public class UserController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(createdUser)
                 .message("User created successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDTO<UserDTO>> update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
+        UserDTO updatedUser = service.update(userDTO, id);
+
+        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(updatedUser)
+                .message("User updated successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseDTO<UserDTO>> patch(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        UserDTO patchedUser = service.patch(userDTO, id);
+
+        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(patchedUser)
+                .message("User updated with patch successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+        boolean result = service.delete(id);
+
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
+                .message(result ? "User deleted successfully" : "Failed to delete user")
                 .build();
         return ResponseEntity.ok(response);
     }

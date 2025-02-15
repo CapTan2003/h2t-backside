@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.dto;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -20,6 +21,9 @@ public class UserDTO extends AbstractBaseDTO {
 
     @NotBlank(message = "Email of user cannot empty")
     private String email;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
 
     private String avatar;
     private RoleEnum roleEnum;
