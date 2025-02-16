@@ -1,0 +1,67 @@
+package com.englishweb.h2t_backside.controller.test;
+
+import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
+import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.service.test.CompetitionTestService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/competition-tests")
+@AllArgsConstructor
+public class CompetitionTestController {
+
+    private final CompetitionTestService service;
+
+    @PostMapping
+    public ResponseEntity<ResponseDTO<CompetitionTestDTO>> create(@Valid @RequestBody CompetitionTestDTO dto) {
+        CompetitionTestDTO createdTest = service.create(dto);
+
+        ResponseDTO<CompetitionTestDTO> response = ResponseDTO.<CompetitionTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(createdTest)
+                .message("CompetitionTest created successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDTO<CompetitionTestDTO>> update(@PathVariable Long id, @Valid @RequestBody CompetitionTestDTO dto) {
+        CompetitionTestDTO updatedTest = service.update(dto, id);
+
+        ResponseDTO<CompetitionTestDTO> response = ResponseDTO.<CompetitionTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(updatedTest)
+                .message("CompetitionTest updated successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseDTO<CompetitionTestDTO>> patch(@PathVariable Long id, @RequestBody CompetitionTestDTO dto) {
+        CompetitionTestDTO patchedTest = service.patch(dto, id);
+
+        ResponseDTO<CompetitionTestDTO> response = ResponseDTO.<CompetitionTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(patchedTest)
+                .message("CompetitionTest updated with patch successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+        boolean result = service.delete(id);
+
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
+                .message(result ? "CompetitionTest deleted successfully" : "Failed to delete CompetitionTest")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+}
