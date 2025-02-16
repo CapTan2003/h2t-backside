@@ -7,7 +7,7 @@ import com.englishweb.h2t_backside.service.lesson.PreparationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -19,61 +19,61 @@ public class PreparationController {
     private final PreparationService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<PreparationDTO>> findById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<PreparationDTO> findById(@PathVariable Long id) {
         PreparationDTO preparation = service.findById(id);
 
-        ResponseDTO<PreparationDTO> response = ResponseDTO.<PreparationDTO>builder()
+        return ResponseDTO.<PreparationDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(preparation)
                 .message("Preparation retrieved successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<PreparationDTO>> create(@Valid @RequestBody PreparationDTO preparationDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO<PreparationDTO> create(@Valid @RequestBody PreparationDTO preparationDTO) {
         PreparationDTO createdPreparation = service.create(preparationDTO);
 
-        ResponseDTO<PreparationDTO> response = ResponseDTO.<PreparationDTO>builder()
+        return ResponseDTO.<PreparationDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(createdPreparation)
                 .message("Preparation created successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<PreparationDTO>> update(@PathVariable Long id, @Valid @RequestBody PreparationDTO preparationDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<PreparationDTO> update(@PathVariable Long id, @Valid @RequestBody PreparationDTO preparationDTO) {
         PreparationDTO updatedPreparation = service.update(preparationDTO, id);
 
-        ResponseDTO<PreparationDTO> response = ResponseDTO.<PreparationDTO>builder()
+        return ResponseDTO.<PreparationDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(updatedPreparation)
                 .message("Preparation updated successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDTO<PreparationDTO>> patch(@PathVariable Long id, @RequestBody PreparationDTO preparationDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<PreparationDTO> patch(@PathVariable Long id, @RequestBody PreparationDTO preparationDTO) {
         PreparationDTO patchedPreparation = service.patch(preparationDTO, id);
 
-        ResponseDTO<PreparationDTO> response = ResponseDTO.<PreparationDTO>builder()
+        return ResponseDTO.<PreparationDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(patchedPreparation)
                 .message("Preparation updated with patch successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> delete(@PathVariable Long id) {
         boolean result = service.delete(id);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Preparation deleted successfully" : "Failed to delete preparation")
                 .build();
-        return ResponseEntity.ok(response);
     }
 }

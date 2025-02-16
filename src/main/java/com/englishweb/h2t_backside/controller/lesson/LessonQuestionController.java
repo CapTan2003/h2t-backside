@@ -7,7 +7,7 @@ import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -19,61 +19,61 @@ public class LessonQuestionController {
     private final LessonQuestionService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<LessonQuestionDTO>> findById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<LessonQuestionDTO> findById(@PathVariable Long id) {
         LessonQuestionDTO lessonQuestion = service.findById(id);
 
-        ResponseDTO<LessonQuestionDTO> response = ResponseDTO.<LessonQuestionDTO>builder()
+        return ResponseDTO.<LessonQuestionDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(lessonQuestion)
                 .message("Lesson question retrieved successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<LessonQuestionDTO>> create(@Valid @RequestBody LessonQuestionDTO lessonQuestionDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO<LessonQuestionDTO> create(@Valid @RequestBody LessonQuestionDTO lessonQuestionDTO) {
         LessonQuestionDTO createdLessonQuestion = service.create(lessonQuestionDTO);
 
-        ResponseDTO<LessonQuestionDTO> response = ResponseDTO.<LessonQuestionDTO>builder()
+        return ResponseDTO.<LessonQuestionDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(createdLessonQuestion)
                 .message("Lesson question created successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<LessonQuestionDTO>> update(@PathVariable Long id, @Valid @RequestBody LessonQuestionDTO lessonQuestionDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<LessonQuestionDTO> update(@PathVariable Long id, @Valid @RequestBody LessonQuestionDTO lessonQuestionDTO) {
         LessonQuestionDTO updatedLessonQuestion = service.update(lessonQuestionDTO, id);
 
-        ResponseDTO<LessonQuestionDTO> response = ResponseDTO.<LessonQuestionDTO>builder()
+        return ResponseDTO.<LessonQuestionDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(updatedLessonQuestion)
                 .message("Lesson question updated successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDTO<LessonQuestionDTO>> patch(@PathVariable Long id, @RequestBody LessonQuestionDTO lessonQuestionDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<LessonQuestionDTO> patch(@PathVariable Long id, @RequestBody LessonQuestionDTO lessonQuestionDTO) {
         LessonQuestionDTO patchedLessonQuestion = service.patch(lessonQuestionDTO, id);
 
-        ResponseDTO<LessonQuestionDTO> response = ResponseDTO.<LessonQuestionDTO>builder()
+        return ResponseDTO.<LessonQuestionDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(patchedLessonQuestion)
                 .message("Lesson question updated with patch successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> delete(@PathVariable Long id) {
         boolean result = service.delete(id);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Lesson question deleted successfully" : "Failed to delete lesson question")
                 .build();
-        return ResponseEntity.ok(response);
     }
 }

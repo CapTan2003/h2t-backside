@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,79 +21,78 @@ public class WritingController {
     private final WritingService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<WritingDTO>> findById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<WritingDTO> findById(@PathVariable Long id) {
         WritingDTO writing = service.findById(id);
 
-        ResponseDTO<WritingDTO> response = ResponseDTO.<WritingDTO>builder()
+        return ResponseDTO.<WritingDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(writing)
                 .message("Writing retrieved successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<WritingDTO>> create(@Valid @RequestBody WritingDTO writingDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO<WritingDTO> create(@Valid @RequestBody WritingDTO writingDTO) {
         WritingDTO createdWriting = service.create(writingDTO);
 
-        ResponseDTO<WritingDTO> response = ResponseDTO.<WritingDTO>builder()
+        return ResponseDTO.<WritingDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(createdWriting)
                 .message("Writing created successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<WritingDTO>> update(@PathVariable Long id, @Valid @RequestBody WritingDTO writingDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<WritingDTO> update(@PathVariable Long id, @Valid @RequestBody WritingDTO writingDTO) {
         WritingDTO updatedWriting = service.update(writingDTO, id);
 
-        ResponseDTO<WritingDTO> response = ResponseDTO.<WritingDTO>builder()
+        return ResponseDTO.<WritingDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(updatedWriting)
                 .message("Writing updated successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDTO<WritingDTO>> patch(@PathVariable Long id, @RequestBody WritingDTO writingDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<WritingDTO> patch(@PathVariable Long id, @RequestBody WritingDTO writingDTO) {
         WritingDTO patchedWriting = service.patch(writingDTO, id);
 
-        ResponseDTO<WritingDTO> response = ResponseDTO.<WritingDTO>builder()
+        return ResponseDTO.<WritingDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(patchedWriting)
                 .message("Writing updated with patch successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> delete(@PathVariable Long id) {
         boolean result = service.delete(id);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Writing deleted successfully" : "Failed to delete writing")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<Page<WritingDTO>>> searchWithFilters(
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<WritingDTO>> searchWithFilters(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
             @RequestParam(required = false) LessonFilterDTO filter) {
 
-        Page<WritingDTO> writings = service.searchWithFilters(
-                page, size, sortFields, filter);
+        Page<WritingDTO> writings = service.searchWithFilters(page, size, sortFields, filter);
 
-        ResponseDTO<Page<WritingDTO>> response = ResponseDTO.<Page<WritingDTO>>builder()
+        return ResponseDTO.<Page<WritingDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(writings)
                 .message("Writings retrieved successfully with filters")
                 .build();
-        return ResponseEntity.ok(response);
     }
 }
