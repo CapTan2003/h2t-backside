@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.mapper;
 
+
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.model.User;
 import org.mapstruct.*;
@@ -48,5 +49,4 @@ public interface UserMapper {
     @Mapping(target = "email", ignore = true) //Bo qua truong email khi update
     void patchEntityFromDTO(UserDTO dto, @MappingTarget User entity);
 }
-
 

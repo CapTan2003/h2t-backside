@@ -1,0 +1,67 @@
+package com.englishweb.h2t_backside.controller.test;
+
+import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.test.SubmitTestAnswerDTO;
+import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.service.test.SubmitTestAnswerService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/submit-test-answers")
+@AllArgsConstructor
+public class SubmitTestAnswerController {
+
+    private final SubmitTestAnswerService service;
+
+    @PostMapping
+    public ResponseEntity<ResponseDTO<SubmitTestAnswerDTO>> create(@Valid @RequestBody SubmitTestAnswerDTO dto) {
+        SubmitTestAnswerDTO createdAnswer = service.create(dto);
+
+        ResponseDTO<SubmitTestAnswerDTO> response = ResponseDTO.<SubmitTestAnswerDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(createdAnswer)
+                .message("SubmitTestAnswer created successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDTO<SubmitTestAnswerDTO>> update(@PathVariable Long id, @Valid @RequestBody SubmitTestAnswerDTO dto) {
+        SubmitTestAnswerDTO updatedAnswer = service.update(dto, id);
+
+        ResponseDTO<SubmitTestAnswerDTO> response = ResponseDTO.<SubmitTestAnswerDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(updatedAnswer)
+                .message("SubmitTestAnswer updated successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseDTO<SubmitTestAnswerDTO>> patch(@PathVariable Long id, @RequestBody SubmitTestAnswerDTO dto) {
+        SubmitTestAnswerDTO patchedAnswer = service.patch(dto, id);
+
+        ResponseDTO<SubmitTestAnswerDTO> response = ResponseDTO.<SubmitTestAnswerDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(patchedAnswer)
+                .message("SubmitTestAnswer updated with patch successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+        boolean result = service.delete(id);
+
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
+                .message(result ? "SubmitTestAnswer deleted successfully" : "Failed to delete SubmitTestAnswer")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+}
