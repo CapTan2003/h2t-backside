@@ -1,54 +1,54 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
-import com.englishweb.h2t_backside.dto.test.TestDTO;
+import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
-import com.englishweb.h2t_backside.mapper.test.TestMapper;
-import com.englishweb.h2t_backside.model.test.Test;
-import com.englishweb.h2t_backside.repository.test.TestRepository;
+import com.englishweb.h2t_backside.mapper.test.SubmitTestMapper;
+import com.englishweb.h2t_backside.model.test.SubmitTest;
+import com.englishweb.h2t_backside.repository.test.SubmitTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
-import com.englishweb.h2t_backside.service.test.TestService;
+import com.englishweb.h2t_backside.service.test.SubmitTestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestRepository> implements TestService {
-    private final TestMapper mapper;
+public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, SubmitTest, SubmitTestRepository> implements SubmitTestService {
+    private final SubmitTestMapper mapper;
 
-    public TestServiceImpl(TestRepository repository, DiscordNotifier discordNotifier, TestMapper mapper) {
+    public SubmitTestServiceImpl(SubmitTestRepository repository, DiscordNotifier discordNotifier, SubmitTestMapper mapper) {
         super(repository, discordNotifier);
         this.mapper = mapper;
     }
 
     @Override
     protected void findByIdError(Long id) {
-        String errorMessage = String.format("Test with ID '%d' not found.", id);
+        String errorMessage = String.format("SubmitTest with ID '%d' not found.", id);
         log.warn(errorMessage);
         throw new ResourceNotFoundException(id, errorMessage);
     }
 
     @Override
-    protected void createError(TestDTO dto, Exception ex) {
-        log.error("Error creating test: {}", ex.getMessage());
-        String errorMessage = "Unexpected error creating test: " + ex.getMessage();
+    protected void createError(SubmitTestDTO dto, Exception ex) {
+        log.error("Error creating submit test: {}", ex.getMessage());
+        String errorMessage = "Unexpected error creating submit test: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
-    protected void updateError(TestDTO dto, Long id, Exception ex) {
-        log.error("Error updating test: {}", ex.getMessage());
-        String errorMessage = "Unexpected error updating test: " + ex.getMessage();
+    protected void updateError(SubmitTestDTO dto, Long id, Exception ex) {
+        log.error("Error updating submit test: {}", ex.getMessage());
+        String errorMessage = "Unexpected error updating submit test: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {
-            errorMessage = String.format("Test with ID '%d' not found.", id);
+            errorMessage = String.format("SubmitTest with ID '%d' not found.", id);
             status = HttpStatus.NOT_FOUND;
         }
 
@@ -56,17 +56,17 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
     }
 
     @Override
-    protected void patchEntityFromDTO(TestDTO dto, Test entity) {
+    protected void patchEntityFromDTO(SubmitTestDTO dto, SubmitTest entity) {
         mapper.patchEntityFromDTO(dto, entity);
     }
 
     @Override
-    protected Test convertToEntity(TestDTO dto) {
+    protected SubmitTest convertToEntity(SubmitTestDTO dto) {
         return mapper.convertToEntity(dto);
     }
 
     @Override
-    protected TestDTO convertToDTO(Test entity) {
+    protected SubmitTestDTO convertToDTO(SubmitTest entity) {
         return mapper.convertToDTO(entity);
     }
 }
