@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.ReadOnlyProperty;
+
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -20,7 +23,7 @@ public class User extends AbstractBaseEntity {
     @Comment("Full name of the User")
     private String name;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = true, length = 255, updatable = false)
     @Comment("Email address of the User")
     private String email;
 
@@ -43,4 +46,11 @@ public class User extends AbstractBaseEntity {
     @Column(length = 20)
     @Comment("Level of the User (e.g. Bachelor, Doctor, Master, or Professor)")
     private LevelEnum levelEnum;
+
+    @Column(unique = true, length = 10)
+    @Comment("Phone number of the User")
+    private String phoneNumber;
+
+    @Comment("Date of Birth of the User")
+    private LocalDate dateOfBirth;
 }
