@@ -14,6 +14,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
@@ -31,7 +33,9 @@ public class GlobalExceptionHandler {
 
     // Loi du lieu DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseDTO<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDTO<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
@@ -51,12 +55,14 @@ public class GlobalExceptionHandler {
 
         // Gửi thông báo lỗi đến Discord
         discordNotifier.buildErrorAndSend(errorDTO);
-        return new ResponseEntity<>(new ResponseDTO<>(ResponseStatusEnum.FAIL, errors, "Value of fields in dto does not valid"), HttpStatus.BAD_REQUEST);
+        return new ResponseDTO<>(ResponseStatusEnum.FAIL, errors, "Value of fields in dto does not valid");
     }
 
     // Loi khong tim thay
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ResponseDTO<String>> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseDTO<String> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
         log.warn("Resource not found: {}", ex.getMessage());
         String errorMessage = "Resource Not Found";
 
@@ -70,13 +76,12 @@ public class GlobalExceptionHandler {
                 .data(ex.getResourceId())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+
+        return ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .data(ex.getMessage())
                 .message(errorMessage)
                 .build();
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     // Loi khoi tao tai nguyen
@@ -94,7 +99,9 @@ public class GlobalExceptionHandler {
 
     // Loi tham so khong hop le
     @ExceptionHandler(InvalidArgumentException.class)
-    public ResponseEntity<ResponseDTO<String>> handleInvalidArgumentException(InvalidArgumentException ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDTO<String> handleInvalidArgumentException(InvalidArgumentException ex, HttpServletRequest request) {
         log.warn("Invalid argument: {}", ex.getMessage());
         String errorMessage = "Invalid Argument";
 
@@ -110,13 +117,11 @@ public class GlobalExceptionHandler {
 
         // Gửi thông báo lỗi đến Discord
         discordNotifier.buildErrorAndSend(errorDTO);
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<ResponseDTO<String>> handleResourceException(HttpStatus status, String message, String errorCode, Object data, HttpServletRequest request, String errorMessage) {
@@ -146,7 +151,9 @@ public class GlobalExceptionHandler {
 
     // Xử lý lỗi sai dữ liệu đầu vào kiểu enum
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ResponseDTO<String>> handleEnumTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDTO<String> handleEnumTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         log.warn("Method argument type mismatch: {}", ex.getMessage());
         String errorMessage = "Method argument type mismatch";
 
@@ -160,18 +167,19 @@ public class GlobalExceptionHandler {
                 .data(ex.getName())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+
+        return ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     // Xử lý lỗi sai dữ liệu đầu vào
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ResponseDTO<String>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDTO<String> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
         log.warn("HttpMessageNotReadableException: {}", ex.getMessage());
         String errorMessage = "Invalid input data format";
 
@@ -185,18 +193,19 @@ public class GlobalExceptionHandler {
                 .data(ex.getMessage())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+
+        return ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     // Xử lý lỗi thieu tham so
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ResponseDTO<String>> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseDTO<String> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpServletRequest request) {
         log.warn("Missing Servlet Request Parameter Exception: {}", ex.getMessage());
         String errorMessage = "Missing Request Parameter";
 
@@ -210,16 +219,17 @@ public class GlobalExceptionHandler {
                 .data(ex.getParameterName())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+
+        return ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IOException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ResponseDTO<String>> handleIOException(IOException ex, HttpServletRequest request) {
         log.error("IOException: {}", ex.getMessage());
 
@@ -244,7 +254,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseDTO<String>> handleException(Exception ex, HttpServletRequest request) {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleException(Exception ex, HttpServletRequest request) {
         log.error("Exception: {}", ex.getMessage());
         String errorMessage = "Internal Server Error";
         ErrorDTO errorDTO = ErrorDTO.builder()
@@ -257,11 +269,10 @@ public class GlobalExceptionHandler {
                 .data(ex.getMessage())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
                 .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

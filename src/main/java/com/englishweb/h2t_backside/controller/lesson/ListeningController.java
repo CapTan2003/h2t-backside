@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,66 +24,67 @@ public class ListeningController {
     private final ListeningService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<ListeningDTO>> findById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ListeningDTO> findById(@PathVariable Long id) {
         ListeningDTO listening = service.findById(id);
 
-        ResponseDTO<ListeningDTO> response = ResponseDTO.<ListeningDTO>builder()
+        return ResponseDTO.<ListeningDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(listening)
                 .message("Listening retrieved successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<ListeningDTO>> create(@Valid @RequestBody ListeningDTO listeningDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO<ListeningDTO> create(@Valid @RequestBody ListeningDTO listeningDTO) {
         ListeningDTO createdListening = service.create(listeningDTO);
 
-        ResponseDTO<ListeningDTO> response = ResponseDTO.<ListeningDTO>builder()
+        return ResponseDTO.<ListeningDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(createdListening)
                 .message("Listening created successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<ListeningDTO>> update(@PathVariable Long id, @Valid @RequestBody ListeningDTO listeningDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ListeningDTO> update(@PathVariable Long id, @Valid @RequestBody ListeningDTO listeningDTO) {
         ListeningDTO updatedListening = service.update(listeningDTO, id);
 
-        ResponseDTO<ListeningDTO> response = ResponseDTO.<ListeningDTO>builder()
+        return ResponseDTO.<ListeningDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(updatedListening)
                 .message("Listening updated successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDTO<ListeningDTO>> patch(@PathVariable Long id, @RequestBody ListeningDTO listeningDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ListeningDTO> patch(@PathVariable Long id, @RequestBody ListeningDTO listeningDTO) {
         ListeningDTO patchedListening = service.patch(listeningDTO, id);
 
-        ResponseDTO<ListeningDTO> response = ResponseDTO.<ListeningDTO>builder()
+        return ResponseDTO.<ListeningDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(patchedListening)
                 .message("Listening updated with patch successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> delete(@PathVariable Long id) {
         boolean result = service.delete(id);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Listening deleted successfully" : "Failed to delete listening")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<Page<ListeningDTO>>> searchWithFilters(
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<ListeningDTO>> searchWithFilters(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
@@ -92,22 +93,22 @@ public class ListeningController {
         Page<ListeningDTO> listenings = service.searchWithFilters(
                 page, size, sortFields, filter);
 
-        ResponseDTO<Page<ListeningDTO>> response = ResponseDTO.<Page<ListeningDTO>>builder()
+        return ResponseDTO.<Page<ListeningDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(listenings)
                 .message("Listenings retrieved successfully with filters")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/questions")
-    public ResponseEntity<ResponseDTO<List<LessonQuestionDTO>>> findQuestionByListeningId(@RequestParam Long listeningId) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByListeningId(@RequestParam Long listeningId) {
         List<LessonQuestionDTO> questions = service.findQuestionByLessonId(listeningId);
-        ResponseDTO<List<LessonQuestionDTO>> response = ResponseDTO.<List<LessonQuestionDTO>>builder()
+
+        return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(questions)
                 .message("Questions retrieved successfully for the listening")
                 .build();
-        return ResponseEntity.ok(response);
     }
 }

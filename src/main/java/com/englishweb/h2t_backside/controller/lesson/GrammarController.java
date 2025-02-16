@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,67 +25,68 @@ public class GrammarController {
     private final GrammarService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<GrammarDTO>> findById(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<GrammarDTO> findById(@PathVariable Long id) {
         GrammarDTO grammar = service.findById(id);
 
-        ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
+        return ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(grammar)
                 .message("Grammar retrieved successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<GrammarDTO>> create(@Valid @RequestBody GrammarDTO grammarDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO<GrammarDTO> create(@Valid @RequestBody GrammarDTO grammarDTO) {
         GrammarDTO createdGrammar = service.create(grammarDTO);
 
-        ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
+        return ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(createdGrammar)
                 .message("Grammar created successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<GrammarDTO>> update(@PathVariable Long id, @Valid @RequestBody GrammarDTO grammarDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<GrammarDTO> update(@PathVariable Long id, @Valid @RequestBody GrammarDTO grammarDTO) {
         GrammarDTO updatedGrammar = service.update(grammarDTO, id);
 
-        ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
+        return ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(updatedGrammar)
                 .message("Grammar updated successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDTO<GrammarDTO>> patch(@PathVariable Long id, @RequestBody GrammarDTO grammarDTO) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<GrammarDTO> patch(@PathVariable Long id, @RequestBody GrammarDTO grammarDTO) {
         GrammarDTO patchedGrammar = service.patch(grammarDTO, id);
 
-        ResponseDTO<GrammarDTO> response = ResponseDTO.<GrammarDTO>builder()
+        return ResponseDTO.<GrammarDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(patchedGrammar)
                 .message("Grammar updated with patch successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO<String>> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> delete(@PathVariable Long id) {
         boolean result =  service.delete(id);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Grammar deleted successfully" : "Failed to delete grammar")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<Page<GrammarDTO>>> searchWithFilters(
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<GrammarDTO>> searchWithFilters(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
@@ -93,22 +95,21 @@ public class GrammarController {
         Page<GrammarDTO> grammars = service.searchWithFilters(
                 page, size, sortFields, filter);
 
-        ResponseDTO<Page<GrammarDTO>> response = ResponseDTO.<Page<GrammarDTO>>builder()
+        return ResponseDTO.<Page<GrammarDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(grammars)
                 .message("Grammars retrieved successfully with filters")
                 .build();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/questions")
-    public ResponseEntity<ResponseDTO<List<LessonQuestionDTO>>> findQuestionByGrammarId(@RequestParam Long grammarId) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByGrammarId(@RequestParam Long grammarId) {
         List<LessonQuestionDTO> questions = service.findQuestionByLessonId(grammarId);
-        ResponseDTO<List<LessonQuestionDTO>> response = ResponseDTO.<List<LessonQuestionDTO>>builder()
+        return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(questions)
                 .message("Questions retrieved successfully")
                 .build();
-        return ResponseEntity.ok(response);
     }
 }
