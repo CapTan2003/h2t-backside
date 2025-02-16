@@ -1,0 +1,28 @@
+package com.englishweb.h2t_backside.dto.test;
+
+import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SubmitTestWritingDTO extends AbstractBaseDTO {
+
+    @NotNull(message = "SubmitTest cannot be null")
+    private SubmitTestDTO submitTest;
+
+    @NotNull(message = "Writing test cannot be null")
+    private TestWritingDTO writing;
+
+    @NotBlank(message = "Content cannot be empty")
+    private String content;
+
+    @NotNull(message = "Score cannot be null")
+    @Min(value = 0, message = "Score must be at least 0")
+    private Integer score;
+}
