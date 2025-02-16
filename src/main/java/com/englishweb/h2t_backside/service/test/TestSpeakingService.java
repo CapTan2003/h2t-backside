@@ -1,4 +1,7 @@
 package com.englishweb.h2t_backside.service.test;
 
-public interface TestSpeakingService {
+import com.englishweb.h2t_backside.dto.test.TestSpeakingDTO;
+import com.englishweb.h2t_backside.service.feature.BaseService;
+
+public interface TestSpeakingService extends BaseService<TestSpeakingDTO> {
 }
