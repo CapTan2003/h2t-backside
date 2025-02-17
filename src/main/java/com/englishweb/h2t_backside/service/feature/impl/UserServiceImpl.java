@@ -8,13 +8,13 @@ import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.EmailService;
 import com.englishweb.h2t_backside.service.feature.UserService;
+import com.englishweb.h2t_backside.utils.SendEmail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.*;
 
 @Service
@@ -23,28 +23,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
 
     private final UserMapper mapper;
     EmailService emailService;
+    private final SendEmail sendEmail;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Map<String, OtpData> otpCache = new HashMap<>();
-    private Map<String, Boolean> otpVerifiedCache = new HashMap<>();
-
-    public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, UserMapper mapper, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, UserMapper mapper, PasswordEncoder passwordEncoder, EmailService emailService, SendEmail sendEmail) {
         super(repository, discordNotifier);
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.mapper = mapper;
-    }
-
-    private class OtpData {
-        String otp;
-        long timestamp;
-
-        OtpData(String otp, long timestamp) {
-            this.otp = otp;
-            this.timestamp = timestamp;
-        }
+        this.sendEmail = sendEmail;
     }
 
     @Override
@@ -97,80 +86,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String password = userDTO.getPassword();
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodedPassword);
-        emailService.sendPasswordByEmail(userDTO.getEmail(), password);
+//        sendEmail.sendPasswordByEmail(userDTO.getEmail(), password);
         return super.create(userDTO);
-    }
-
-    private String generateOtp() {
-        return String.format("%06d", new SecureRandom().nextInt(1000000));
-    }
-
-    public void sendOtpForResetPassword(String email) {
-        if (email.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Email cannot be empty.");
-        }
-        List<User> user = repository.findAllByEmail(email);
-        if (user.isEmpty()) {
-            throw new ResourceNotFoundException("Email does not exist.");
-        }
-
-        String otp = generateOtp();
-        long timestamp = System.currentTimeMillis(); // Lấy thời gian hiện tại
-        otpCache.put(email, new OtpData(otp, timestamp)); // Lưu OTP và thời gian tạo
-        emailService.sendOtpByEmail(email, otp);
-    }
-
-    public boolean verifyOtp(String email, String inputOtp) {
-        OtpData otpData = otpCache.get(email.trim());
-        if (otpData == null) {
-            return false;
-        }
-
-        long currentTime = System.currentTimeMillis();
-        long elapsedTime = currentTime - otpData.timestamp;
-        if (elapsedTime > 120 * 1000) {
-            otpCache.remove(email.trim());
-            return false;
-        }
-
-        if (!otpData.otp.trim().equals(inputOtp.trim())) {
-            return false;
-        }
-
-        otpCache.remove(email.trim());
-        otpVerifiedCache.put(email.trim(), true);
-        return true;
-    }
-
-    public void resetPassword(String email, String newPassword, String confirmPassword) {
-        // Kiểm tra OTP đã được xác thực hay chưa
-        if (!otpVerifiedCache.getOrDefault(email.trim(), false)) {
-            throw new ResourceNotFoundException("You need to verify the OTP code before changing your password.");
-        }
-
-        // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp nhau không
-        if (!newPassword.equals(confirmPassword)) {
-            throw new ResourceNotFoundException("New password and confirm password do not match.");
-        }
-
-        // Tìm người dùng bằng email
-        List<User> userList = repository.findAllByEmail(email.trim());
-        if (userList.isEmpty()) {
-            throw new ResourceNotFoundException("User with email '" + email + "' not found.");
-        }
-
-        // Lấy người dùng đầu tiên từ danh sách
-        User user = userList.get(0);
-
-        // Mã hóa mật khẩu mới và cập nhật
-        String hashedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(hashedPassword);
-
-        // Lưu người dùng đã cập nhật
-        repository.save(user);
-
-        // Xóa email khỏi cache OTP đã xác thực
-        otpVerifiedCache.remove(email.trim());
     }
 
     @Override
