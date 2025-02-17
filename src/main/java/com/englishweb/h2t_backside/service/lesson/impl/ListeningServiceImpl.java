@@ -94,7 +94,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
     @Override
     public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
         try {
-            List<Long> listQuestion = ParseData.parseStringToLongList(findById(lessonId).getQuestions());
+            List<Long> listQuestion = findById(lessonId).getQuestions();
             return lessonQuestionService.findByIds(listQuestion);
         } catch (ResourceNotFoundException ex) {
             String errorMessage = String.format("Error finding questions for listening with ID '%d': %s", lessonId, ex.getMessage());

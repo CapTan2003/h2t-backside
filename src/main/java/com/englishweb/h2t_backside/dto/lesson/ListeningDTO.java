@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -21,7 +23,7 @@ public class ListeningDTO extends AbstractLessonDTO {
     @NotBlank(message = "Transcript cannot be empty")
     private String transcript;
 
-    private String questions = "";
+    private List<Long> questions;
 
     private PreparationDTO preparation;
 }

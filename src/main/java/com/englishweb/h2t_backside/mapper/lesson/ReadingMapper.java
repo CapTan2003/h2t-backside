@@ -3,7 +3,10 @@ package com.englishweb.h2t_backside.mapper.lesson;
 import com.englishweb.h2t_backside.dto.lesson.ReadingDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.lesson.Reading;
+import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -21,7 +24,7 @@ public interface ReadingMapper {
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "views", source = "dto.views", defaultValue = "0L")
     @Mapping(target = "file", source = "dto.file")
-    @Mapping(target = "questions", source = "dto.questions")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "preparation", source = "dto.preparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     Reading convertToEntity(ReadingDTO dto);
@@ -36,7 +39,7 @@ public interface ReadingMapper {
     @Mapping(target = "description", source = "entity.description")
     @Mapping(target = "views", source = "entity.views")
     @Mapping(target = "file", source = "entity.file")
-    @Mapping(target = "questions", source = "entity.questions")
+    @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList") // Đã khai báo bên trong PreparationMapper.class
     @Mapping(target = "preparation", source = "entity.preparation")
     @Mapping(target = "routeNode", source = "entity.routeNode")
     ReadingDTO convertToDTO(Reading entity);
@@ -49,8 +52,9 @@ public interface ReadingMapper {
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "views", source = "dto.views")
     @Mapping(target = "file", source = "dto.file")
-    @Mapping(target = "questions", source = "dto.questions")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString") // Đã khai báo bên trong PreparationMapper.class
     @Mapping(target = "preparation", source = "dto.preparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     void patchEntityFromDTO(ReadingDTO dto, @MappingTarget Reading entity);
+
 }

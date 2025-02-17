@@ -3,7 +3,10 @@ package com.englishweb.h2t_backside.mapper.lesson;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
+import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -13,6 +16,7 @@ import org.mapstruct.*;
 )
 public interface GrammarMapper {
 
+    // Convert DTO (List<Long>) → Entity (String)
     @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
     @Mapping(target = "views", source = "dto.views", defaultValue = "0L")
     @Mapping(target = "id", source = "dto.id")
@@ -20,13 +24,13 @@ public interface GrammarMapper {
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "routeNode", source = "dto.routeNode")
-    @Mapping(target = "questions", source = "dto.questions")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "definition", source = "dto.definition")
     @Mapping(target = "example", source = "dto.example")
     @Mapping(target = "file", source = "dto.file")
     Grammar convertToEntity(GrammarDTO dto);
 
-    // Convert Grammar entity to GrammarDTO
+    // Convert Entity (String) → DTO (List<Long>)
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
@@ -36,7 +40,7 @@ public interface GrammarMapper {
     @Mapping(target = "description", source = "entity.description")
     @Mapping(target = "views", source = "entity.views")
     @Mapping(target = "routeNode", source = "entity.routeNode")
-    @Mapping(target = "questions", source = "entity.questions")
+    @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList")
     @Mapping(target = "definition", source = "entity.definition")
     @Mapping(target = "example", source = "entity.example")
     @Mapping(target = "file", source = "entity.file")
@@ -48,9 +52,20 @@ public interface GrammarMapper {
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "views", source = "dto.views")
     @Mapping(target = "routeNode", source = "dto.routeNode")
-    @Mapping(target = "questions", source = "dto.questions")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "definition", source = "dto.definition")
     @Mapping(target = "example", source = "dto.example")
     @Mapping(target = "file", source = "dto.file")
     void patchEntityFromDTO(GrammarDTO dto, @MappingTarget Grammar entity);
+
+    // Custom mapping methods
+    @Named("stringToLongList")
+    default List<Long> stringToLongList(String str) {
+        return ParseData.parseStringToLongList(str);
+    }
+
+    @Named("longListToString")
+    default String longListToString(List<Long> list) {
+        return ParseData.parseLongListToString(list);
+    }
 }

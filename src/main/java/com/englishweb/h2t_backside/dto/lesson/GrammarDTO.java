@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -24,5 +26,5 @@ public class GrammarDTO extends AbstractLessonDTO {
     @NotBlank(message = "Example cannot be empty")
     private String example;
 
-    private String questions;
+    private List<Long> questions;
 }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -15,5 +17,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class TopicDTO extends AbstractLessonDTO {
 
-    private String questions;
+    private List<Long> questions;
 }

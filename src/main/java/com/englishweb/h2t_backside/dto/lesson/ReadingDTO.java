@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -18,7 +20,7 @@ public class ReadingDTO extends AbstractLessonDTO {
     @NotBlank(message = "File for reading lesson cannot be empty")
     private String file;
 
-    private String questions;
+    private List<Long> questions;
 
     private PreparationDTO preparation;
 }
