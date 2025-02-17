@@ -3,12 +3,13 @@ package com.englishweb.h2t_backside.dto.test;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionDTO extends AbstractBaseDTO {

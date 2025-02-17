@@ -4,10 +4,11 @@ import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.AnswerEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmitToeicPart6DTO extends AbstractBaseDTO {
