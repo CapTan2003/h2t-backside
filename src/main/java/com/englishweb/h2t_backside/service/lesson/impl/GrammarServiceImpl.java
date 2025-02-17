@@ -93,7 +93,7 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     @Override
     public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
         try {
-            List<Long> listQuestion = ParseData.parseStringToLongList(findById(lessonId).getQuestions());
+            List<Long> listQuestion = findById(lessonId).getQuestions();
             return lessonQuestionService.findByIds(listQuestion);
         } catch (ResourceNotFoundException ex) {
             String errorMessage = String.format("Error finding questions for grammar with ID '%d': %s", lessonId, ex.getMessage());

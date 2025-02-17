@@ -3,7 +3,10 @@ package com.englishweb.h2t_backside.mapper.lesson;
 import com.englishweb.h2t_backside.dto.lesson.TopicDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.lesson.Topic;
+import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
+
+import java.util.List;
 
 
 @Mapper(
@@ -21,7 +24,7 @@ public interface TopicMapper {
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "routeNode", source = "dto.routeNode")
-    @Mapping(target = "questions", source = "dto.questions")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     Topic convertToEntity(TopicDTO dto);
 
     @Mapping(target = "id", source = "entity.id")
@@ -33,7 +36,7 @@ public interface TopicMapper {
     @Mapping(target = "description", source = "entity.description")
     @Mapping(target = "views", source = "entity.views")
     @Mapping(target = "routeNode", source = "entity.routeNode")
-    @Mapping(target = "questions", source = "entity.questions")
+    @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList")
     TopicDTO convertToDTO(Topic entity);
 
     @Mapping(target = "status", source = "dto.status")
@@ -42,6 +45,17 @@ public interface TopicMapper {
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "views", source = "dto.views")
     @Mapping(target = "routeNode", source = "dto.routeNode")
-    @Mapping(target = "questions", source = "dto.questions")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     void patchEntityFromDTO(TopicDTO dto, @MappingTarget Topic entity);
+
+    // Custom mapping methods
+    @Named("stringToLongList")
+    default List<Long> stringToLongList(String str) {
+        return ParseData.parseStringToLongList(str);
+    }
+
+    @Named("longListToString")
+    default String longListToString(List<Long> list) {
+        return ParseData.parseLongListToString(list);
+    }
 }
