@@ -5,10 +5,11 @@ import com.englishweb.h2t_backside.model.enummodel.AnswerEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ToeicPart1DTO extends AbstractBaseDTO {
