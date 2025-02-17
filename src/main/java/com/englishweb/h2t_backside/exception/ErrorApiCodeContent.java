@@ -11,6 +11,8 @@ public class ErrorApiCodeContent {
     public static final String USER_NAME_EMPTY = "105"; // Không tìm thấy user
     public static final String USER_UPDATED_FAIL = "106"; // Cap nhat user that bai
 
+
+
     // Lỗi liên quan đến bài học
     public static final String LESSON_CREATED_FAIL = "201"; // Tao moi bai hoc that bai
     public static final String LESSON_UPDATED_FAIL = "202"; // Cap nhat bai hoc that bai
