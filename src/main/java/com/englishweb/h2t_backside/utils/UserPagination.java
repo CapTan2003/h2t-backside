@@ -39,6 +39,14 @@ public class UserPagination {
             specification = specification.and(UserSpecification.findByEmail(filter.getEmail()));
         }
 
+        if (filter.getRoleEnumList() != null && !filter.getRoleEnumList().isEmpty()) {
+            specification = specification.and(UserSpecification.findByRoles(filter.getRoleEnumList()));
+        }
+
+        if (filter.getLevelEnum() != null) {
+            specification = specification.and(UserSpecification.findByLevel(filter.getLevelEnum()));
+        }
+
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
 
         if (!ValidationData.isValidFieldInSortList(entityClass, orders)) {
