@@ -23,40 +23,14 @@ public class EmailController {
     @PostMapping("/send-otp")
     public ResponseEntity<ResponseDTO<String>> sendOtpForResetPassword(@RequestBody Map<String, String> requestBody) {
         String email = requestBody.get("email");
+        ResponseDTO<String> responseDTO = service.sendOtpForResetPassword(email);
 
-        if (email == null || email.trim().isEmpty()) {
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Email is required.")
-                    .build();
-            return ResponseEntity.status(400).body(response);
-        }
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(responseDTO.getStatus())
+                .message(responseDTO.getMessage())
+                .build();
 
-        try {
-            // Gửi OTP cho người dùng
-            service.sendOtpForResetPassword(email);
-
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.SUCCESS)
-                    .message("OTP has been sent to your email successfully.")
-                    .build();
-
-            return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException ex) {
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message(ex.getMessage()) // Nếu email không tồn tại, sẽ trả thông báo lỗi
-                    .build();
-
-            return ResponseEntity.status(404).body(response);
-        } catch (Exception ex) {
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Failed to send OTP. Please try again.")
-                    .build();
-
-            return ResponseEntity.status(500).body(response);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify-otp")
@@ -64,7 +38,6 @@ public class EmailController {
         String email = requestBody.get("email");
         String otp = requestBody.get("otp");
 
-        // Kiểm tra OTP có hợp lệ hay không
         boolean isVerified = service.verifyOtp(email, otp);
 
         ResponseDTO<String> response = ResponseDTO.<String>builder()
@@ -81,30 +54,14 @@ public class EmailController {
         String newPassword = requestBody.get("newPassword");
         String confirmPassword = requestBody.get("confirmPassword");
 
-        try {
-            // Gọi service để reset mật khẩu
-            service.resetPassword(email, newPassword, confirmPassword);
+        ResponseDTO<String> responseDTO = service.resetPassword(email, newPassword, confirmPassword);
 
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.SUCCESS)
-                    .message("Password has been reset successfully.")
-                    .build();
+        ResponseDTO<String> response = ResponseDTO.<String>builder()
+                .status(responseDTO.getStatus())
+                .data(responseDTO.getData())
+                .message(responseDTO.getMessage())
+                .build();
 
-            return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException ex) {
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message(ex.getMessage()) // Nếu OTP chưa được xác thực hoặc mật khẩu không hợp lệ
-                    .build();
-
-            return ResponseEntity.status(400).body(response);
-        } catch (Exception ex) {
-            ResponseDTO<String> response = ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Failed to reset password. Please try again.")
-                    .build();
-
-            return ResponseEntity.status(500).body(response);
-        }
+        return ResponseEntity.ok(response);
     }
 }
