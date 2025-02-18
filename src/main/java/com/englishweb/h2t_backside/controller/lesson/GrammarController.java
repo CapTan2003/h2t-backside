@@ -90,7 +90,7 @@ public class GrammarController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
-            @RequestParam(required = false) LessonFilterDTO filter) {
+            @ModelAttribute LessonFilterDTO filter) {
 
         Page<GrammarDTO> grammars = service.searchWithFilters(
                 page, size, sortFields, filter);

@@ -88,7 +88,7 @@ public class ListeningController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
-            @RequestParam(required = false) LessonFilterDTO filter) {
+            @ModelAttribute LessonFilterDTO filter) {
 
         Page<ListeningDTO> listenings = service.searchWithFilters(
                 page, size, sortFields, filter);
