@@ -85,7 +85,7 @@ public class VocabularyController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
-            @RequestParam(required = false) VocabularyFilterDTO filter,
+            @ModelAttribute VocabularyFilterDTO filter,
             @RequestParam Long topicId) {
 
         Page<VocabularyDTO> vocabularies = service.searchWithFiltersTopicId(page, size, sortFields, filter, topicId);
