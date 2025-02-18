@@ -1,10 +1,15 @@
 package com.englishweb.h2t_backside.controller;
 
+import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
+import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
+import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.service.feature.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import lombok.AllArgsConstructor;
@@ -92,5 +97,22 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<UserDTO>> searchWithFilters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @ModelAttribute UserFilterDTO filter) {
+
+        Page<UserDTO> users = service.searchWithFilters(
+                page, size, sortFields, filter);
+
+       return ResponseDTO.<Page<UserDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(users)
+                .message("Users retrieved successfully with filters")
+                .build();
+    }
 }
 

@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.model;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
+import com.englishweb.h2t_backside.model.interfacemodel.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USERS")
-public class User extends AbstractBaseEntity {
+public class User extends AbstractBaseEntity implements UserEntity {
     @Column(nullable = false, length = 255)
     @Comment("Full name of the User")
     private String name;
