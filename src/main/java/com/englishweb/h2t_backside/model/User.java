@@ -37,13 +37,11 @@ public class User extends AbstractBaseEntity implements UserEntity {
     @Comment("Avatar image URL for the User")
     private String avatar;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     @Comment("Role of the User (Admin, Student, or Teacher)")
     @Builder.Default
     private RoleEnum roleEnum = RoleEnum.STUDENT;
 
-    @Enumerated(EnumType.STRING)
     @Column(length = 20)
     @Comment("Level of the User (e.g. Bachelor, Doctor, Master, or Professor)")
     private LevelEnum levelEnum;
@@ -54,4 +52,7 @@ public class User extends AbstractBaseEntity implements UserEntity {
 
     @Comment("Date of Birth of the User")
     private LocalDate dateOfBirth;
+
+    @Column(length = 500)
+    private String refreshToken;
 }

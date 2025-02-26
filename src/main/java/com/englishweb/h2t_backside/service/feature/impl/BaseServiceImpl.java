@@ -8,7 +8,6 @@ import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 

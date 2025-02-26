@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -63,7 +63,7 @@ public class EmailServiceImpl extends BaseServiceImpl<EmailDTO, User, UserReposi
                     .build();
         }
 
-        List<User> users = repository.findAllByEmail(emailDTO.getEmail());
+        Optional<User> users = repository.findAllByEmail(emailDTO.getEmail());
         if (users.isEmpty()) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
@@ -132,7 +132,7 @@ public class EmailServiceImpl extends BaseServiceImpl<EmailDTO, User, UserReposi
                     .build();
         }
 
-        List<User> userList = repository.findAllByEmail(emailDTO.getEmail().trim());
+        Optional<User> userList = repository.findAllByEmail(emailDTO.getEmail().trim());
         if (userList.isEmpty()) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
@@ -140,7 +140,7 @@ public class EmailServiceImpl extends BaseServiceImpl<EmailDTO, User, UserReposi
                     .build();
         }
 
-        User user = userList.get(0);
+        User user = userList.get();
         String hashedPassword = passwordEncoder.encode(emailDTO.getNewPassword());
         user.setPassword(hashedPassword);
         repository.save(user);

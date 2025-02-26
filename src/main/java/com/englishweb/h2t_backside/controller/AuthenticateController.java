@@ -1,0 +1,77 @@
+package com.englishweb.h2t_backside.controller;
+
+import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
+import com.englishweb.h2t_backside.dto.security.LoginDTO;
+import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.dto.security.RefreshTokenDTO;
+import com.englishweb.h2t_backside.service.feature.AuthenticateService;
+import com.englishweb.h2t_backside.utils.JwtUtil;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/auth")
+@AllArgsConstructor
+public class AuthenticateController {
+    private final AuthenticateService service;
+    private final JwtUtil jwtUtil;
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<AuthenticateDTO> login(@Valid @RequestBody LoginDTO dto) {
+        ResponseDTO<AuthenticateDTO> response = service.login(dto);
+
+        return ResponseDTO.<AuthenticateDTO>builder()
+                .status(response.getStatus())
+                .data(response.getData())
+                .message(response.getMessage())
+                .build();
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Boolean> logout(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        ResponseDTO<Boolean> isLogout = service.logout(refreshToken);
+
+        return ResponseDTO.<Boolean>builder()
+                .status(isLogout.getStatus())
+                .data(isLogout.getData())
+                .message(isLogout.getMessage())
+                .build();
+    }
+
+    @GetMapping("/validate")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Boolean> validateToken(@RequestHeader("Authorization") String token) {
+        String jwt = token.replace("Bearer ", "").trim();
+        boolean isValid = jwtUtil.validateToken(jwt, true); // Chỉ chấp nhận access token
+
+        return ResponseDTO.<Boolean>builder()
+                .status(isValid ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
+                .data(isValid)
+                .message(isValid ? "Token is valid" : "Invalid token")
+                .build();
+    }
+
+    @PostMapping("/refresh-token")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<AuthenticateDTO> refreshToken(@Valid @RequestBody RefreshTokenDTO request) {
+        ResponseDTO<AuthenticateDTO> response = service.refreshAccessToken(request.getRefreshToken());
+
+        return ResponseDTO.<AuthenticateDTO>builder()
+                .status(response.getStatus())
+                .message(response.getMessage())
+                .data(response.getData())
+                .build();
+    }
+
+}
+

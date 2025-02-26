@@ -30,4 +30,5 @@ public class UserDTO extends AbstractBaseDTO {
     private LevelEnum levelEnum;
     private String phoneNumber;
     private LocalDate dateOfBirth;
+    private String refreshToken;
 }

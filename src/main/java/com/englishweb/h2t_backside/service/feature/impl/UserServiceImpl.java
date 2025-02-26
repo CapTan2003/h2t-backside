@@ -70,12 +70,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String errorCode = ErrorApiCodeContent.USER_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         // Kiem tra email da ton tai hay chua
-        User exitsUser = repository.findAllByEmail(dto.getEmail()).get(0);
+        Optional<User> exitsUser = repository.findAllByEmail(dto.getEmail());
 
         if (!this.isExist(id)){
             errorMessage = String.format("User with ID '%d' not found.", id);
             status =  HttpStatus.NOT_FOUND;
-        } else if (!Objects.equals(exitsUser.getId(), id)) {
+        } else if (!Objects.equals(exitsUser, id)) {
             errorMessage = "Email already exists";
             errorCode = ErrorApiCodeContent.USER_EMAIL_EXIST;
             status = HttpStatus.BAD_REQUEST;
