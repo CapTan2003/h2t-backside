@@ -1,17 +1,13 @@
 package com.englishweb.h2t_backside.controller;
 
-import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.EmailDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.service.feature.EmailService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -21,47 +17,40 @@ public class EmailController {
     private final EmailService service;
 
     @PostMapping("/send-otp")
-    public ResponseEntity<ResponseDTO<String>> sendOtpForResetPassword(@RequestBody Map<String, String> requestBody) {
-        String email = requestBody.get("email");
-        ResponseDTO<String> responseDTO = service.sendOtpForResetPassword(email);
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> sendOtpForResetPassword(@Valid @RequestBody EmailDTO emailDTO) {
+        ResponseDTO<String> responseDTO = service.sendOtpForResetPassword(emailDTO);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(responseDTO.getStatus())
                 .message(responseDTO.getMessage())
                 .build();
 
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<ResponseDTO<String>> verifyOtp(@RequestBody Map<String, String> requestBody) {
-        String email = requestBody.get("email");
-        String otp = requestBody.get("otp");
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Boolean> verifyOtp(@Valid @RequestBody EmailDTO emailDTO) {
+        ResponseDTO<Boolean> response = service.verifyOtp(emailDTO);
 
-        boolean isVerified = service.verifyOtp(email, otp);
-
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
-                .status(isVerified ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
-                .message(isVerified ? "OTP verified successfully." : "Invalid OTP or OTP expired.")
+        return ResponseDTO.<Boolean>builder()
+                .status(response.getStatus())
+                .message(response.getMessage())
+                .data(response.getData())
                 .build();
-
-        return ResponseEntity.status(isVerified ? 200 : 400).body(response);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ResponseDTO<String>> resetPassword(@RequestBody Map<String, String> requestBody) {
-        String email = requestBody.get("email");
-        String newPassword = requestBody.get("newPassword");
-        String confirmPassword = requestBody.get("confirmPassword");
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> resetPassword(@Valid @RequestBody EmailDTO emailDTO) {
 
-        ResponseDTO<String> responseDTO = service.resetPassword(email, newPassword, confirmPassword);
+        ResponseDTO<String> responseDTO = service.resetPassword(emailDTO);
 
-        ResponseDTO<String> response = ResponseDTO.<String>builder()
+        return ResponseDTO.<String>builder()
                 .status(responseDTO.getStatus())
                 .data(responseDTO.getData())
                 .message(responseDTO.getMessage())
                 .build();
 
-        return ResponseEntity.ok(response);
     }
 }

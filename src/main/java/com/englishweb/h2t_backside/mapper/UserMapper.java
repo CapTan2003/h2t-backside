@@ -23,6 +23,7 @@ public interface UserMapper {
     @Mapping(target = "phoneNumber", source = "dto.phoneNumber")
     @Mapping(target = "dateOfBirth", source = "dto.dateOfBirth")
     @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "refreshToken", source = "dto.refreshToken")
     User convertToEntity(UserDTO dto);
 
     @Mapping(target = "id", source = "entity.id")
@@ -47,6 +48,7 @@ public interface UserMapper {
     @Mapping(target = "dateOfBirth", source = "dto.dateOfBirth")
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "email", ignore = true) //Bo qua truong email khi update
+    @Mapping(target = "refreshToken", source = "dto.refreshToken")
     void patchEntityFromDTO(UserDTO dto, @MappingTarget User entity);
 }
 
