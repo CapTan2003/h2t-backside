@@ -26,8 +26,8 @@ public class UserDTO extends AbstractBaseDTO {
     private String password;
 
     private String avatar;
-    private RoleEnum roleEnum;
-    private LevelEnum levelEnum;
+    private RoleEnum role;
+    private LevelEnum level;
     private String phoneNumber;
     private LocalDate dateOfBirth;
     private String refreshToken;

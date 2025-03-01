@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.dto.security;
 
-import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDTO extends AbstractBaseDTO {
+public class LoginDTO{
     @NotBlank(message = "Email cannot be empty")
     private String email;
 

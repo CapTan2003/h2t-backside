@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.dto.security;
 
-import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
+import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -9,10 +9,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticateDTO extends AbstractBaseDTO {
+public class AuthenticateDTO {
     private boolean authenticated;
     private String accessToken;
     private String refreshToken;
-    private String role;
+    private RoleEnum role;
     private String userId;
 }

@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
 import com.englishweb.h2t_backside.dto.EmailDTO;
+import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.feature.EmailService;
 import jakarta.validation.Valid;
@@ -19,38 +20,34 @@ public class EmailController {
     @PostMapping("/send-otp")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<String> sendOtpForResetPassword(@Valid @RequestBody EmailDTO emailDTO) {
-        ResponseDTO<String> responseDTO = service.sendOtpForResetPassword(emailDTO);
+        service.sendOtpForResetPassword(emailDTO);
 
         return ResponseDTO.<String>builder()
-                .status(responseDTO.getStatus())
-                .message(responseDTO.getMessage())
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("OTP has been sent successfully.")
                 .build();
-
     }
 
     @PostMapping("/verify-otp")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<Boolean> verifyOtp(@Valid @RequestBody EmailDTO emailDTO) {
-        ResponseDTO<Boolean> response = service.verifyOtp(emailDTO);
+        service.verifyOtp(emailDTO);
 
         return ResponseDTO.<Boolean>builder()
-                .status(response.getStatus())
-                .message(response.getMessage())
-                .data(response.getData())
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("OTP code is valid")
+                .data(true)
                 .build();
     }
 
     @PostMapping("/reset-password")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<String> resetPassword(@Valid @RequestBody EmailDTO emailDTO) {
-
-        ResponseDTO<String> responseDTO = service.resetPassword(emailDTO);
+        service.resetPassword(emailDTO);
 
         return ResponseDTO.<String>builder()
-                .status(responseDTO.getStatus())
-                .data(responseDTO.getData())
-                .message(responseDTO.getMessage())
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Password has been reset successfully.")
                 .build();
-
     }
 }
