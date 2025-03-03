@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
+import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import com.englishweb.h2t_backside.service.feature.UserService;
@@ -32,7 +33,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     private final UserRepository repository;
     private final UserService userService;
 
-    @Value("${google.client-id}")
+    @Value("${gg_client_id}")
     private String ggClientId;
 
     @Autowired
@@ -53,6 +54,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.warn("Invalid password for email: {}", dto.getEmail());
             throw new ResourceNotFoundException("Invalid email or password.");
+        }
+
+        if(user.getStatus()== StatusEnum.INACTIVE){
+            throw new ResourceNotFoundException("Account has been locked!");
         }
 
         String accessToken = jwtUtil.generateAccessToken(user);
