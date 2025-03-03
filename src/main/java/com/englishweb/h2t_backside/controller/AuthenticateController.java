@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
 import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
+import com.englishweb.h2t_backside.dto.security.GoogleLoginDTO;
 import com.englishweb.h2t_backside.dto.security.LoginDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
@@ -31,6 +32,17 @@ public class AuthenticateController {
         return ResponseDTO.<AuthenticateDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .message("Login successful.")
+                .data(authData)
+                .build();
+    }
+
+    @PostMapping("/login/google")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<AuthenticateDTO> loginWithGoogle(@RequestBody GoogleLoginDTO request) {
+        AuthenticateDTO authData = service.loginWithGoogle(request);
+        return ResponseDTO.<AuthenticateDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Google login successful.")
                 .data(authData)
                 .build();
     }

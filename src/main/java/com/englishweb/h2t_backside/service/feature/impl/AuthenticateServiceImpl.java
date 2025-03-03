@@ -1,18 +1,27 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
+import com.englishweb.h2t_backside.dto.security.GoogleLoginDTO;
 import com.englishweb.h2t_backside.dto.security.LoginDTO;
+import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import com.englishweb.h2t_backside.service.feature.UserService;
 import com.englishweb.h2t_backside.utils.JwtUtil;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -22,6 +31,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     private final JwtUtil jwtUtil;
     private final UserRepository repository;
     private final UserService userService;
+
+    @Value("${google.client-id}")
+    private String ggClientId;
 
     @Autowired
     public AuthenticateServiceImpl(PasswordEncoder passwordEncoder, JwtUtil jwtUtil, UserRepository repository, UserService userService) {
@@ -59,6 +71,55 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 .role(user.getRole())
                 .userId(Long.toString(user.getId()))
                 .build();
+    }
+
+    public AuthenticateDTO loginWithGoogle(GoogleLoginDTO request) {
+        String idTokenString = request.getIdToken();
+
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList(ggClientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            if (idToken == null) {
+                throw new IllegalArgumentException("Invalid Google ID token.");
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+            String avatar = (String) payload.get("picture");
+
+            User user = repository.findAllByEmail(email).orElseGet(() -> {
+                User newUser = new User();
+                newUser.setEmail(email);
+                newUser.setName(name);
+                newUser.setAvatar(avatar);
+                newUser.setRole(RoleEnum.STUDENT);  // default role
+                newUser.setPassword(""); // Không có mật khẩu
+                return repository.save(newUser);
+            });
+
+            // Sinh token cho user
+            String accessToken = jwtUtil.generateAccessToken(user);
+            String refreshToken = jwtUtil.generateRefreshToken(user);
+
+            user.setRefreshToken(refreshToken);
+            repository.save(user);
+
+            return AuthenticateDTO.builder()
+                    .authenticated(true)
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .role(user.getRole())
+                    .userId(Long.toString(user.getId()))
+                    .build();
+
+        } catch (Exception e) {
+            throw new AuthenticateException("Failed to verify Google ID Token", e);
+        }
     }
 
     public void logout(String refreshToken) {
