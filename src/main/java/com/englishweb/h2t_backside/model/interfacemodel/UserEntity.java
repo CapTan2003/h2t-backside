@@ -18,11 +18,11 @@ public interface UserEntity extends BaseEntity {
     String getAvatar();
     void setAvatar(String avatar);
 
-    RoleEnum getRoleEnum();
-    void setRoleEnum(RoleEnum roleEnum);
+    RoleEnum getRole();
+    void setRole(RoleEnum role);
 
-    LevelEnum getLevelEnum();
-    void setLevelEnum(LevelEnum levelEnum);
+    LevelEnum getLevel();
+    void setLevel(LevelEnum level);
 
     String getPhoneNumber();
     void setPhoneNumber(String phoneNumber);

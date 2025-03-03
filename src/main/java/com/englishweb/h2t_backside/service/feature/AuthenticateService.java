@@ -1,15 +1,15 @@
 package com.englishweb.h2t_backside.service.feature;
 
 import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
+import com.englishweb.h2t_backside.dto.security.GoogleLoginDTO;
 import com.englishweb.h2t_backside.dto.security.LoginDTO;
-import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 
-public interface AuthenticateService extends BaseService<AuthenticateDTO>{
-    ResponseDTO<AuthenticateDTO> login(LoginDTO dto);
+public interface AuthenticateService {
+    AuthenticateDTO login(LoginDTO dto);
 
-    ResponseDTO<Boolean> logout(String token);
+    AuthenticateDTO loginWithGoogle(GoogleLoginDTO request);
 
-    void updateUserRefreshToken(String userId, String refreshToken);
+    void logout(String refreshToken);
 
-    ResponseDTO<AuthenticateDTO> refreshAccessToken(String refreshToken);
+    AuthenticateDTO refreshAccessToken(String refreshToken);
 }

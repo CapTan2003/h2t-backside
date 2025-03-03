@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.controller;
 
 import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
+import com.englishweb.h2t_backside.dto.security.GoogleLoginDTO;
 import com.englishweb.h2t_backside.dto.security.LoginDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
@@ -26,12 +27,23 @@ public class AuthenticateController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<AuthenticateDTO> login(@Valid @RequestBody LoginDTO dto) {
-        ResponseDTO<AuthenticateDTO> response = service.login(dto);
+        AuthenticateDTO authData = service.login(dto);
 
         return ResponseDTO.<AuthenticateDTO>builder()
-                .status(response.getStatus())
-                .data(response.getData())
-                .message(response.getMessage())
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Login successful.")
+                .data(authData)
+                .build();
+    }
+
+    @PostMapping("/login/google")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<AuthenticateDTO> loginWithGoogle(@RequestBody GoogleLoginDTO request) {
+        AuthenticateDTO authData = service.loginWithGoogle(request);
+        return ResponseDTO.<AuthenticateDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Google login successful.")
+                .data(authData)
                 .build();
     }
 
@@ -39,12 +51,12 @@ public class AuthenticateController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<Boolean> logout(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
-        ResponseDTO<Boolean> isLogout = service.logout(refreshToken);
+        service.logout(refreshToken);
 
         return ResponseDTO.<Boolean>builder()
-                .status(isLogout.getStatus())
-                .data(isLogout.getData())
-                .message(isLogout.getMessage())
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("User logged out successfully.")
+                .data(true)
                 .build();
     }
 
@@ -64,14 +76,13 @@ public class AuthenticateController {
     @PostMapping("/refresh-token")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<AuthenticateDTO> refreshToken(@Valid @RequestBody RefreshTokenDTO request) {
-        ResponseDTO<AuthenticateDTO> response = service.refreshAccessToken(request.getRefreshToken());
+        AuthenticateDTO authData = service.refreshAccessToken(request.getRefreshToken());
 
         return ResponseDTO.<AuthenticateDTO>builder()
-                .status(response.getStatus())
-                .message(response.getMessage())
-                .data(response.getData())
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Access token refreshed successfully.")
+                .data(authData)
                 .build();
     }
-
 }
 

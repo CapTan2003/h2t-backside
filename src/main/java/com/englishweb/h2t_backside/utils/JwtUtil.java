@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.utils;
 
+import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.model.User;
 import com.nimbusds.jose.*;
@@ -46,7 +47,7 @@ public class JwtUtil {
                     .claim("id", user.getId());
 
             if ("access".equals(tokenType)) {
-                claimsBuilder.claim("role", user.getRoleEnum().name()); // Chỉ access token mới có quyền
+                claimsBuilder.claim("role", user.getRole()); // Chỉ access token mới có quyền
             } else if ("refresh".equals(tokenType)) {
                 claimsBuilder.claim("is_refresh", true); // Thêm trường để xác định refresh token
             }

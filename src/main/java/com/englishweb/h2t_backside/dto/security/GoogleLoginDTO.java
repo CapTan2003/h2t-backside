@@ -12,10 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDTO{
-    @NotBlank(message = "Email cannot be empty")
-    private String email;
-
-    @NotBlank(message = "Password cannot be empty")
-    private String password;
+public class GoogleLoginDTO {
+    @NotBlank(message = "idToken cannot be empty")
+    private String idToken;
 }

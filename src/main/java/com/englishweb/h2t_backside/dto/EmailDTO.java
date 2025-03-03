@@ -20,5 +20,4 @@ public class EmailDTO extends AbstractBaseDTO {
     private String otp;
 
     private String newPassword;
-    private String confirmPassword;
 }

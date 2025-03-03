@@ -1,11 +1,9 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.EmailDTO;
-import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
-import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.repository.UserRepository;
-import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.EmailService;
 import com.englishweb.h2t_backside.utils.SendEmail;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +18,13 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class EmailServiceImpl extends BaseServiceImpl<EmailDTO, User, UserRepository> implements EmailService {
+public class EmailServiceImpl implements EmailService {
     private final SendEmail sendEmail;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    private Map<String, OtpData> otpCache = new HashMap<>();
-    private Map<String, Boolean> otpVerifiedCache = new HashMap<>();
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository repository;
+    private final Map<String, OtpData> otpCache = new HashMap<>();
+    private final Map<String, Boolean> otpVerifiedCache = new HashMap<>();
 
     private class OtpData {
         String otp;
@@ -37,38 +36,21 @@ public class EmailServiceImpl extends BaseServiceImpl<EmailDTO, User, UserReposi
         }
     }
 
-    public EmailServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, SendEmail sendEmail) {
-        super(repository, discordNotifier);
+    public EmailServiceImpl(SendEmail sendEmail, PasswordEncoder passwordEncoder, UserRepository repository) {
         this.sendEmail = sendEmail;
+        this.passwordEncoder = passwordEncoder;
+        this.repository = repository;
     }
-
-    @Override
-    protected void findByIdError(Long id) { }
-
-    @Override
-    protected void createError(EmailDTO dto, Exception ex) { }
-
-    @Override
-    protected void updateError(EmailDTO dto, Long id, Exception ex) { }
 
     private String generateOtp() {
         return String.format("%06d", new SecureRandom().nextInt(1000000));
     }
 
-    public ResponseDTO<String> sendOtpForResetPassword(EmailDTO emailDTO) {
-        if (emailDTO.getEmail() == null || emailDTO.getEmail().trim().isEmpty()) {
-            return ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Email field is required.")
-                    .build();
-        }
+    public void sendOtpForResetPassword(EmailDTO emailDTO) {
+        Optional<User> userOptional = repository.findAllByEmail(emailDTO.getEmail());
 
-        Optional<User> users = repository.findAllByEmail(emailDTO.getEmail());
-        if (users.isEmpty()) {
-            return ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Email does not exist.")
-                    .build();
+        if (userOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Email does not exist.");
         }
 
         String otp = generateOtp();
@@ -76,93 +58,45 @@ public class EmailServiceImpl extends BaseServiceImpl<EmailDTO, User, UserReposi
         otpCache.put(emailDTO.getEmail(), new EmailServiceImpl.OtpData(otp, timestamp));
 
         sendEmail.sendOtpByEmail(emailDTO.getEmail(), otp);
-
-        return ResponseDTO.<String>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .message("OTP has been sent successfully.")
-                .build();
     }
 
-    public ResponseDTO<Boolean> verifyOtp(EmailDTO emailDTO) {
-        EmailServiceImpl.OtpData otpData = otpCache.get(emailDTO.getEmail().trim());
+    public void verifyOtp(EmailDTO emailDTO) {
+        String email = emailDTO.getEmail().trim();
+        EmailServiceImpl.OtpData otpData = otpCache.get(email);
+
         if (otpData == null) {
-            return ResponseDTO.<Boolean>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("OTP code null")
-                    .build();
+            throw new ResourceNotFoundException("OTP code is null.");
         }
 
         long currentTime = System.currentTimeMillis();
         long elapsedTime = currentTime - otpData.timestamp;
+
         if (elapsedTime > 120 * 1000) {
-            otpCache.remove(emailDTO.getEmail().trim());
-            return ResponseDTO.<Boolean>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("OTP code has expired")
-                    .build();
+            otpCache.remove(email);
+            throw new ResourceNotFoundException("OTP code has expired.");
         }
 
         if (!otpData.otp.trim().equals(emailDTO.getOtp().trim())) {
-            return ResponseDTO.<Boolean>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("OTP code not valid")
-                    .build();
+            throw new ResourceNotFoundException("OTP code is not valid.");
         }
 
-        otpCache.remove(emailDTO.getEmail().trim());
-        otpVerifiedCache.put(emailDTO.getEmail().trim(), true);
-        return ResponseDTO.<Boolean>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .message("OTP code is valid")
-                .build();
+        otpCache.remove(email);
+        otpVerifiedCache.put(email, true);
     }
 
-    public ResponseDTO<String> resetPassword(EmailDTO emailDTO) {
+    public void resetPassword(EmailDTO emailDTO) {
         if (!otpVerifiedCache.getOrDefault(emailDTO.getEmail().trim(), false)) {
-            return ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("You need to verify the OTP code before changing your password.")
-                    .build();
+            throw new ResourceNotFoundException("You need to verify the OTP code before changing your password.");
         }
 
-        if (!emailDTO.getNewPassword().equals(emailDTO.getConfirmPassword())) {
-            return ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("New password and confirm password do not match.")
-                    .build();
-        }
+        User user = repository.findAllByEmail(emailDTO.getEmail().trim())
+                .orElseThrow(() -> new ResourceNotFoundException("User with email '" + emailDTO.getEmail() + "' not found."));
 
-        Optional<User> userList = repository.findAllByEmail(emailDTO.getEmail().trim());
-        if (userList.isEmpty()) {
-            return ResponseDTO.<String>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("User with email '" + emailDTO.getEmail() + "' not found.")
-                    .build();
-        }
-
-        User user = userList.get();
         String hashedPassword = passwordEncoder.encode(emailDTO.getNewPassword());
         user.setPassword(hashedPassword);
         repository.save(user);
 
         otpVerifiedCache.remove(emailDTO.getEmail().trim());
-
-        return ResponseDTO.<String>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .message("Password has been reset successfully.")
-                .build();
     }
 
-    @Override
-    protected void patchEntityFromDTO(EmailDTO dto, User entity) { }
-
-    @Override
-    protected User convertToEntity(EmailDTO dto) {
-        return null;
-    }
-
-    @Override
-    protected EmailDTO convertToDTO(User entity) {
-        return null;
-    }
 }
