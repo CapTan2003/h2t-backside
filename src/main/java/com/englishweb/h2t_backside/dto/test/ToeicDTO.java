@@ -25,8 +25,11 @@ public class ToeicDTO extends AbstractBaseDTO {
     @NotNull(message = "Questions Part 2 cannot be null")
     private String questionsPart2;
 
-    @NotNull(message = "Questions Part 3 & 4 cannot be null")
-    private String questionsPart3_4;
+    @NotNull(message = "Questions Part 3 cannot be null")
+    private String questionsPart3;
+
+    @NotNull(message = "Questions Part 4 cannot be null")
+    private String questionsPart4;
 
     @NotNull(message = "Questions Part 5 cannot be null")
     private String questionsPart5;
