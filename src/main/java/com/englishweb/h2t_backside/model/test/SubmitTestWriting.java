@@ -25,4 +25,7 @@ public class SubmitTestWriting extends AbstractBaseEntity {
 
     @Column(nullable = false)
     private Integer score;
+
+    @Lob
+    private String comment;
 }
