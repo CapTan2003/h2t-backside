@@ -1,35 +1,30 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
-import com.englishweb.h2t_backside.exception.CreateResourceException;
-import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
+import com.englishweb.h2t_backside.dto.EmailDTO;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
-import com.englishweb.h2t_backside.exception.UpdateResourceException;
-import com.englishweb.h2t_backside.mapper.UserMapper;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.repository.UserRepository;
-import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.EmailService;
 import com.englishweb.h2t_backside.utils.SendEmail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
-public class EmailServiceImpl extends BaseServiceImpl<UserDTO, User, UserRepository> implements EmailService {
-    private final UserMapper mapper;
+public class EmailServiceImpl implements EmailService {
     private final SendEmail sendEmail;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    private Map<String, OtpData> otpCache = new HashMap<>();
-    private Map<String, Boolean> otpVerifiedCache = new HashMap<>();
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository repository;
+    private final Map<String, OtpData> otpCache = new HashMap<>();
+    private final Map<String, Boolean> otpVerifiedCache = new HashMap<>();
 
     private class OtpData {
         String otp;
@@ -41,118 +36,67 @@ public class EmailServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposit
         }
     }
 
-    public EmailServiceImpl(UserRepository repository, DiscordNotifier discordNotifier, UserMapper mapper, SendEmail sendEmail) {
-        super(repository, discordNotifier);
-        this.mapper = mapper;
+    public EmailServiceImpl(SendEmail sendEmail, PasswordEncoder passwordEncoder, UserRepository repository) {
         this.sendEmail = sendEmail;
-    }
-
-    @Override
-    protected void findByIdError(Long id) { }
-
-    @Override
-    protected void createError(UserDTO dto, Exception ex) {
-        log.error("Error creating email entity: {}", ex.getMessage());
-        String errorMessage = "Unexpected error creating email entity: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.USER_EMAIL_EMPTY;
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        throw new CreateResourceException(dto, errorMessage, errorCode, status);
-    }
-
-    @Override
-    protected void updateError(UserDTO dto, Long id, Exception ex) {
-        log.error("Error updating password entity: {}", ex.getMessage());
-        String errorMessage = "Unexpected error updating password entity: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.USER_UPDATED_FAIL;
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-        if (!this.isExist(id)) {
-            errorMessage = String.format("Email data for user with ID '%d' not found.", id);
-            status = HttpStatus.NOT_FOUND;
-        }
-
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        this.passwordEncoder = passwordEncoder;
+        this.repository = repository;
     }
 
     private String generateOtp() {
         return String.format("%06d", new SecureRandom().nextInt(1000000));
     }
 
-    public void sendOtpForResetPassword(String email) {
-        if (email.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Email cannot be empty.");
-        }
-        List<User> user = repository.findAllByEmail(email);
-        if (user.isEmpty()) {
+    public void sendOtpForResetPassword(EmailDTO emailDTO) {
+        Optional<User> userOptional = repository.findAllByEmail(emailDTO.getEmail());
+
+        if (userOptional.isEmpty()) {
             throw new ResourceNotFoundException("Email does not exist.");
         }
 
         String otp = generateOtp();
-        long timestamp = System.currentTimeMillis(); // Lấy thời gian hiện tại
-        otpCache.put(email, new EmailServiceImpl.OtpData(otp, timestamp)); // Lưu OTP và thời gian tạo
-        sendEmail.sendOtpByEmail(email, otp);
+        long timestamp = System.currentTimeMillis();
+        otpCache.put(emailDTO.getEmail(), new EmailServiceImpl.OtpData(otp, timestamp));
+
+        sendEmail.sendOtpByEmail(emailDTO.getEmail(), otp);
     }
 
-    public boolean verifyOtp(String email, String inputOtp) {
-        EmailServiceImpl.OtpData otpData = otpCache.get(email.trim());
+    public void verifyOtp(EmailDTO emailDTO) {
+        String email = emailDTO.getEmail().trim();
+        EmailServiceImpl.OtpData otpData = otpCache.get(email);
+
         if (otpData == null) {
-            return false;
+            throw new ResourceNotFoundException("OTP code is null.");
         }
 
         long currentTime = System.currentTimeMillis();
         long elapsedTime = currentTime - otpData.timestamp;
+
         if (elapsedTime > 120 * 1000) {
-            otpCache.remove(email.trim());
-            return false;
+            otpCache.remove(email);
+            throw new ResourceNotFoundException("OTP code has expired.");
         }
 
-        if (!otpData.otp.trim().equals(inputOtp.trim())) {
-            return false;
+        if (!otpData.otp.trim().equals(emailDTO.getOtp().trim())) {
+            throw new ResourceNotFoundException("OTP code is not valid.");
         }
 
-        otpCache.remove(email.trim());
-        otpVerifiedCache.put(email.trim(), true);
-        return true;
+        otpCache.remove(email);
+        otpVerifiedCache.put(email, true);
     }
 
-    public void resetPassword(String email, String newPassword, String confirmPassword) {
-        // Kiểm tra OTP đã được xác thực hay chưa
-        if (!otpVerifiedCache.getOrDefault(email.trim(), false)) {
+    public void resetPassword(EmailDTO emailDTO) {
+        if (!otpVerifiedCache.getOrDefault(emailDTO.getEmail().trim(), false)) {
             throw new ResourceNotFoundException("You need to verify the OTP code before changing your password.");
         }
 
-        // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp nhau không
-        if (!newPassword.equals(confirmPassword)) {
-            throw new ResourceNotFoundException("New password and confirm password do not match.");
-        }
+        User user = repository.findAllByEmail(emailDTO.getEmail().trim())
+                .orElseThrow(() -> new ResourceNotFoundException("User with email '" + emailDTO.getEmail() + "' not found."));
 
-        // Tìm người dùng bằng email
-        List<User> userList = repository.findAllByEmail(email.trim());
-        if (userList.isEmpty()) {
-            throw new ResourceNotFoundException("User with email '" + email + "' not found.");
-        }
-
-        // Lấy người dùng đầu tiên từ danh sách
-        User user = userList.get(0);
-
-        // Mã hóa mật khẩu mới và cập nhật
-        String hashedPassword = passwordEncoder.encode(newPassword);
+        String hashedPassword = passwordEncoder.encode(emailDTO.getNewPassword());
         user.setPassword(hashedPassword);
-
-        // Lưu người dùng đã cập nhật
         repository.save(user);
 
-        // Xóa email khỏi cache OTP đã xác thực
-        otpVerifiedCache.remove(email.trim());
+        otpVerifiedCache.remove(emailDTO.getEmail().trim());
     }
 
-    @Override
-    protected void patchEntityFromDTO(UserDTO dto, User entity) { mapper.patchEntityFromDTO(dto, entity); }
-
-    @Override
-    protected User convertToEntity(UserDTO dto) { return mapper.convertToEntity(dto); }
-
-    @Override
-    protected UserDTO convertToDTO(User entity) { return mapper.convertToDTO(entity); }
 }

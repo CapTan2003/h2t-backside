@@ -35,7 +35,12 @@ public class Toeic extends AbstractBaseEntity {
     @Column(nullable = false)
     @ColumnDefault("''")
     @Builder.Default
-    private String questionsPart3_4 = "";
+    private String questionsPart3 = "";
+
+    @Column(nullable = false)
+    @ColumnDefault("''")
+    @Builder.Default
+    private String questionsPart4 = "";
 
     @Column(nullable = false)
     @ColumnDefault("''")

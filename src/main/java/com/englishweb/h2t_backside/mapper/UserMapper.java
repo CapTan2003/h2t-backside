@@ -18,19 +18,20 @@ public interface UserMapper {
     @Mapping(target = "avatar", source = "dto.avatar")
     @Mapping(target = "email", source = "dto.email")
     @Mapping(target = "password", source = "dto.password")
-    @Mapping(target = "roleEnum", source = "dto.roleEnum")
-    @Mapping(target = "levelEnum", source = "dto.levelEnum")
+    @Mapping(target = "role", source = "dto.role")
+    @Mapping(target = "level", source = "dto.level")
     @Mapping(target = "phoneNumber", source = "dto.phoneNumber")
     @Mapping(target = "dateOfBirth", source = "dto.dateOfBirth")
     @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "refreshToken", source = "dto.refreshToken")
     User convertToEntity(UserDTO dto);
 
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "name", source = "entity.name")
     @Mapping(target = "avatar", source = "entity.avatar")
     @Mapping(target = "email", source = "entity.email")
-    @Mapping(target = "roleEnum", source = "entity.roleEnum")
-    @Mapping(target = "levelEnum", source = "entity.levelEnum")
+    @Mapping(target = "role", source = "entity.role")
+    @Mapping(target = "level", source = "entity.level")
     @Mapping(target = "phoneNumber", source = "entity.phoneNumber")
     @Mapping(target = "dateOfBirth", source = "entity.dateOfBirth")
     @Mapping(target = "status", source = "entity.status")
@@ -41,12 +42,13 @@ public interface UserMapper {
     @Mapping(target = "name", source = "dto.name")
     @Mapping(target = "avatar", source = "dto.avatar")
     @Mapping(target = "password", source = "dto.password")
-    @Mapping(target = "roleEnum", source = "dto.roleEnum")
-    @Mapping(target = "levelEnum", source = "dto.levelEnum")
+    @Mapping(target = "role", source = "dto.role")
+    @Mapping(target = "level", source = "dto.level")
     @Mapping(target = "phoneNumber", source = "dto.phoneNumber")
     @Mapping(target = "dateOfBirth", source = "dto.dateOfBirth")
     @Mapping(target = "status", source = "dto.status")
     @Mapping(target = "email", ignore = true) //Bo qua truong email khi update
+    @Mapping(target = "refreshToken", source = "dto.refreshToken")
     void patchEntityFromDTO(UserDTO dto, @MappingTarget User entity);
 }
 

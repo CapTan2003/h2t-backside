@@ -1,11 +1,12 @@
 package com.englishweb.h2t_backside.service.feature;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
+import com.englishweb.h2t_backside.dto.EmailDTO;
+import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 
-public interface EmailService extends BaseService<UserDTO> {
-    void sendOtpForResetPassword(String email);
+public interface EmailService {
+    void sendOtpForResetPassword(EmailDTO emailDTO);
 
-    boolean verifyOtp(String email, String inputOtp);
+    void verifyOtp(EmailDTO emailDTO);
 
-    void resetPassword(String email, String newPassword, String confirmPassword);
+    void resetPassword(EmailDTO emailDTO);
 }

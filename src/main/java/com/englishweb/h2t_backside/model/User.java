@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.model;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
+import com.englishweb.h2t_backside.model.interfacemodel.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USERS")
-public class User extends AbstractBaseEntity {
+public class User extends AbstractBaseEntity implements UserEntity {
     @Column(nullable = false, length = 255)
     @Comment("Full name of the User")
     private String name;
@@ -40,12 +41,12 @@ public class User extends AbstractBaseEntity {
     @Column(nullable = false, length = 10)
     @Comment("Role of the User (Admin, Student, or Teacher)")
     @Builder.Default
-    private RoleEnum roleEnum = RoleEnum.STUDENT;
+    private RoleEnum role = RoleEnum.STUDENT;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     @Comment("Level of the User (e.g. Bachelor, Doctor, Master, or Professor)")
-    private LevelEnum levelEnum;
+    private LevelEnum level;
 
     @Column(unique = true, length = 10)
     @Comment("Phone number of the User")
@@ -53,4 +54,7 @@ public class User extends AbstractBaseEntity {
 
     @Comment("Date of Birth of the User")
     private LocalDate dateOfBirth;
+
+    @Column(length = 500)
+    private String refreshToken;
 }
