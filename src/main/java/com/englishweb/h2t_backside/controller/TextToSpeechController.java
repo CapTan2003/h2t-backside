@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.controller;
 
+import com.englishweb.h2t_backside.dto.VoiceDTO;
 import com.englishweb.h2t_backside.service.feature.TextToSpeechService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class TextToSpeechController {
 
     @GetMapping("/voices")
     @ResponseStatus(HttpStatus.OK)
-    public List<String> getAvailableVoices() {
+    public List<VoiceDTO> getAvailableVoices() {
         return service.getAvailableVoices();
     }
 }
