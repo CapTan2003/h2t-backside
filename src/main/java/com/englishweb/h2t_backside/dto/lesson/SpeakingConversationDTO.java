@@ -27,4 +27,6 @@ public class SpeakingConversationDTO extends AbstractBaseDTO {
 
     @NotBlank(message = "Speaking id cannot be empty")
     private Long speakingId;
+
+    private String audioUrl;
 }
