@@ -1,6 +1,8 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
+import com.englishweb.h2t_backside.dto.VoiceDTO;
 import com.englishweb.h2t_backside.service.feature.TextToSpeechService;
+import com.englishweb.h2t_backside.utils.VoiceData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -13,8 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -23,6 +24,9 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
 
     @Value("${tts.api.url}")
     private String apiUrl;
+
+    @Value("${tts.voice.audio.directory}")
+    private String voiceAudioDirectory;
 
     private final RestTemplate restTemplate;
 
@@ -47,16 +51,6 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
 
             byte[] audioBytes = response.getBody();
             if (audioBytes != null) {
-                Path filePath = Paths.get("audio_output.mp3");
-
-                try (FileOutputStream fileOutputStream = new FileOutputStream(filePath.toFile())) {
-                    fileOutputStream.write(audioBytes);
-                    fileOutputStream.flush();
-                } catch (IOException e) {
-                    log.error("Error writing to file", e);
-                    return null;
-                }
-
                 InputStream inputStream = new ByteArrayInputStream(audioBytes);
                 return new InputStreamResource(inputStream);
             } else {
@@ -68,23 +62,24 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
         }
     }
 
-    public List<String> getAvailableVoices() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("accept", "application/json");
+    public List<VoiceDTO> getAvailableVoices() {
+        List<VoiceDTO> voiceDTOs = new LinkedList<>();
 
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        for (VoiceData.VoiceName voiceName : VoiceData.VOICE_NAMES) {
+            String filePath = voiceAudioDirectory + "/" + voiceName.voice() + ".mp3";
 
-        try {
-            ResponseEntity<Voices> response = restTemplate.exchange(apiUrl + "/voices", HttpMethod.GET, entity, Voices.class);
-
-            Voices responseBody = response.getBody();
-            if (responseBody == null) {
-                return null;
+            try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+                byte[] fileData = fileInputStream.readAllBytes();
+                VoiceDTO voiceDTO = VoiceDTO.builder()
+                        .voice(voiceName.name())
+                        .fileData(fileData)
+                        .build();
+                voiceDTOs.add(voiceDTO);
+            } catch (IOException e) {
+                log.error("Error reading file: {}", filePath, e);
             }
-            return responseBody.voices;
-        } catch (HttpStatusCodeException e) {
-            return null;
         }
+
+        return voiceDTOs;
     }
-    private record Voices(List<String> voices) {}
 }

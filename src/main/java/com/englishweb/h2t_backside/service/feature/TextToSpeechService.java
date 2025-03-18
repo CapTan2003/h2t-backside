@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.feature;
 
+import com.englishweb.h2t_backside.dto.VoiceDTO;
 import org.springframework.core.io.InputStreamResource;
 
 import java.io.IOException;
@@ -9,5 +10,5 @@ public interface TextToSpeechService {
 
     InputStreamResource convertTextToSpeech(String inputText, String voice);
 
-    List<String> getAvailableVoices();
+    List<VoiceDTO> getAvailableVoices();
 }
