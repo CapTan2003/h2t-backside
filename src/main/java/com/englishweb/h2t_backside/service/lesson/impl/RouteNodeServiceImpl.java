@@ -111,7 +111,11 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
         typeProcessor.put(RouteNodeEnum.WRITING, this::processWriting);
         typeProcessor.put(RouteNodeEnum.SPEAKING, this::processSpeaking);
         typeProcessor.put(RouteNodeEnum.LISTENING, this::processListening);
-        typeProcessor.put(RouteNodeEnum.TEST, this::processTest);
+        typeProcessor.put(RouteNodeEnum.READING_TEST, this::processTest);
+        typeProcessor.put(RouteNodeEnum.WRITING_TEST, this::processTest);
+        typeProcessor.put(RouteNodeEnum.SPEAKING_TEST, this::processTest);
+        typeProcessor.put(RouteNodeEnum.LISTENING_TEST, this::processTest);
+        typeProcessor.put(RouteNodeEnum.MIXING_TEST, this::processTest);
 
         return repository.findByRoute_Id(routeId).stream()
                 .map(mapper::convertToDTO)
