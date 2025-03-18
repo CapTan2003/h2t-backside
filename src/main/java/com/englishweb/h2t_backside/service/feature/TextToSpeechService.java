@@ -3,10 +3,11 @@ package com.englishweb.h2t_backside.service.feature;
 import org.springframework.core.io.InputStreamResource;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface TextToSpeechService {
 
-    InputStreamResource convertTextToSpeech(String text, String voice) throws IOException, InterruptedException;
+    InputStreamResource convertTextToSpeech(String inputText, String voice);
 
-    String getAvailableVoices() throws IOException, InterruptedException;
+    List<String> getAvailableVoices();
 }

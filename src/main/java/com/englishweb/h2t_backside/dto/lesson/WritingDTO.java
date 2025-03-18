@@ -20,7 +20,7 @@ public class WritingDTO extends AbstractLessonDTO {
     @NotBlank(message = "Topic for writing cannot be empty")
     private String topic;
 
-    @NotBlank(message = "File for writing cannot be empty")
+    @NotBlank(message = "File docx reading for writing cannot be empty")
     private String file;
 
     @NotBlank(message = "Paragraph for writing cannot be empty")
