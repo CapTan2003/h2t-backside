@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/speech-to-text")
 @RequiredArgsConstructor
@@ -17,6 +19,14 @@ public class SpeechToTextController {
     @ResponseStatus(HttpStatus.OK)
     public SpeechToTextResponse speechToText(@RequestParam("audioFile") MultipartFile audioFile) {
         String text = speechToTextService.convertSpeechToText(audioFile);
+        return new SpeechToTextResponse(text);
+    }
+
+    @PostMapping("/convert-base64")
+    @ResponseStatus(HttpStatus.OK)
+    public SpeechToTextResponse speechToTextBase64(@RequestBody Map<String, String> request) {
+        String base64Audio = request.get("audioBase64");
+        String text = speechToTextService.convertSpeechToText(base64Audio);
         return new SpeechToTextResponse(text);
     }
 }

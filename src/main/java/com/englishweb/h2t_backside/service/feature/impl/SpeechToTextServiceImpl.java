@@ -8,6 +8,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.Collections;
 
 @Service
@@ -48,4 +49,47 @@ public class SpeechToTextServiceImpl implements SpeechToTextService {
             throw new RuntimeException("Error calling Speech-to-Text API", e);
         }
     }
+
+    @Override
+    public String convertSpeechToText(String base64Audio) {
+        try {
+            // Giải mã base64 thành byte array
+            byte[] audioBytes = Base64.getDecoder().decode(base64Audio);
+
+            // Tạo ByteArrayResource giả lập một file
+            ByteArrayResource audioResource = new ByteArrayResource(audioBytes) {
+                @Override
+                public String getFilename() {
+                    return "audio.wav";  // Tên file giả định
+                }
+            };
+
+            return sendAudioToApi(audioResource);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing Base64 audio", e);
+        }
+    }
+
+    private String sendAudioToApi(ByteArrayResource audioResource) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+            LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("audio_file", audioResource);
+
+            HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    apiUrl + "/asr?task=transcribe&language=en",
+                    HttpMethod.POST, requestEntity, String.class
+            );
+
+            return response.getBody();
+        } catch (Exception e) {
+            throw new RuntimeException("Error calling Speech-to-Text API", e);
+        }
+    }
+
 }
