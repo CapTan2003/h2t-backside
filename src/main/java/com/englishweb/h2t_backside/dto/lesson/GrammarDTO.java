@@ -26,5 +26,7 @@ public class GrammarDTO extends AbstractLessonDTO {
     @NotBlank(message = "Example cannot be empty")
     private String example;
 
+    private List<String> tips;
+
     private List<Long> questions;
 }

@@ -26,6 +26,7 @@ public interface GrammarMapper {
     @Mapping(target = "routeNode", source = "dto.routeNode")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "definition", source = "dto.definition")
+    @Mapping(target = "tips", source = "dto.tips")
     @Mapping(target = "example", source = "dto.example")
     @Mapping(target = "file", source = "dto.file")
     Grammar convertToEntity(GrammarDTO dto);
@@ -42,6 +43,7 @@ public interface GrammarMapper {
     @Mapping(target = "routeNode", source = "entity.routeNode")
     @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList")
     @Mapping(target = "definition", source = "entity.definition")
+    @Mapping(target = "tips", source = "entity.tips")
     @Mapping(target = "example", source = "entity.example")
     @Mapping(target = "file", source = "entity.file")
     GrammarDTO convertToDTO(Grammar entity);
@@ -54,6 +56,7 @@ public interface GrammarMapper {
     @Mapping(target = "routeNode", source = "dto.routeNode")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "definition", source = "dto.definition")
+    @Mapping(target = "tips", source = "dto.tips")
     @Mapping(target = "example", source = "dto.example")
     @Mapping(target = "file", source = "dto.file")
     void patchEntityFromDTO(GrammarDTO dto, @MappingTarget Grammar entity);
