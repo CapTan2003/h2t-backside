@@ -53,14 +53,16 @@ public class SpeechToTextServiceImpl implements SpeechToTextService {
     @Override
     public String convertSpeechToText(String base64Audio) {
         try {
-            // Giải mã base64 thành byte array
+            if (base64Audio.startsWith("data:audio/mp3;base64,")) {
+                base64Audio = base64Audio.replaceFirst("^data:audio/mp3;base64,", "");
+            }
+
             byte[] audioBytes = Base64.getDecoder().decode(base64Audio);
 
-            // Tạo ByteArrayResource giả lập một file
             ByteArrayResource audioResource = new ByteArrayResource(audioBytes) {
                 @Override
                 public String getFilename() {
-                    return "audio.wav";  // Tên file giả định
+                    return "audio.wav";
                 }
             };
 
