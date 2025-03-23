@@ -1,5 +1,5 @@
 package com.englishweb.h2t_backside.controller;
-import com.englishweb.h2t_backside.dto.RecordDTO;
+import com.englishweb.h2t_backside.dto.STTRequestDTO;
 import com.englishweb.h2t_backside.dto.response.SpeechToTextResponse;
 import com.englishweb.h2t_backside.service.feature.SpeechToTextService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class SpeechToTextController {
 
     @PostMapping("/convert-base64")
     @ResponseStatus(HttpStatus.OK)
-    public SpeechToTextResponse speechToTextBase64(@RequestBody RecordDTO recordDTO) {
+    public SpeechToTextResponse speechToTextBase64(@RequestBody STTRequestDTO recordDTO) {
         String text = speechToTextService.convertSpeechToText(recordDTO.getAudioBase64());
         return new SpeechToTextResponse(text);
     }
