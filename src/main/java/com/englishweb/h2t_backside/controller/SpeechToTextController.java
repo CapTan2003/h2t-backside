@@ -1,4 +1,5 @@
 package com.englishweb.h2t_backside.controller;
+import com.englishweb.h2t_backside.dto.RecordDTO;
 import com.englishweb.h2t_backside.dto.response.SpeechToTextResponse;
 import com.englishweb.h2t_backside.service.feature.SpeechToTextService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,13 @@ public class SpeechToTextController {
     @ResponseStatus(HttpStatus.OK)
     public SpeechToTextResponse speechToText(@RequestParam("audioFile") MultipartFile audioFile) {
         String text = speechToTextService.convertSpeechToText(audioFile);
+        return new SpeechToTextResponse(text);
+    }
+
+    @PostMapping("/convert-base64")
+    @ResponseStatus(HttpStatus.OK)
+    public SpeechToTextResponse speechToTextBase64(@RequestBody RecordDTO recordDTO) {
+        String text = speechToTextService.convertSpeechToText(recordDTO.getAudioBase64());
         return new SpeechToTextResponse(text);
     }
 }

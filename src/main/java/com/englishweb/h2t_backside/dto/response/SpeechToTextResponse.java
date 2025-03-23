@@ -8,4 +8,3 @@ import lombok.Data;
 public class SpeechToTextResponse {
     private String text;
 }
-

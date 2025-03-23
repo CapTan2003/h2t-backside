@@ -4,4 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface SpeechToTextService {
     String convertSpeechToText(MultipartFile audioFile);
+
+    String convertSpeechToText(String base64Audio);
 }
