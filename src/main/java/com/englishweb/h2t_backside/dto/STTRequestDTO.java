@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RecordDTO {
+public class STTRequestDTO {
     private String audioBase64;
 }
