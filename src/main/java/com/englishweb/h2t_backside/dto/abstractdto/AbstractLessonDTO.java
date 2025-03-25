@@ -26,8 +26,7 @@ public abstract class AbstractLessonDTO extends AbstractBaseDTO implements Lesso
     @NotBlank(message = "Description cannot be empty")
     private String description;
 
-    @Positive(message = "Views number must be greater than 0")
-    private Long views;
+    private Long views = 0L;
 
     private RouteNodeDTO routeNode;
 }

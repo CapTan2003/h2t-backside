@@ -17,6 +17,7 @@ import com.englishweb.h2t_backside.service.lesson.ListeningService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
     private final ListeningMapper mapper;
     private final LessonQuestionService lessonQuestionService;
 
-    public ListeningServiceImpl(ListeningRepository repository, DiscordNotifierImpl discordNotifier, ListeningMapper mapper, LessonQuestionService lessonQuestionService) {
+    public ListeningServiceImpl(ListeningRepository repository, DiscordNotifierImpl discordNotifier, @Lazy ListeningMapper mapper, LessonQuestionService lessonQuestionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;

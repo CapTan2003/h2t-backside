@@ -14,7 +14,7 @@ public class ParseData {
 
     public static List<Long> parseStringToLongList(String str) {
         List<Long> list = new LinkedList<>();
-        if (!str.isEmpty()) {
+        if (str != null && !str.isEmpty()) {
             String[] elements = str.split(",");
             for (String element : elements) {
                 if (!element.isEmpty()) {

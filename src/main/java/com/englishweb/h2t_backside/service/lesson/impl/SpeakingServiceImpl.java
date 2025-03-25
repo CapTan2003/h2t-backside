@@ -14,6 +14,7 @@ import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.SpeakingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
 
     private final SpeakingMapper mapper;
 
-    public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, SpeakingMapper mapper) {
+    public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, @Lazy SpeakingMapper mapper) {
         super(repository, discordNotifier);
         this.mapper = mapper;
     }
