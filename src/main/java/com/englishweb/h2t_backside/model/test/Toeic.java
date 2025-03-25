@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.model.test;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.ColumnDefault;
 public class Toeic extends AbstractBaseEntity {
 
     @Column(nullable = false)
+    @NotNull(message = "title cannot be null")
     private String title;
 
     @Column(nullable = false)

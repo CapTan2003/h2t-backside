@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -16,9 +17,11 @@ import lombok.*;
 @AllArgsConstructor
 public class ToeicPart2 extends AbstractBaseEntity {
     @Column(nullable = false)
+    @NotNull(message = "audio cannot be null")
     private String audio;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "correctAnswer cannot be null")
     private AnswerEnum correctAnswer;
 }
