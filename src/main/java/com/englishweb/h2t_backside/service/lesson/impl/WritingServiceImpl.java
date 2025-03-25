@@ -14,6 +14,7 @@ import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.WritingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class WritingServiceImpl extends BaseServiceImpl<WritingDTO, Writing, Wri
 
     private final WritingMapper mapper;
 
-    public WritingServiceImpl(WritingRepository repository, DiscordNotifier discordNotifier, WritingMapper mapper) {
+    public WritingServiceImpl(WritingRepository repository, DiscordNotifier discordNotifier, @Lazy WritingMapper mapper) {
         super(repository, discordNotifier);
         this.mapper = mapper;
     }

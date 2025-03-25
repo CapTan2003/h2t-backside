@@ -17,6 +17,7 @@ import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.*;
 import com.englishweb.h2t_backside.service.test.TestService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,15 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
     private final ListeningService listeningService;
     private final TestService testService;
 
-    public RouteNodeServiceImpl(RouteNodeRepository repository, DiscordNotifier discordNotifier, RouteNodeMapper mapper, RouteService routeService, TopicService topicService, GrammarService grammarService, ReadingService readingService, WritingService writingService, SpeakingService speakingService, ListeningService listeningService, TestService testService) {
+    public RouteNodeServiceImpl(RouteNodeRepository repository, DiscordNotifier discordNotifier,
+                                @Lazy RouteNodeMapper mapper, RouteService routeService,
+                                @Lazy TopicService topicService,
+                                @Lazy GrammarService grammarService,
+                                @Lazy  ReadingService readingService,
+                                @Lazy  WritingService writingService,
+                                @Lazy  SpeakingService speakingService,
+                                @Lazy  ListeningService listeningService,
+                                @Lazy  TestService testService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.routeService = routeService;
