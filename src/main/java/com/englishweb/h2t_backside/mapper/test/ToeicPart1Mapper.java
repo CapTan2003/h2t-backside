@@ -16,7 +16,7 @@ public interface ToeicPart1Mapper {
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "audio", source = "dto.audio")
     @Mapping(target = "correctAnswer", source = "dto.correctAnswer")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart1 convertToEntity(ToeicPart1DTO dto);
 
     // Chuyển đổi từ ToeicPart1 Entity sang ToeicPart1DTO

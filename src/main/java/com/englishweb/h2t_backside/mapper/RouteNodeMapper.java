@@ -14,7 +14,7 @@ public interface RouteNodeMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "nodeId", source = "dto.nodeId")
     @Mapping(target = "type", source = "dto.type")
     @Mapping(target = "serial", source = "dto.serial")

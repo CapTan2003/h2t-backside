@@ -15,7 +15,7 @@ public interface TestPartMapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "questions", source = "dto.questions")
     @Mapping(target = "type", source = "dto.type")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     TestPart convertToEntity(TestPartDTO dto);
 
     // Chuyển đổi từ TestPart Entity sang TestPartDTO

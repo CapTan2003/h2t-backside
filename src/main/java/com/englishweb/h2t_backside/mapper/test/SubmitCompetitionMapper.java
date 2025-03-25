@@ -17,7 +17,7 @@ public interface SubmitCompetitionMapper {
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "user", source = "dto.user")
     @Mapping(target = "test", source = "dto.test")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitCompetition convertToEntity(SubmitCompetitionDTO dto);
 
     // Chuyển đổi từ Entity sang DTO

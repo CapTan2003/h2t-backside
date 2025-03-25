@@ -18,7 +18,7 @@ public interface SubmitToeicPart3_4Mapper {
     @Mapping(target = "answerQ1", source = "dto.answerQ1")
     @Mapping(target = "answerQ2", source = "dto.answerQ2")
     @Mapping(target = "answerQ3", source = "dto.answerQ3")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitToeicPart3_4 convertToEntity(SubmitToeicPart3_4DTO dto);
 
     // Chuyển đổi từ SubmitToeicPart3_4 Entity sang SubmitToeicPart3_4DTO

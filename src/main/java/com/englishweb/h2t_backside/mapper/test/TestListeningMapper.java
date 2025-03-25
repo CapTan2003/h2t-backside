@@ -16,7 +16,7 @@ public interface TestListeningMapper {
     @Mapping(target = "audio", source = "dto.audio")
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "questions", source = "dto.questions")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     TestListening convertToEntity(TestListeningDTO dto);
 
     // Chuyển đổi từ TestListening Entity sang TestListeningDTO

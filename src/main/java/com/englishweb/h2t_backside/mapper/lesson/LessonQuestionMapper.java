@@ -13,7 +13,7 @@ import org.mapstruct.*;
 public interface LessonQuestionMapper {
 
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "answers", source = "dto.answers")
     LessonQuestion convertToEntity(LessonQuestionDTO dto);

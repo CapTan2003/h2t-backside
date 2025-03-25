@@ -16,7 +16,7 @@ public interface SubmitToeicPart2Mapper {
     @Mapping(target = "submitToeic", source = "dto.submitToeic")
     @Mapping(target = "toeicPart2", source = "dto.toeicPart2")
     @Mapping(target = "answer", source = "dto.answer")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitToeicPart2 convertToEntity(SubmitToeicPart2DTO dto);
 
     // Chuyển đổi từ SubmitToeicPart2 Entity sang SubmitToeicPart2DTO

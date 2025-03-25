@@ -15,7 +15,7 @@ public interface ToeicPart7Mapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "questions", source = "dto.questions")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart7 convertToEntity(ToeicPart7DTO dto);
 
     // Chuyển đổi từ ToeicPart7 Entity sang ToeicPart7DTO

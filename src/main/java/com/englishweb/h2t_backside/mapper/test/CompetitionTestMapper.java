@@ -17,7 +17,7 @@ public interface CompetitionTestMapper {
     @Mapping(target = "startTime", source = "dto.startTime")
     @Mapping(target = "endTime", source = "dto.endTime")
     @Mapping(target = "parts", source = "dto.parts", defaultValue = "")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     CompetitionTest convertToEntity(CompetitionTestDTO dto);
 
     // Chuyển đổi từ Entity sang DTO

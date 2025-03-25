@@ -1,6 +1,5 @@
-package com.englishweb.h2t_backside.utils;
+package com.englishweb.h2t_backside.security;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.model.User;
 import com.nimbusds.jose.*;

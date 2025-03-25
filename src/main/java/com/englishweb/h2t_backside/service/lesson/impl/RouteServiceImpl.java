@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.RouteDTO;
+import com.englishweb.h2t_backside.dto.filter.RouteFilterDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -8,10 +9,16 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.RouteMapper;
 import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.repository.RouteRepository;
+import com.englishweb.h2t_backside.repository.specifications.RouteSpecification;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.RouteService;
+import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -69,5 +76,19 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
     @Override
     protected RouteDTO convertToDTO(Route entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public Page<RouteDTO> findByOwnerId(int page, int size, String sortFields, RouteFilterDTO filter, Long ownerId) {
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Route.class);
+
+        Specification<Route> specification = Specification.where(RouteSpecification.findByOwnerId(ownerId))
+                .and(BaseFilterSpecification.applyBaseFilters(filter));
+
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            specification = specification.and(RouteSpecification.findByTitle(filter.getTitle()));
+        }
+
+        return repository.findAll(specification, pageable).map(this::convertToDTO);
     }
 }

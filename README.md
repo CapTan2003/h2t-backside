@@ -10,3 +10,9 @@ java -jar target/h2t-backside-0.0.1-SNAPSHOT.jar --server.port=8080 --spring.con
 ```bash
 sudo docker run -d -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:v0.2.2
 ```
+
+# Access MYSQL
+
+```bash
+sudo docker exec -it mysql mysql -u root -p
+```

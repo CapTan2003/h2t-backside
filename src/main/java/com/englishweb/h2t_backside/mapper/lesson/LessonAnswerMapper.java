@@ -14,7 +14,7 @@ public interface LessonAnswerMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "correct", source = "dto.correct")
     @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionIdToQuestion")

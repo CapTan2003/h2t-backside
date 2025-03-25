@@ -22,7 +22,7 @@ public interface ToeicMapper {
     @Mapping(target = "questionsPart5", source = "dto.questionsPart5")
     @Mapping(target = "questionsPart6", source = "dto.questionsPart6")
     @Mapping(target = "questionsPart7", source = "dto.questionsPart7")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     Toeic convertToEntity(ToeicDTO dto);
 
     // Chuyển đổi từ Toeic Entity sang ToeicDTO

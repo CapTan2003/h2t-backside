@@ -17,7 +17,7 @@ public interface SubmitToeicMapper {
     @Mapping(target = "comment", source = "dto.comment")
     @Mapping(target = "toeic", source = "dto.toeic")
     @Mapping(target = "user", source = "dto.user")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitToeic convertToEntity(SubmitToeicDTO dto);
 
     // Chuyển đổi từ SubmitToeic Entity sang SubmitToeicDTO

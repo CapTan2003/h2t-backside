@@ -17,7 +17,7 @@ import java.util.List;
 )
 public interface TopicMapper {
 
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "views", source = "dto.views", defaultValue = "0L")
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "title", source = "dto.title")

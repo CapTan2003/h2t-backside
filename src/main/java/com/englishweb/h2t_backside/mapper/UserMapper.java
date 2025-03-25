@@ -22,7 +22,7 @@ public interface UserMapper {
     @Mapping(target = "level", source = "dto.level")
     @Mapping(target = "phoneNumber", source = "dto.phoneNumber")
     @Mapping(target = "dateOfBirth", source = "dto.dateOfBirth")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "refreshToken", source = "dto.refreshToken")
     User convertToEntity(UserDTO dto);
 

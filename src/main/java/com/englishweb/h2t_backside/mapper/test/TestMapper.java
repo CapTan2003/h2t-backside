@@ -19,7 +19,7 @@ public interface TestMapper {
     @Mapping(target = "type", source = "dto.type")
     @Mapping(target = "parts", source = "dto.parts")
     @Mapping(target = "routeNode", source = "dto.routeNode")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     Test convertToEntity(TestDTO dto);
 
     // Chuyển đổi từ Test Entity sang TestDTO

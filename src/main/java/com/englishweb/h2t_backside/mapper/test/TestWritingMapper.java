@@ -16,7 +16,7 @@ public interface TestWritingMapper {
     @Mapping(target = "topic", source = "dto.topic")
     @Mapping(target = "maxWords", source = "dto.maxWords")
     @Mapping(target = "minWords", source = "dto.minWords")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     TestWriting convertToEntity(TestWritingDTO dto);
 
     // Chuyển đổi từ TestWriting Entity sang TestWritingDTO

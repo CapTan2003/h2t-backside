@@ -2,11 +2,13 @@ package com.englishweb.h2t_backside.controller.lesson;
 
 import com.englishweb.h2t_backside.dto.RouteDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.filter.RouteFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.lesson.RouteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,6 +76,23 @@ public class RouteController {
         return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Route deleted successfully" : "Failed to delete route")
+                .build();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<RouteDTO>> findByOwnerId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @ModelAttribute RouteFilterDTO filter,
+            @RequestParam Long ownerId) {
+        Page<RouteDTO> result = service.findByOwnerId(page, size, sortFields, filter, ownerId);
+
+        return ResponseDTO.<Page<RouteDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Routes retrieved successfully")
                 .build();
     }
 }

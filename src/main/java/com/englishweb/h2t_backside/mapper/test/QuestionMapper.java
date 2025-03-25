@@ -15,7 +15,7 @@ public interface QuestionMapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "answers", source = "dto.answers")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     Question convertToEntity(QuestionDTO dto);
 
     // Chuyển đổi từ Entity sang DTO

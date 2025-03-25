@@ -15,7 +15,7 @@ public interface TestReadingMapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "questions", source = "dto.questions")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     TestReading convertToEntity(TestReadingDTO dto);
 
     // Chuyển đổi từ TestReading Entity sang TestReadingDTO

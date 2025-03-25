@@ -14,7 +14,7 @@ public interface SpeakingConversationMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "name", source = "dto.name")
     @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "content", source = "dto.content")
