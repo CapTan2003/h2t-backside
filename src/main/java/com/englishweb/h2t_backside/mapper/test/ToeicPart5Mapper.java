@@ -19,7 +19,7 @@ public interface ToeicPart5Mapper {
     @Mapping(target = "answer3", source = "dto.answer3")
     @Mapping(target = "answer4", source = "dto.answer4")
     @Mapping(target = "correctAnswer", source = "dto.correctAnswer")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart5 convertToEntity(ToeicPart5DTO dto);
 
     // Chuyển đổi từ ToeicPart5 Entity sang ToeicPart5DTO

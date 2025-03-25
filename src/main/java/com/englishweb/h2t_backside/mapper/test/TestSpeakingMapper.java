@@ -14,7 +14,7 @@ public interface TestSpeakingMapper {
     // Chuyển đổi từ TestSpeakingDTO sang TestSpeaking Entity
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "questions", source = "dto.questions")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     TestSpeaking convertToEntity(TestSpeakingDTO dto);
 
     // Chuyển đổi từ TestSpeaking Entity sang TestSpeakingDTO

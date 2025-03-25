@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.model.abstractmodel;
 
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,10 +20,9 @@ public abstract class AbstractBaseEntity implements BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false)
     @Builder.Default
-    private StatusEnum status = StatusEnum.ACTIVE;
+    private Boolean status = true;
 
     @CreationTimestamp
     @Column(updatable = false)

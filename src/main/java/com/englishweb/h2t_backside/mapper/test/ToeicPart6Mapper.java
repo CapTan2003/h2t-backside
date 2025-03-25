@@ -38,7 +38,7 @@ public interface ToeicPart6Mapper {
     @Mapping(target = "correctAnswer2", source = "dto.correctAnswer2")
     @Mapping(target = "correctAnswer3", source = "dto.correctAnswer3")
     @Mapping(target = "correctAnswer4", source = "dto.correctAnswer4")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart6 convertToEntity(ToeicPart6DTO dto);
 
     // Chuyển đổi từ ToeicPart6 Entity sang ToeicPart6DTO

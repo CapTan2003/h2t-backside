@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.dto.filter;
 
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,5 +15,5 @@ public class BaseFilterDTO {
     private LocalDateTime endCreatedAt;
     private LocalDateTime startUpdatedAt;
     private LocalDateTime endUpdatedAt;
-    private StatusEnum status;
+    private Boolean status;
 }

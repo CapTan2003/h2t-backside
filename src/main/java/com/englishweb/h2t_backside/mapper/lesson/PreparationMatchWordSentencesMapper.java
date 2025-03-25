@@ -13,7 +13,7 @@ public interface PreparationMatchWordSentencesMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "sentence", source = "dto.sentence")
     @Mapping(target = "word", source = "dto.word")
     PreparationMatchWordSentences convertToEntity(PreparationMatchWordSentencesDTO dto);

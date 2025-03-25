@@ -20,7 +20,7 @@ public interface SubmitCompetitionSpeakingMapper {
     @Mapping(target = "question", source = "dto.question")
     @Mapping(target = "transcript", source = "dto.transcript", defaultValue = "")
     @Mapping(target = "score", source = "dto.score")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitCompetitionSpeaking convertToEntity(SubmitCompetitionSpeakingDTO dto);
 
     // Chuyển đổi từ Entity sang DTO

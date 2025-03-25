@@ -7,11 +7,10 @@ import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import com.englishweb.h2t_backside.service.feature.UserService;
-import com.englishweb.h2t_backside.utils.JwtUtil;
+import com.englishweb.h2t_backside.security.JwtUtil;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -56,7 +55,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             throw new ResourceNotFoundException("Invalid email or password.");
         }
 
-        if(user.getStatus()== StatusEnum.INACTIVE){
+        if(!user.getStatus()){
             throw new ResourceNotFoundException("Account has been locked!");
         }
 

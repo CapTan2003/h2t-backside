@@ -1,7 +1,6 @@
 package com.englishweb.h2t_backside.dto.abstractdto;
 
 import com.englishweb.h2t_backside.dto.interfacedto.BaseDTO;
-import com.englishweb.h2t_backside.model.enummodel.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AbstractBaseDTO implements BaseDTO {
     private Long id;
-    private StatusEnum status;
+    private Boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

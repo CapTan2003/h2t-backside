@@ -13,7 +13,7 @@ import org.mapstruct.*;
 public interface ListenAndWriteAWordMapper {
 
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "audio", source = "dto.audio")
     @Mapping(target = "sentence", source = "dto.sentence")

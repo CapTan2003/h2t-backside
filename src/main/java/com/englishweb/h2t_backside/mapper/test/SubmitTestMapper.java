@@ -20,7 +20,7 @@ public interface SubmitTestMapper {
     @Mapping(target = "test", source = "dto.test")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment", defaultValue = "")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitTest convertToEntity(SubmitTestDTO dto);
 
     // Chuyển đổi từ Entity sang DTO

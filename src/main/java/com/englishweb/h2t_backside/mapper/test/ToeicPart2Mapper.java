@@ -15,7 +15,7 @@ public interface ToeicPart2Mapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "audio", source = "dto.audio")
     @Mapping(target = "correctAnswer", source = "dto.correctAnswer")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart2 convertToEntity(ToeicPart2DTO dto);
 
     // Chuyển đổi từ ToeicPart2 Entity sang ToeicPart2DTO

@@ -17,7 +17,7 @@ public interface AnswerMapper {
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "correct", source = "dto.correct")
     @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionIdToQuestion")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     Answer convertToEntity(AnswerDTO dto);
 
     // Chuyển đổi từ Answer Entity sang AnswerDTO

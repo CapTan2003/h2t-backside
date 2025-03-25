@@ -12,7 +12,7 @@ public interface PreparationClassifyMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "groupName", source = "dto.groupName")
     @Mapping(target = "members", source = "dto.members")
     PreparationClassify convertToEntity(PreparationClassifyDTO dto);

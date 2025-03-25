@@ -33,7 +33,7 @@ public interface ToeicPart3_4Mapper {
     @Mapping(target = "correctAnswer1", source = "dto.correctAnswer1")
     @Mapping(target = "correctAnswer2", source = "dto.correctAnswer2")
     @Mapping(target = "correctAnswer3", source = "dto.correctAnswer3")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart3_4 convertToEntity(ToeicPart3_4DTO dto);
 
     // Chuyển đổi từ ToeicPart3_4 Entity sang ToeicPart3_4DTO

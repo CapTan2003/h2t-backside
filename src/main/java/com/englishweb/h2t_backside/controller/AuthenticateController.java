@@ -7,7 +7,7 @@ import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.dto.security.RefreshTokenDTO;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
-import com.englishweb.h2t_backside.utils.JwtUtil;
+import com.englishweb.h2t_backside.security.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

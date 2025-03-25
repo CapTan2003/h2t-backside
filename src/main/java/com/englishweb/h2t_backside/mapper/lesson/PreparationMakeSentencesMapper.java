@@ -13,7 +13,7 @@ public interface PreparationMakeSentencesMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "sentences", source = "dto.sentences")
     PreparationMakeSentences convertToEntity(PreparationMakeSentencesDTO dto);
 

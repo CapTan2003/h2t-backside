@@ -19,7 +19,7 @@ public interface ToeicPart7QuestionMapper {
     @Mapping(target = "answer3", source = "dto.answer3")
     @Mapping(target = "answer4", source = "dto.answer4")
     @Mapping(target = "correctAnswer", source = "dto.correctAnswer")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart7Question convertToEntity(ToeicPart7QuestionDTO dto);
 
     // Chuyển đổi từ ToeicPart7Question Entity sang ToeicPart7QuestionDTO

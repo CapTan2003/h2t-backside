@@ -20,7 +20,7 @@ public interface SubmitCompetitionWritingMapper {
     @Mapping(target = "writing", source = "dto.writing")
     @Mapping(target = "content", source = "dto.content", defaultValue = "")
     @Mapping(target = "score", source = "dto.score")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitCompetitionWriting convertToEntity(SubmitCompetitionWritingDTO dto);
 
     // Chuyển đổi từ Entity sang DTO

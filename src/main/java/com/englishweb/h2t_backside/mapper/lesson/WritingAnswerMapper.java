@@ -14,7 +14,7 @@ public interface WritingAnswerMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "missingIndex", source = "dto.missingIndex")
     @Mapping(target = "correctAnswer", source = "dto.correctAnswer")
     @Mapping(target = "writing", source = "dto.writingId", qualifiedByName = "mapWritingIdToEntity")

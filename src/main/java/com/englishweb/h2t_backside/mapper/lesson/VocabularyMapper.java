@@ -14,7 +14,7 @@ public interface VocabularyMapper {
 
     // Convert DTO -> Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "ACTIVE")
+    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     @Mapping(target = "example", source = "dto.example")
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "word", source = "dto.word")
