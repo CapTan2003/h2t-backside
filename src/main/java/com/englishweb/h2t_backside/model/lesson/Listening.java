@@ -29,7 +29,7 @@ public class Listening extends AbstractLessonEntity {
     private String questions = "";
 
     @OneToOne
-    @JoinColumn(name = "preparation_id", nullable = false)
+    @JoinColumn(name = "preparation_id")
     @Comment("Preparation object associated with this listening lesson")
     private Preparation preparation;
 }

@@ -33,7 +33,7 @@ public class Writing extends AbstractLessonEntity {
     private List<WritingAnswer> answers;
 
     @OneToOne
-    @JoinColumn(name = "preparation_id", nullable = false)
+    @JoinColumn(name = "preparation_id")
     @Comment("Preparation object associated with this writing lesson")
     private Preparation preparation;
 
@@ -42,7 +42,7 @@ public class Writing extends AbstractLessonEntity {
             name = "writing_tips",
             joinColumns = @JoinColumn(name = "writing_id")
     )
-    @Column(name = "tip", nullable = false)
+    @Column(name = "tip")
     @Comment("List of tips for writing skill")
     private List<String> tips;
 }
