@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -13,27 +14,30 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmitTestSpeaking extends AbstractBaseEntity {
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "submit_test_id")
+    @Comment("Reference to the related test submission")
     private SubmitTest submitTest;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
+    @Comment("Speaking question that was answered")
     private Question question;
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    @NotNull(message = "transcript cannot be null")
+    @Comment("Transcript of the user's spoken response")
     private String transcript;
 
-    @NotNull(message = "file cannot be null")
+    @Comment("Audio file path of the spoken response")
     private String file;
 
     @Column(nullable = false)
-    @NotNull(message = "score cannot be null")
+    @Comment("Score given for the speaking response")
     private Integer score;
 
     @Lob
-    @NotNull(message = "comment cannot be null")
+    @Comment("Comment provided by the reviewer or system")
     private String comment;
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -16,15 +17,16 @@ import org.hibernate.annotations.ColumnDefault;
 public class TestListening extends AbstractBaseEntity {
 
     @Column(nullable = false)
-    @NotNull(message = "audio cannot be null")
+    @Comment("Audio file path used for the listening test")
     private String audio;
 
     @Column(nullable = false)
-    @NotNull(message = "transcript cannot be null")
+    @Comment("Transcript of the listening audio")
     private String transcript;
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    @NotNull(message = "questions cannot be null")
-    private String questions; // Luu danh sach id cac cau hoi
+    @Comment("List of question IDs associated with this listening test")
+    private String questions;
 }
+

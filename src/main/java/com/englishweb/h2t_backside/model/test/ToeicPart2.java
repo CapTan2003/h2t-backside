@@ -8,6 +8,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -16,12 +17,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ToeicPart2 extends AbstractBaseEntity {
+
     @Column(nullable = false)
-    @NotNull(message = "audio cannot be null")
+    @Comment("Audio file for the TOEIC Part 2 question")
     private String audio;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "correctAnswer cannot be null")
+    @Comment("Correct answer for the TOEIC Part 2 question")
     private AnswerEnum correctAnswer;
 }
+

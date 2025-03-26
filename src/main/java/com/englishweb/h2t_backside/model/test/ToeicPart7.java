@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -17,10 +18,12 @@ import org.hibernate.annotations.ColumnDefault;
 public class ToeicPart7 extends AbstractBaseEntity {
 
     @Column(nullable = false)
-    @NotNull(message = "file cannot be null")
-    private String file; // Luu docx file
+    @Comment("Path to the DOCX file containing the TOEIC Part 7 passage")
+    private String file;
 
+    @Column(nullable = false)
     @ColumnDefault("''")
-    @NotNull(message = "questions cannot be null")
-    private String questions; // Luu danh sach id cau hoi
+    @Comment("List of question IDs related to this passage")
+    private String questions;
 }
+

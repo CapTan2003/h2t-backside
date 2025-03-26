@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -22,106 +23,107 @@ import lombok.experimental.SuperBuilder;
 public class ToeicPart6 extends AbstractBaseEntity {
 
     @Column(nullable = false)
-    @NotNull(message = "file cannot be null")
-    private String file; // Luu docx file
+    @Comment("Path to the DOCX file for the TOEIC Part 6 passage")
+    private String file;
 
     @Column(nullable = false)
-    @NotNull(message = "contentQuestion1 cannot be null")
+    @Comment("Content of question 1 in the paragraph")
     private String contentQuestion1;
 
     @Column(nullable = false)
-    @NotNull(message = "contentQuestion2 cannot be null")
+    @Comment("Content of question 2 in the paragraph")
     private String contentQuestion2;
 
     @Column(nullable = false)
-    @NotNull(message = "contentQuestion3 cannot be null")
+    @Comment("Content of question 3 in the paragraph")
     private String contentQuestion3;
 
     @Column(nullable = false)
-    @NotNull(message = "contentQuestion4 cannot be null")
+    @Comment("Content of question 4 in the paragraph")
     private String contentQuestion4;
 
     @Column(nullable = false)
-    @NotNull(message = "answer1Q1 cannot be null")
+    @Comment("First answer choice for question 1")
     private String answer1Q1;
 
     @Column(nullable = false)
-    @NotNull(message = "answer2Q1 cannot be null")
+    @Comment("Second answer choice for question 1")
     private String answer2Q1;
 
     @Column(nullable = false)
-    @NotNull(message = "answer3Q1 cannot be null")
+    @Comment("Third answer choice for question 1")
     private String answer3Q1;
 
     @Column(nullable = false)
-    @NotNull(message = "answer4Q1 cannot be null")
+    @Comment("Fourth answer choice for question 1")
     private String answer4Q1;
 
     @Column(nullable = false)
-    @NotNull(message = "answer1Q2 cannot be null")
+    @Comment("First answer choice for question 2")
     private String answer1Q2;
 
     @Column(nullable = false)
-    @NotNull(message = "answer2Q2 cannot be null")
+    @Comment("Second answer choice for question 2")
     private String answer2Q2;
 
     @Column(nullable = false)
-    @NotNull(message = "answer3Q2 cannot be null")
+    @Comment("Third answer choice for question 2")
     private String answer3Q2;
 
     @Column(nullable = false)
-    @NotNull(message = "answer4Q2 cannot be null")
+    @Comment("Fourth answer choice for question 2")
     private String answer4Q2;
 
     @Column(nullable = false)
-    @NotNull(message = "answer1Q3 cannot be null")
+    @Comment("First answer choice for question 3")
     private String answer1Q3;
 
     @Column(nullable = false)
-    @NotNull(message = "answer2Q3 cannot be null")
+    @Comment("Second answer choice for question 3")
     private String answer2Q3;
 
     @Column(nullable = false)
-    @NotNull(message = "answer3Q3 cannot be null")
+    @Comment("Third answer choice for question 3")
     private String answer3Q3;
 
     @Column(nullable = false)
-    @NotNull(message = "answer4Q3 cannot be null")
+    @Comment("Fourth answer choice for question 3")
     private String answer4Q3;
 
     @Column(nullable = false)
-    @NotNull(message = "answer1Q4 cannot be null")
+    @Comment("First answer choice for question 4")
     private String answer1Q4;
 
     @Column(nullable = false)
-    @NotNull(message = "answer2Q4 cannot be null")
+    @Comment("Second answer choice for question 4")
     private String answer2Q4;
 
     @Column(nullable = false)
-    @NotNull(message = "answer3Q4 cannot be null")
+    @Comment("Third answer choice for question 4")
     private String answer3Q4;
 
     @Column(nullable = false)
-    @NotNull(message = "answer4Q4 cannot be null")
+    @Comment("Fourth answer choice for question 4")
     private String answer4Q4;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "correctAnswer1 cannot be null")
+    @Comment("Correct answer for question 1")
     private AnswerEnum correctAnswer1;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "correctAnswer2 cannot be null")
+    @Comment("Correct answer for question 2")
     private AnswerEnum correctAnswer2;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "correctAnswer3 cannot be null")
+    @Comment("Correct answer for question 3")
     private AnswerEnum correctAnswer3;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "correctAnswer4 cannot be null")
+    @Comment("Correct answer for question 4")
     private AnswerEnum correctAnswer4;
 }
+

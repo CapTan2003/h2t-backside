@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -17,6 +18,7 @@ public class TestSpeaking extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @ColumnDefault("''")
-    @NotNull(message = "questions cannot be null")
+    @Comment("List of question IDs associated with this speaking test")
     private String questions;
 }
+

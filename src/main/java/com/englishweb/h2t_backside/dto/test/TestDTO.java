@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class TestDTO extends AbstractBaseDTO {
     private TestTypeEnum type;
 
     @NotNull(message = "Duration cannot be null")
+    @Positive(message = "Duration must be positive")
     private Integer duration;
 
     @NotNull(message = "Parts cannot be null")
@@ -37,7 +39,7 @@ public class TestDTO extends AbstractBaseDTO {
     @NotNull(message = "Total questions cannot be null")
     private Integer totalQuestions;
 
-    private Integer scoreLastOfTest;  
+    private Integer scoreLastOfTest;
 
     @NotNull(message = "Route node ID cannot be null")
     private Integer routeNodeId;
