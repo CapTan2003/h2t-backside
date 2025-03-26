@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.dto.lesson;
 
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractLessonDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class SpeakingDTO extends AbstractLessonDTO {
     @NotBlank(message = "Topic for writing cannot be empty")
     private String topic;
 
-    @NotBlank(message = "Duration for speaking cannot be empty")
+    @NotNull(message = "Duration for speaking cannot be empty")
     private Integer duration;
 
     private PreparationDTO preparation;
