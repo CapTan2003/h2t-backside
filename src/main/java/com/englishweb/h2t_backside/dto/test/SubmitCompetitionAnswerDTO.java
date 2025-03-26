@@ -12,12 +12,12 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SubmitCompetitionAnswerDTO extends AbstractBaseDTO {
 
-    @NotNull(message = "Submit competition cannot be null")
-    private SubmitCompetitionDTO submitCompetition;
+    @NotNull(message = "SubmitCompetition id cannot be null")
+    private Long submitCompetitionId;
 
-    @NotNull(message = "Question cannot be null")
-    private QuestionDTO question;
+    @NotNull(message = "Question id cannot be null")
+    private Long questionId;
 
-    @NotNull(message = "Answer cannot be null")
-    private AnswerDTO answer;
+    @NotNull(message = "Answer id cannot be null")
+    private Long answerId;
 }

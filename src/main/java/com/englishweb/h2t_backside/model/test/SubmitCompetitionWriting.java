@@ -20,9 +20,9 @@ public class SubmitCompetitionWriting extends AbstractBaseEntity {
     private SubmitCompetition submitCompetition;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writing_id")
+    @JoinColumn(name = "testWritingId")
     @Comment("Reference to the writing test question")
-    private TestWriting writing;
+    private TestWriting testWriting;
 
     @Lob
     @Column(nullable = false)

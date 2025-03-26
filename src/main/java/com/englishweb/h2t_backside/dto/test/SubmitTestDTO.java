@@ -18,11 +18,11 @@ public class SubmitTestDTO extends AbstractBaseDTO {
     @Min(value = 0, message = "Score must be at least 0")
     private Integer score;
 
-    @NotNull(message = "User cannot be null")
-    private UserDTO user;
+    @NotNull(message = "User id cannot be null")
+    private Long userId;
 
-    @NotNull(message = "Test cannot be null")
-    private TestDTO test;
+    @NotNull(message = "Test id cannot be null")
+    private Long testId;
 
     private String comment;
 }

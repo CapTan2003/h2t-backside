@@ -14,14 +14,17 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SubmitTestWritingDTO extends AbstractBaseDTO {
 
-    @NotNull(message = "SubmitTest cannot be null")
-    private SubmitTestDTO submitTest;
+    @NotNull(message = "submitTest id cannot be null")
+    private Long submitTestId;
 
-    @NotNull(message = "Writing test cannot be null")
-    private TestWritingDTO writing;
+    @NotNull(message = "testWriting id test cannot be null")
+    private Long testWritingId;
 
     @NotBlank(message = "Content cannot be empty")
     private String content;
+
+    @NotBlank(message = "Comment cannot be empty")
+    private String comment;
 
     @NotNull(message = "Score cannot be null")
     @Min(value = 0, message = "Score must be at least 0")
