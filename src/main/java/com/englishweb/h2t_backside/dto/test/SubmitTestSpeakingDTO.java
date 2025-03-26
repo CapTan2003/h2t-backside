@@ -20,6 +20,9 @@ public class SubmitTestSpeakingDTO extends AbstractBaseDTO {
     @NotNull(message = "Question cannot be null")
     private QuestionDTO question;
 
+    @NotNull(message = "file cannot be null")
+    private String file;
+
     @NotBlank(message = "Transcript cannot be empty")
     private String transcript;
 

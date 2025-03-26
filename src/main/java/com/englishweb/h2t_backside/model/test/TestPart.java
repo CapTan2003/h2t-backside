@@ -6,8 +6,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
@@ -19,9 +21,11 @@ public class TestPart extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @ColumnDefault("''")
+    @Comment("List of question IDs belonging to this test part")
     private String questions;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Comment("Type of competition or test part (e.g., LISTENING, READING)")
     private CompetitionEnum type;
 }

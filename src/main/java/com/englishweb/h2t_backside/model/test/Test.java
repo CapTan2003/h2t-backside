@@ -35,7 +35,7 @@ public class Test extends AbstractBaseEntity {
     @Column(nullable = false)
     @Comment("Id part of the Test")
     @ColumnDefault("''")
-    private String parts = ""; // Lưu mảng Id các phần trong bài kiểm tra.
+    private String parts = "";
 
     @OneToOne
     @JoinColumn(name = "route_node_id")

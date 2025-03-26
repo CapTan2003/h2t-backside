@@ -3,11 +3,15 @@ package com.englishweb.h2t_backside.dto.test;
 import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,10 +20,27 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class TestDTO extends AbstractBaseDTO {
 
+    @NotNull(message = "Title cannot be null")
     private String title;
+
+    @NotNull(message = "Description cannot be null")
     private String description;
-    private Integer duration;
+
+    @NotNull(message = "Type cannot be null")
     private TestTypeEnum type;
+
+    @NotNull(message = "Duration cannot be null")
+    @Positive(message = "Duration must be positive")
+    private Integer duration;
+
+    @NotNull(message = "Parts cannot be null")
     private String parts;
-    private RouteNodeDTO routeNode;
+
+    @NotNull(message = "Total questions cannot be null")
+    private Integer totalQuestions;
+
+    private Integer scoreLastOfTest;
+
+    @NotNull(message = "Route node ID cannot be null")
+    private Integer routeNodeId;
 }
