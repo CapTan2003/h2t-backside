@@ -101,8 +101,8 @@ public class TopicController {
 
     @GetMapping("/questions")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByTopicId(@RequestParam Long topicId) {
-        List<LessonQuestionDTO> lessons = service.findQuestionByLessonId(topicId);
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByTopicId(@RequestParam Long lessonId) {
+        List<LessonQuestionDTO> lessons = service.findQuestionByLessonId(lessonId);
 
         return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)

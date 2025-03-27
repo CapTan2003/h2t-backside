@@ -22,6 +22,10 @@ public class LessonQuestion extends AbstractBaseEntity {
     @Comment("Content of the question")
     private String content;
 
+    @Column(nullable = false)
+    @Comment("Explanation of the question")
+    private String explanation;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LessonAnswer> answers;
 }
