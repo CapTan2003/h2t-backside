@@ -7,8 +7,11 @@
     import jakarta.validation.Valid;
     import lombok.AllArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
+    import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
+
+    import java.util.List;
 
     @Slf4j
     @RestController
@@ -17,6 +20,28 @@
     public class TestReadingController {
 
         private final TestReadingService service;
+
+        @GetMapping("/{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseDTO<TestReadingDTO> findById(@PathVariable Long id) {
+            TestReadingDTO dto = service.findById(id);
+            return ResponseDTO.<TestReadingDTO>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .data(dto)
+                    .message("TestReading retrieved successfully")
+                    .build();
+        }
+        @PostMapping("/by-ids")
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseDTO<List<TestReadingDTO>> getByIds(@RequestBody List<Long> ids) {
+            List<TestReadingDTO> result = service.findByIds(ids);
+            return ResponseDTO.<List<TestReadingDTO>>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .data(result)
+                    .message("TestReading retrieved successfully")
+                    .build();
+        }
+
 
         @PostMapping
         public ResponseEntity<ResponseDTO<TestReadingDTO>> create(@Valid @RequestBody TestReadingDTO dto) {

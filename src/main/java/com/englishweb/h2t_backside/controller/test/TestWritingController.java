@@ -7,8 +7,11 @@ import com.englishweb.h2t_backside.service.test.TestWritingService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,6 +20,27 @@ import org.springframework.web.bind.annotation.*;
 public class TestWritingController {
 
     private final TestWritingService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<TestWritingDTO> findById(@PathVariable Long id) {
+        TestWritingDTO dto = service.findById(id);
+        return ResponseDTO.<TestWritingDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("TestWriting retrieved successfully")
+                .build();
+    }
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<TestWritingDTO>> getByIds(@RequestBody List<Long> ids) {
+        List<TestWritingDTO> result = service.findByIds(ids);
+        return ResponseDTO.<List<TestWritingDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("TestWriting retrieved successfully")
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<TestWritingDTO>> create(@Valid @RequestBody TestWritingDTO dto) {

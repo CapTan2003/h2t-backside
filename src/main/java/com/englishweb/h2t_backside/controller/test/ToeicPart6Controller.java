@@ -7,8 +7,11 @@ import com.englishweb.h2t_backside.service.test.ToeicPart6Service;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,6 +20,28 @@ import org.springframework.web.bind.annotation.*;
 public class ToeicPart6Controller {
 
     private final ToeicPart6Service service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ToeicPart6DTO> findById(@PathVariable Long id) {
+        ToeicPart6DTO dto = service.findById(id);
+        return ResponseDTO.<ToeicPart6DTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("ToeicPart6 retrieved successfully")
+                .build();
+    }
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<ToeicPart6DTO>> getByIds(@RequestBody List<Long> ids) {
+        List<ToeicPart6DTO> result = service.findByIds(ids);
+        return ResponseDTO.<List<ToeicPart6DTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Toeic Part 6 questions retrieved successfully")
+                .build();
+    }
+
 
     @PostMapping
     public ResponseEntity<ResponseDTO<ToeicPart6DTO>> create(@Valid @RequestBody ToeicPart6DTO dto) {

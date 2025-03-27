@@ -19,6 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class CompetitionTestController {
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<CompetitionTestDTO> findById(@PathVariable Long id) {
+        CompetitionTestDTO dto = service.findById(id);
+        return ResponseDTO.<CompetitionTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("CompetitionTest retrieved successfully")
+                .build();
+    }
+
+
     private final CompetitionTestService service;
 
     @PostMapping

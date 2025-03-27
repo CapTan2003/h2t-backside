@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.service.test.SubmitToeicPart5Service;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,17 @@ public class SubmitToeicPart5Controller {
                 .message("SubmitToeicPart5 created successfully")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<SubmitToeicPart5DTO> findById(@PathVariable Long id) {
+        SubmitToeicPart5DTO dto = service.findById(id);
+        return ResponseDTO.<SubmitToeicPart5DTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("SubmitToeicPart5 retrieved successfully")
+                .build();
     }
 
     @PutMapping("/{id}")
