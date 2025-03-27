@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.filter.CompetitionTestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -11,7 +12,10 @@ import com.englishweb.h2t_backside.repository.test.CompetitionTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.CompetitionTestService;
+import com.englishweb.h2t_backside.service.test.TestPartService;
+import com.englishweb.h2t_backside.utils.CompetitionTestPagination;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +23,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestDTO, CompetitionTest, CompetitionTestRepository> implements CompetitionTestService {
     private final CompetitionTestMapper mapper;
-
-    public CompetitionTestServiceImpl(CompetitionTestRepository repository, DiscordNotifier discordNotifier, CompetitionTestMapper mapper) {
+    private final TestPartService testPartService;
+    public CompetitionTestServiceImpl(CompetitionTestRepository repository, DiscordNotifier discordNotifier, CompetitionTestMapper mapper, TestPartService testPartService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.testPartService = testPartService;
     }
 
     @Override
@@ -69,4 +74,15 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
     protected CompetitionTestDTO convertToDTO(CompetitionTest entity) {
         return mapper.convertToDTO(entity);
     }
+    @Override
+    public Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, String userId) {
+        return CompetitionTestPagination.searchWithFiltersGeneric(
+                page, size, sortFields, filter, repository, CompetitionTest.class
+        ).map(entity -> {
+            CompetitionTestDTO dto = mapper.convertToDTO(entity);
+            dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts()));
+            return dto;
+        });
+    }
+
 }

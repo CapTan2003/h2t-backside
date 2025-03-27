@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
 import com.englishweb.h2t_backside.dto.test.TestSpeakingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -14,6 +15,9 @@ import com.englishweb.h2t_backside.service.test.TestSpeakingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -68,5 +72,13 @@ public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, Te
     @Override
     protected TestSpeakingDTO convertToDTO(TestSpeaking entity) {
         return mapper.convertToDTO(entity);
+    }
+    @Override
+    public List<TestSpeakingDTO> findByIds(List<Long> ids) {
+        List<TestSpeakingDTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
     }
 }

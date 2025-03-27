@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -16,5 +18,5 @@ public class TestReadingDTO extends AbstractBaseDTO {
     private String file; // Lưu đường dẫn file docx của Reading
 
     @NotNull(message = "Questions cannot be null")
-    private String questions; // Lưu danh sách ID các câu hỏi
+    private List<Long> questions; // Lưu danh sách ID các câu hỏi
 }

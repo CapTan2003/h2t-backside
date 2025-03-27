@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 @Slf4j
 public class ToeicPart7ServiceImpl extends BaseServiceImpl<ToeicPart7DTO, ToeicPart7, ToeicPart7Repository> implements ToeicPart7Service {
@@ -68,5 +71,13 @@ public class ToeicPart7ServiceImpl extends BaseServiceImpl<ToeicPart7DTO, ToeicP
     @Override
     protected ToeicPart7DTO convertToDTO(ToeicPart7 entity) {
         return mapper.convertToDTO(entity);
+    }
+    @Override
+    public List<ToeicPart7DTO> findByIds(List<Long> ids) {
+        List<ToeicPart7DTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
     }
 }

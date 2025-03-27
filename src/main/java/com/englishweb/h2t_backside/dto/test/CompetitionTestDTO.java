@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,5 +31,8 @@ public class CompetitionTestDTO extends AbstractBaseDTO {
     @NotNull(message = "End time cannot be null")
     private LocalDateTime endTime;
 
-    private String parts;
+    @NotNull(message = "Parts cannot be null")
+    private List<Long> parts;
+
+    private Integer totalQuestions;
 }

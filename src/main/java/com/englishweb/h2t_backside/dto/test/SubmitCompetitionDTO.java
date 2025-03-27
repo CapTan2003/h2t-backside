@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class SubmitCompetitionDTO extends AbstractBaseDTO {
 
     @Min(value = 0, message = "Score must be at least 0")
-    private Integer score;
+    private Double score;
 
     @NotNull(message = "User id cannot be null")
     private Long userId;

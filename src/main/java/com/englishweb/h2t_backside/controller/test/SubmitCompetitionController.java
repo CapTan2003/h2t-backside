@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.controller.test;
 
+import com.englishweb.h2t_backside.dto.SubmitTestStatsDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
@@ -64,4 +65,20 @@ public class SubmitCompetitionController {
                 .build();
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/stats")
+    public ResponseDTO<SubmitTestStatsDTO> getTestStats(@RequestParam Long userId) {
+        int count = service.countSubmitByUserId(userId);
+        double score = service.totalScoreByUserId(userId);
+
+        SubmitTestStatsDTO stats = new SubmitTestStatsDTO();
+        stats.setCount(count);
+        stats.setSumScore(score);
+
+        return ResponseDTO.<SubmitTestStatsDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(stats)
+                .message("SubmitTest stats retrieved")
+                .build();
+    }
+
 }

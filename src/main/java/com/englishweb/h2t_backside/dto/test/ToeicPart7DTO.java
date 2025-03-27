@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -16,5 +18,5 @@ public class ToeicPart7DTO extends AbstractBaseDTO {
     private String file; // Lưu đường dẫn file docx
 
     @NotBlank(message = "Questions list cannot be blank")
-    private String questions; // Lưu danh sách ID câu hỏi dưới dạng chuỗi
+    private List<Long> questions; // Lưu danh sách ID câu hỏi dưới dạng chuỗi
 }

@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.model.enummodel;
 
-public enum CompetitionEnum {
+public enum TestPartEnum {
     VOCABULARY,
     GRAMMAR,
     READING,

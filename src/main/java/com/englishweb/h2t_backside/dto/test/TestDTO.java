@@ -34,10 +34,10 @@ public class TestDTO extends AbstractBaseDTO {
     private Integer duration;
 
     @NotNull(message = "Parts cannot be null")
-    private String parts;
+    private List<Long> parts; // type mixing 1 2 3 4 5 6 // reading  1
 
     private Integer totalQuestions;
 
-    private Integer scoreLastOfTest;
+    private Double scoreLastOfTest;
 
 }
