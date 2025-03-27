@@ -22,9 +22,10 @@ public class SubmitToeicDTO extends AbstractBaseDTO {
     @NotBlank(message = "Comment cannot be empty")
     private String comment;
 
-    @NotNull(message = "Toeic test cannot be null")
-    private ToeicDTO toeic;
+    @NotNull(message = "Toeic id cannot be null")
+    private Long toeicId;
 
-    @NotNull(message = "User cannot be null")
-    private UserDTO user;
+    @NotNull(message = "User id cannot be null")
+    private Long userId;
+
 }

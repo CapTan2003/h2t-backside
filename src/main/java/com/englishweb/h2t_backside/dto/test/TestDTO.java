@@ -36,11 +36,8 @@ public class TestDTO extends AbstractBaseDTO {
     @NotNull(message = "Parts cannot be null")
     private String parts;
 
-    @NotNull(message = "Total questions cannot be null")
     private Integer totalQuestions;
 
     private Integer scoreLastOfTest;
 
-    @NotNull(message = "Route node ID cannot be null")
-    private Integer routeNodeId;
 }

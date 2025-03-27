@@ -20,9 +20,9 @@ public class SubmitTestWriting extends AbstractBaseEntity {
     private SubmitTest submitTest;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writing_id")
+    @JoinColumn(name = "testwriting_id")
     @Comment("Reference to the writing test question")
-    private TestWriting writing;
+    private TestWriting testWriting;
 
     @Lob
     @Column(nullable = false)

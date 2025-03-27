@@ -1,36 +1,63 @@
 package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.SubmitTestAnswerDTO;
+import com.englishweb.h2t_backside.model.test.Answer;
+import com.englishweb.h2t_backside.model.test.Question;
+import com.englishweb.h2t_backside.model.test.SubmitTest;
 import com.englishweb.h2t_backside.model.test.SubmitTestAnswer;
 import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {SubmitTestMapper.class, QuestionMapper.class, AnswerMapper.class},
         builder = @Builder(disableBuilder = true)
 )
 public interface SubmitTestAnswerMapper {
 
-    // Chuyển đổi từ DTO sang Entity
+    // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitTest", source = "dto.submitTest")
-    @Mapping(target = "question", source = "dto.question")
-    @Mapping(target = "answer", source = "dto.answer")
+    @Mapping(target = "submitTest", source = "dto.submitTestId", qualifiedByName = "mapSubmitTestId")
+    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "answer", source = "dto.answerId", qualifiedByName = "mapAnswerId")
     SubmitTestAnswer convertToEntity(SubmitTestAnswerDTO dto);
 
-    // Chuyển đổi từ Entity sang DTO
+    // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitTest", source = "entity.submitTest")
-    @Mapping(target = "question", source = "entity.question")
-    @Mapping(target = "answer", source = "entity.answer")
+    @Mapping(target = "submitTestId", source = "entity.submitTest.id")
+    @Mapping(target = "questionId", source = "entity.question.id")
+    @Mapping(target = "answerId", source = "entity.answer.id")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     SubmitTestAnswerDTO convertToDTO(SubmitTestAnswer entity);
 
-    // Cập nhật dữ liệu từ DTO vào Entity (bỏ qua trường null)
-    @Mapping(target = "submitTest", source = "dto.submitTest")
-    @Mapping(target = "question", source = "dto.question")
-    @Mapping(target = "answer", source = "dto.answer")
+    // Patch DTO → Entity
+    @Mapping(target = "submitTest", source = "dto.submitTestId", qualifiedByName = "mapSubmitTestId")
+    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "answer", source = "dto.answerId", qualifiedByName = "mapAnswerId")
     void patchEntityFromDTO(SubmitTestAnswerDTO dto, @MappingTarget SubmitTestAnswer entity);
+
+
+    @Named("mapSubmitTestId")
+    default SubmitTest mapSubmitTestId(Long id) {
+        if (id == null) return null;
+        SubmitTest entity = new SubmitTest();
+        entity.setId(id);
+        return entity;
+    }
+
+    @Named("mapQuestionId")
+    default Question mapQuestionId(Long id) {
+        if (id == null) return null;
+        Question entity = new Question();
+        entity.setId(id);
+        return entity;
+    }
+
+    @Named("mapAnswerId")
+    default Answer mapAnswerId(Long id) {
+        if (id == null) return null;
+        Answer entity = new Answer();
+        entity.setId(id);
+        return entity;
+    }
 }

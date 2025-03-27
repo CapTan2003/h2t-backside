@@ -1,7 +1,9 @@
 package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.SubmitToeicPart7DTO;
+import com.englishweb.h2t_backside.model.test.SubmitToeic;
 import com.englishweb.h2t_backside.model.test.SubmitToeicPart7;
+import com.englishweb.h2t_backside.model.test.ToeicPart7Question;
 import org.mapstruct.*;
 
 @Mapper(
@@ -11,28 +13,45 @@ import org.mapstruct.*;
 )
 public interface SubmitToeicPart7Mapper {
 
-    // Chuyển đổi từ SubmitToeicPart7DTO sang SubmitToeicPart7 Entity
+    // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitToeic", source = "dto.submitToeic")
-    @Mapping(target = "toeicPart7Question", source = "dto.toeicPart7Question")
+    @Mapping(target = "submitToeic", source = "dto.submitToeicId", qualifiedByName = "mapSubmitToeicId")
+    @Mapping(target = "toeicPart7Question", source = "dto.toeicPart7QuestionId", qualifiedByName = "mapPart7QuestionId")
     @Mapping(target = "answer", source = "dto.answer")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitToeicPart7 convertToEntity(SubmitToeicPart7DTO dto);
 
-    // Chuyển đổi từ SubmitToeicPart7 Entity sang SubmitToeicPart7DTO
+    // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitToeic", source = "entity.submitToeic")
-    @Mapping(target = "toeicPart7Question", source = "entity.toeicPart7Question")
+    @Mapping(target = "submitToeicId", source = "entity.submitToeic.id")
+    @Mapping(target = "toeicPart7QuestionId", source = "entity.toeicPart7Question.id")
     @Mapping(target = "answer", source = "entity.answer")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     SubmitToeicPart7DTO convertToDTO(SubmitToeicPart7 entity);
 
-    // Cập nhật dữ liệu từ DTO vào Entity (chỉ cập nhật trường có giá trị)
-    @Mapping(target = "submitToeic", source = "dto.submitToeic")
-    @Mapping(target = "toeicPart7Question", source = "dto.toeicPart7Question")
+    // Patch DTO → Entity
+    @Mapping(target = "submitToeic", source = "dto.submitToeicId", qualifiedByName = "mapSubmitToeicId")
+    @Mapping(target = "toeicPart7Question", source = "dto.toeicPart7QuestionId", qualifiedByName = "mapPart7QuestionId")
     @Mapping(target = "answer", source = "dto.answer")
     @Mapping(target = "status", source = "dto.status")
     void patchEntityFromDTO(SubmitToeicPart7DTO dto, @MappingTarget SubmitToeicPart7 entity);
+
+
+    @Named("mapSubmitToeicId")
+    default SubmitToeic mapSubmitToeicId(Long id) {
+        if (id == null) return null;
+        SubmitToeic entity = new SubmitToeic();
+        entity.setId(id);
+        return entity;
+    }
+
+    @Named("mapPart7QuestionId")
+    default ToeicPart7Question mapPart7QuestionId(Long id) {
+        if (id == null) return null;
+        ToeicPart7Question entity = new ToeicPart7Question();
+        entity.setId(id);
+        return entity;
+    }
 }

@@ -37,8 +37,4 @@ public class Test extends AbstractBaseEntity {
     @ColumnDefault("''")
     private String parts = "";
 
-    @OneToOne
-    @JoinColumn(name = "route_node_id")
-    @Comment("Associated Route node for the Test")
-    private RouteNode routeNode;
 }

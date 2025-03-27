@@ -14,11 +14,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SubmitCompetitionSpeakingDTO extends AbstractBaseDTO {
 
-    @NotNull(message = "Submit competition cannot be null")
-    private SubmitCompetitionDTO submitCompetition;
+    @NotNull(message = "SubmitCompetition_id cannot be null")
+    private Long submitCompetitionId;
 
-    @NotNull(message = "Question cannot be null")
-    private QuestionDTO question;
+    @NotNull(message = "Question id cannot be null")
+    private Long questionId;
 
     @NotBlank(message = "Transcript cannot be empty")
     private String transcript;

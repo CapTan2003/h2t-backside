@@ -13,11 +13,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SubmitToeicPart1DTO extends AbstractBaseDTO {
 
-    @NotNull(message = "Submit TOEIC cannot be null")
-    private SubmitToeicDTO submitToeic;
+    @NotNull(message = "Submit TOEIC id cannot be null")
+    private Long submitToeicId;
 
-    @NotNull(message = "Toeic Part 1 cannot be null")
-    private ToeicPart1DTO toeicPart1;
+    @NotNull(message = "Toeic Part 1 id cannot be null")
+    private Long toeicPart1Id;
 
     @NotNull(message = "Answer cannot be null")
     private AnswerEnum answer;

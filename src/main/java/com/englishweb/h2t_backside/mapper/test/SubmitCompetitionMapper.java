@@ -1,39 +1,57 @@
 package com.englishweb.h2t_backside.mapper.test;
+
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
-import com.englishweb.h2t_backside.mapper.UserMapper;
+import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import com.englishweb.h2t_backside.model.test.SubmitCompetition;
+import com.englishweb.h2t_backside.model.User;
 import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {UserMapper.class, CompetitionTestMapper.class},
         builder = @Builder(disableBuilder = true)
 )
 public interface SubmitCompetitionMapper {
 
-    // Chuyển đổi từ DTO sang Entity
+    // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "score", source = "dto.score")
-    @Mapping(target = "user", source = "dto.user")
-    @Mapping(target = "test", source = "dto.test")
+    @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
+    @Mapping(target = "test", source = "dto.competitionTestId", qualifiedByName = "mapTestId")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitCompetition convertToEntity(SubmitCompetitionDTO dto);
 
-    // Chuyển đổi từ Entity sang DTO
+    // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "score", source = "entity.score")
-    @Mapping(target = "user", source = "entity.user")
-    @Mapping(target = "test", source = "entity.test")
+    @Mapping(target = "userId", source = "entity.user.id")
+    @Mapping(target = "competitionTestId", source = "entity.test.id")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     SubmitCompetitionDTO convertToDTO(SubmitCompetition entity);
 
-    // Cập nhật dữ liệu từ DTO vào Entity (bỏ qua trường null)
+    // Patch DTO → Entity
     @Mapping(target = "score", source = "dto.score")
-    @Mapping(target = "user", source = "dto.user")
-    @Mapping(target = "test", source = "dto.test")
+    @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
+    @Mapping(target = "test", source = "dto.competitionTestId", qualifiedByName = "mapTestId")
     @Mapping(target = "status", source = "dto.status")
     void patchEntityFromDTO(SubmitCompetitionDTO dto, @MappingTarget SubmitCompetition entity);
+
+
+    @Named("mapUserId")
+    default User mapUserId(Long id) {
+        if (id == null) return null;
+        User user = new User();
+        user.setId(id);
+        return user;
+    }
+
+    @Named("mapTestId")
+    default CompetitionTest mapTestId(Long id) {
+        if (id == null) return null;
+        CompetitionTest test = new CompetitionTest();
+        test.setId(id);
+        return test;
+    }
 }

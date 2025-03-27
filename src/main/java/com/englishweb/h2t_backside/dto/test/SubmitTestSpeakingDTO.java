@@ -14,17 +14,22 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SubmitTestSpeakingDTO extends AbstractBaseDTO {
 
-    @NotNull(message = "SubmitTest cannot be null")
-    private SubmitTestDTO submitTest;
 
-    @NotNull(message = "Question cannot be null")
-    private QuestionDTO question;
+    @NotNull(message = "submitTest id cannot be null")
+    private Long submitTestId;
+
+
+    @NotNull(message = "Question id cannot be null")
+    private Long questionId;
 
     @NotNull(message = "file cannot be null")
     private String file;
 
     @NotBlank(message = "Transcript cannot be empty")
     private String transcript;
+
+    @NotBlank(message = "Comment cannot be empty")
+    private String comment;
 
     @NotNull(message = "Score cannot be null")
     @Min(value = 0, message = "Score must be at least 0")
