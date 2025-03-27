@@ -102,8 +102,8 @@ public class ListeningController {
 
     @GetMapping("/questions")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByListeningId(@RequestParam Long listeningId) {
-        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(listeningId);
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByListeningId(@RequestParam Long lessonId) {
+        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(lessonId);
 
         return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)

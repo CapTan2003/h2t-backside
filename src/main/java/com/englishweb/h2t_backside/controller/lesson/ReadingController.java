@@ -101,8 +101,8 @@ public class ReadingController {
 
     @GetMapping("/questions")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByReadingId(@RequestParam Long readingId) {
-        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(readingId);
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByReadingId(@RequestParam Long lessonId) {
+        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(lessonId);
 
         return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)

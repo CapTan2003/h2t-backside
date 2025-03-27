@@ -34,6 +34,12 @@ public class LessonQuestionServiceImpl
     }
 
     @Override
+    public LessonQuestionDTO create(LessonQuestionDTO dto) {
+        dto.setAnswers(dto.getAnswers().stream().peek(answer -> answer.setId(null)).toList());
+        return super.create(dto);
+    }
+
+    @Override
     protected void findByIdError(Long id) {
         String errorMessage = String.format("LessonQuestion with ID '%d' not found.", id);
         log.warn(errorMessage);

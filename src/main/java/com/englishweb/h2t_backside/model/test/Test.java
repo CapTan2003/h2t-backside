@@ -1,13 +1,15 @@
 package com.englishweb.h2t_backside.model.test;
 
-import com.englishweb.h2t_backside.model.RouteNode;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @EqualsAndHashCode(callSuper = true)
