@@ -40,6 +40,16 @@ public class LessonQuestionServiceImpl
     }
 
     @Override
+    public LessonQuestionDTO update(LessonQuestionDTO dto, Long id) {
+        dto.setAnswers(dto.getAnswers().stream().peek(answer ->{
+            if (answer.getId() <= 0) {
+                answer.setId(null);
+            }
+        }).toList());
+        return super.update(dto, id);
+    }
+
+    @Override
     protected void findByIdError(Long id) {
         String errorMessage = String.format("LessonQuestion with ID '%d' not found.", id);
         log.warn(errorMessage);
