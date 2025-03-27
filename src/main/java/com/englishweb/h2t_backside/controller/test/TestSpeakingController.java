@@ -7,8 +7,11 @@ import com.englishweb.h2t_backside.service.test.TestSpeakingService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,6 +20,29 @@ import org.springframework.web.bind.annotation.*;
 public class TestSpeakingController {
 
     private final TestSpeakingService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<TestSpeakingDTO> findById(@PathVariable Long id) {
+        TestSpeakingDTO dto = service.findById(id);
+        return ResponseDTO.<TestSpeakingDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("TestSpeaking retrieved successfully")
+                .build();
+    }
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<TestSpeakingDTO>> getByIds(@RequestBody List<Long> ids) {
+        List<TestSpeakingDTO> result = service.findByIds(ids);
+        return ResponseDTO.<List<TestSpeakingDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("TestSpeaking retrieved successfully")
+                .build();
+    }
+
+
 
     @PostMapping
     public ResponseEntity<ResponseDTO<TestSpeakingDTO>> create(@Valid @RequestBody TestSpeakingDTO dto) {

@@ -8,6 +8,7 @@ import com.englishweb.h2t_backside.service.test.SubmitToeicService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,17 @@ import org.springframework.web.bind.annotation.*;
 public class SubmitToeicController {
 
     private final SubmitToeicService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<SubmitToeicDTO> findById(@PathVariable Long id) {
+        SubmitToeicDTO toeic = service.findById(id);
+        return ResponseDTO.<SubmitToeicDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(toeic)
+                .message("SubmitToeic retrieved successfully")
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<SubmitToeicDTO>> create(@Valid @RequestBody SubmitToeicDTO dto) {

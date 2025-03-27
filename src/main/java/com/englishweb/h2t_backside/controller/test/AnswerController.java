@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.service.test.AnswerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,18 @@ import org.springframework.web.bind.annotation.*;
 public class AnswerController {
 
     private final AnswerService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<AnswerDTO> findById(@PathVariable Long id) {
+        AnswerDTO dto = service.findById(id);
+        return ResponseDTO.<AnswerDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("Answer retrieved successfully")
+                .build();
+    }
+
 
     @PostMapping
     public ResponseEntity<ResponseDTO<AnswerDTO>> create(@Valid @RequestBody AnswerDTO dto) {

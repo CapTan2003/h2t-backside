@@ -7,8 +7,11 @@ import com.englishweb.h2t_backside.service.test.TestPartService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -17,6 +20,27 @@ import org.springframework.web.bind.annotation.*;
 public class TestPartController {
 
     private final TestPartService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<TestPartDTO> findById(@PathVariable Long id) {
+        TestPartDTO dto = service.findById(id);
+        return ResponseDTO.<TestPartDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("TestPart retrieved successfully")
+                .build();
+    }
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<TestPartDTO>> getByIds(@RequestBody List<Long> ids) {
+        List<TestPartDTO> result = service.findByIds(ids);
+        return ResponseDTO.<List<TestPartDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("TestPart retrieved successfully")
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<TestPartDTO>> create(@Valid @RequestBody TestPartDTO dto) {

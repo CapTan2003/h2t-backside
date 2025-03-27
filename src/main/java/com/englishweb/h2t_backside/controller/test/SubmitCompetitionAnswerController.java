@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.service.test.SubmitCompetitionAnswerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class SubmitCompetitionAnswerController {
 
     private final SubmitCompetitionAnswerService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<SubmitCompetitionAnswerDTO> findById(@PathVariable Long id) {
+        SubmitCompetitionAnswerDTO dto = service.findById(id);
+        return ResponseDTO.<SubmitCompetitionAnswerDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("SubmitCompetitionAnswer retrieved successfully")
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<SubmitCompetitionAnswerDTO>> create(@Valid @RequestBody SubmitCompetitionAnswerDTO dto) {

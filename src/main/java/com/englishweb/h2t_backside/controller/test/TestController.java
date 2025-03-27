@@ -21,6 +21,19 @@ public class TestController {
 
     private final TestService service;
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<TestDTO> findById(@PathVariable Long id) {
+        TestDTO test = service.findById(id);
+
+        return ResponseDTO.<TestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(test)
+                .message("Test retrieved successfully")
+                .build();
+    }
+
+
     @PostMapping
     public ResponseEntity<ResponseDTO<TestDTO>> create(@Valid @RequestBody TestDTO dto) {
         TestDTO createdTest = service.create(dto);

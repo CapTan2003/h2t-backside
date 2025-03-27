@@ -21,6 +21,17 @@ public class ToeicController {
 
     private final ToeicService service;
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ToeicDTO> findById(@PathVariable Long id) {
+        ToeicDTO dto = service.findById(id);
+        return ResponseDTO.<ToeicDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("Toeic retrieved successfully")
+                .build();
+    }
+
     @PostMapping
     public ResponseEntity<ResponseDTO<ToeicDTO>> create(@Valid @RequestBody ToeicDTO dto) {
         ToeicDTO createdToeic = service.create(dto);

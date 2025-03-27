@@ -8,6 +8,7 @@ import com.englishweb.h2t_backside.service.test.SubmitTestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,18 @@ import org.springframework.web.bind.annotation.*;
 public class SubmitTestController {
 
     private final SubmitTestService service;
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<SubmitTestDTO> findById(@PathVariable Long id) {
+        SubmitTestDTO test = service.findById(id);
+        return ResponseDTO.<SubmitTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(test)
+                .message("SubmitTest retrieved successfully")
+                .build();
+    }
+
 
     @PostMapping
     public ResponseEntity<ResponseDTO<SubmitTestDTO>> create(@Valid @RequestBody SubmitTestDTO dto) {
