@@ -1,12 +1,15 @@
 package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.filter.ToeicFilterDTO;
 import com.englishweb.h2t_backside.dto.test.ToeicDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.ToeicService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,4 +67,22 @@ public class ToeicController {
                 .build();
         return ResponseEntity.ok(response);
     }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<ToeicDTO>> searchToeicWithFilters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @RequestParam(defaultValue = "") String userId,
+            @ModelAttribute ToeicFilterDTO filter) {
+
+        Page<ToeicDTO> results = service.searchWithFilters(page, size, sortFields, filter, userId);
+
+        return ResponseDTO.<Page<ToeicDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(results)
+                .message("Toeic results retrieved successfully with filters")
+                .build();
+    }
+
 }

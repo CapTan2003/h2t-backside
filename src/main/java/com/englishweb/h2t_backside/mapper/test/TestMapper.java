@@ -2,8 +2,10 @@ package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.model.test.Test;
-import com.englishweb.h2t_backside.model.RouteNode;
+import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -18,7 +20,7 @@ public interface TestMapper {
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "duration", source = "dto.duration")
     @Mapping(target = "type", source = "dto.type")
-    @Mapping(target = "parts", source = "dto.parts")
+    @Mapping(target = "parts", source = "dto.parts", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     Test convertToEntity(TestDTO dto);
 
@@ -28,7 +30,7 @@ public interface TestMapper {
     @Mapping(target = "description", source = "entity.description")
     @Mapping(target = "duration", source = "entity.duration")
     @Mapping(target = "type", source = "entity.type")
-    @Mapping(target = "parts", source = "entity.parts")
+    @Mapping(target = "parts", source = "entity.parts", qualifiedByName = "stringToLongList")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
@@ -39,8 +41,18 @@ public interface TestMapper {
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "duration", source = "dto.duration")
     @Mapping(target = "type", source = "dto.type")
-    @Mapping(target = "parts", source = "dto.parts")
+    @Mapping(target = "parts", source = "dto.parts", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status")
     void patchEntityFromDTO(TestDTO dto, @MappingTarget Test entity);
 
+    // Custom converters
+    @Named("stringToLongList")
+    default List<Long> stringToLongList(String str) {
+        return ParseData.parseStringToLongList(str);
+    }
+
+    @Named("longListToString")
+    default String longListToString(List<Long> list) {
+        return ParseData.parseLongListToString(list);
+    }
 }

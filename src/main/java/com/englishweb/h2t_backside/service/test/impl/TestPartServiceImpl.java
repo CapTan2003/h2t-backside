@@ -1,29 +1,51 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.TestPartMapper;
+import com.englishweb.h2t_backside.model.test.Test;
 import com.englishweb.h2t_backside.model.test.TestPart;
 import com.englishweb.h2t_backside.repository.test.TestPartRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.TestListeningService;
 import com.englishweb.h2t_backside.service.test.TestPartService;
+import com.englishweb.h2t_backside.service.test.TestReadingService;
+import com.englishweb.h2t_backside.service.test.TestSpeakingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 @Slf4j
 public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, TestPartRepository> implements TestPartService {
+
+    private final TestReadingService testReadingService;
+    private final TestListeningService testListeningService;
+    private final TestSpeakingService testSpeakingService;
     private final TestPartMapper mapper;
 
-    public TestPartServiceImpl(TestPartRepository repository, DiscordNotifier discordNotifier, TestPartMapper mapper) {
+    public TestPartServiceImpl(TestPartRepository repository,
+                               DiscordNotifier discordNotifier,
+                               TestPartMapper mapper,
+                               TestReadingService testReadingService,
+                               TestListeningService testListeningService,
+                               TestSpeakingService testSpeakingService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.testReadingService = testReadingService;
+        this.testListeningService = testListeningService;
+        this.testSpeakingService = testSpeakingService;
     }
+
 
     @Override
     protected void findByIdError(Long id) {
@@ -69,4 +91,59 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
     protected TestPartDTO convertToDTO(TestPart entity) {
         return mapper.convertToDTO(entity);
     }
+    @Override
+    public int countTotalQuestionsOfTest(List<Long> testParts) {
+        if (testParts == null || testParts.isEmpty()) return 0;
+
+        return testParts.stream()
+                .mapToInt(partId -> {
+                    try {
+                        TestPartDTO part = this.findById(partId);
+                        List<Long> questionIds = part.getQuestions();
+
+                        return switch (part.getType()) {
+                            case VOCABULARY, GRAMMAR, WRITING -> (questionIds != null) ? questionIds.size() : 0;
+                            case LISTENING, READING, SPEAKING -> countSubTestQuestions(questionIds, part.getType().name().toLowerCase());
+                            default -> 0;
+                        };
+
+                    } catch (Exception e) {
+                        log.warn("Error with TestPart ID {}: {}", partId, e.getMessage());
+                        return 0;
+                    }
+                })
+                .sum();
+    }
+
+    private int countSubTestQuestions(List<Long> testIds, String type) {
+        if (testIds == null || testIds.isEmpty()) return 0;
+
+        return testIds.stream()
+                .mapToInt(testId -> {
+                    try {
+                        List<Long> questionIds = switch (type) {
+                            case "reading" -> testReadingService.findById(testId).getQuestions();
+                            case "listening" -> testListeningService.findById(testId).getQuestions();
+                            case "speaking" -> testSpeakingService.findById(testId).getQuestions();
+                            default -> List.of();
+                        };
+                        return (questionIds != null) ? questionIds.size() : 0;
+                    } catch (Exception e) {
+                        log.warn("Failed to load sub-test {}: {}", testId, e.getMessage());
+                        return 0;
+                    }
+                })
+                .sum();
+    }
+    @Override
+    public List<TestPartDTO> findByIds(List<Long> ids) {
+        List<TestPartDTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
+    }
+
+
+
 }

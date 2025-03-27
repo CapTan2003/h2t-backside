@@ -69,4 +69,13 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
     protected SubmitCompetitionDTO convertToDTO(SubmitCompetition entity) {
         return mapper.convertToDTO(entity);
     }
+    @Override
+    public int countSubmitByUserId(Long userId) {
+        return repository.countByUserIdAndStatusTrue(userId);
+    }
+
+    @Override
+    public double totalScoreByUserId(Long userId) {
+        return repository.sumScoreByUserIdAndStatusTrue(userId);
+    }
 }

@@ -6,6 +6,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.SubmitToeicMapper;
+import com.englishweb.h2t_backside.model.test.SubmitTest;
 import com.englishweb.h2t_backside.model.test.SubmitToeic;
 import com.englishweb.h2t_backside.repository.test.SubmitToeicRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -14,6 +15,9 @@ import com.englishweb.h2t_backside.service.test.SubmitToeicService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -68,5 +72,23 @@ public class SubmitToeicServiceImpl extends BaseServiceImpl<SubmitToeicDTO, Subm
     @Override
     protected SubmitToeicDTO convertToDTO(SubmitToeic entity) {
         return mapper.convertToDTO(entity);
+    }
+    @Override
+    public Double getScoreOfLastTestByUser(Long userId) {
+        List<SubmitToeic> submits = repository.findByUserIdAndStatusTrue(userId);
+
+        return Double.valueOf(submits.stream()
+                .max(Comparator.comparing(SubmitToeic::getCreatedAt))
+                .map(SubmitToeic::getScore)
+                .orElse(0));
+    }
+    @Override
+    public int countSubmitByUserId(Long userId) {
+        return repository.countByUserIdAndStatusTrue(userId);
+    }
+
+    @Override
+    public double totalScoreByUserId(Long userId) {
+        return repository.sumScoreByUserIdAndStatusTrue(userId);
     }
 }

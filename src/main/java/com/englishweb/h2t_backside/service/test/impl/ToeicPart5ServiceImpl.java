@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.ToeicPart3_4DTO;
 import com.englishweb.h2t_backside.dto.test.ToeicPart5DTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -14,6 +15,9 @@ import com.englishweb.h2t_backside.service.test.ToeicPart5Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -68,5 +72,13 @@ public class ToeicPart5ServiceImpl extends BaseServiceImpl<ToeicPart5DTO, ToeicP
     @Override
     protected ToeicPart5DTO convertToDTO(ToeicPart5 entity) {
         return mapper.convertToDTO(entity);
+    }
+    @Override
+    public List<ToeicPart5DTO> findByIds(List<Long> ids) {
+        List<ToeicPart5DTO> result = new LinkedList<>();
+        for (Long id : ids) {
+            result.add(findById(id));
+        }
+        return result;
     }
 }

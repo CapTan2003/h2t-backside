@@ -1,12 +1,15 @@
 package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.filter.TestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.TestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,4 +67,22 @@ public class TestController {
                 .build();
         return ResponseEntity.ok(response);
     }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<TestDTO>> searchWithFilters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @RequestParam(defaultValue = "") String userId,
+            @ModelAttribute TestFilterDTO filter) {
+
+        Page<TestDTO> tests = service.searchWithFilters(page, size, sortFields, filter, userId);
+
+        return ResponseDTO.<Page<TestDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(tests)
+                .message("Tests retrieved successfully with filters")
+                .build();
+    }
+
 }

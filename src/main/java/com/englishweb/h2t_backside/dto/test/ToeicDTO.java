@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -20,23 +22,25 @@ public class ToeicDTO extends AbstractBaseDTO {
     private int duration;
 
     @NotNull(message = "Questions Part 1 cannot be null")
-    private String questionsPart1;
+    private List<Long> questionsPart1;
 
     @NotNull(message = "Questions Part 2 cannot be null")
-    private String questionsPart2;
+    private List<Long> questionsPart2;
 
     @NotNull(message = "Questions Part 3 cannot be null")
-    private String questionsPart3;
+    private List<Long> questionsPart3;
 
     @NotNull(message = "Questions Part 4 cannot be null")
-    private String questionsPart4;
+    private List<Long> questionsPart4;
 
     @NotNull(message = "Questions Part 5 cannot be null")
-    private String questionsPart5;
+    private List<Long> questionsPart5;
 
     @NotNull(message = "Questions Part 6 cannot be null")
-    private String questionsPart6;
+    private List<Long> questionsPart6;
 
     @NotNull(message = "Questions Part 7 cannot be null")
-    private String questionsPart7;
+    private List<Long> questionsPart7;
+
+    private Double ScoreLastOfTest;
 }

@@ -3,5 +3,8 @@ package com.englishweb.h2t_backside.service.test;
 import com.englishweb.h2t_backside.dto.test.TestSpeakingDTO;
 import com.englishweb.h2t_backside.service.feature.BaseService;
 
+import java.util.List;
+
 public interface TestSpeakingService extends BaseService<TestSpeakingDTO> {
+    List<TestSpeakingDTO> findByIds(List<Long> ids);
 }

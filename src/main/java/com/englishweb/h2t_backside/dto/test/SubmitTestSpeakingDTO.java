@@ -33,5 +33,5 @@ public class SubmitTestSpeakingDTO extends AbstractBaseDTO {
 
     @NotNull(message = "Score cannot be null")
     @Min(value = 0, message = "Score must be at least 0")
-    private Integer score;
+    private Double score;
 }

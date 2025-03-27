@@ -16,7 +16,7 @@ public class SubmitTestDTO extends AbstractBaseDTO {
 
     @NotNull(message = "Score cannot be null")
     @Min(value = 0, message = "Score must be at least 0")
-    private Integer score;
+    private Double score;
 
     @NotNull(message = "User id cannot be null")
     private Long userId;
@@ -25,4 +25,5 @@ public class SubmitTestDTO extends AbstractBaseDTO {
     private Long testId;
 
     private String comment;
+
 }

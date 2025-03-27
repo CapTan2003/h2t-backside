@@ -1,7 +1,13 @@
 package com.englishweb.h2t_backside.service.test;
 
+import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
 import com.englishweb.h2t_backside.service.feature.BaseService;
 
+import java.util.List;
+
 public interface TestPartService extends BaseService<TestPartDTO> {
+    int countTotalQuestionsOfTest(List<Long> testParts);
+    List<TestPartDTO> findByIds(List<Long> ids);
+
 }

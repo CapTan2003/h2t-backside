@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, SubmitTest, SubmitTestRepository> implements SubmitTestService {
@@ -69,4 +72,23 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
     protected SubmitTestDTO convertToDTO(SubmitTest entity) {
         return mapper.convertToDTO(entity);
     }
+    @Override
+    public double getScoreOfLastTestByUser(Long userId) {
+        List<SubmitTest> submits = repository.findByUserIdAndStatusTrue(userId);
+
+        return Double.valueOf(submits.stream()
+                .max(Comparator.comparing(SubmitTest::getCreatedAt))
+                .map(SubmitTest::getScore)
+                .orElse( 0));
+    }
+    @Override
+    public int countSubmitByUserId(Long userId) {
+        return repository.countByUserIdAndStatusTrue(userId);
+    }
+
+    @Override
+    public double totalScoreByUserId(Long userId) {
+        return repository.sumScoreByUserIdAndStatusTrue(userId);
+    }
+
 }
