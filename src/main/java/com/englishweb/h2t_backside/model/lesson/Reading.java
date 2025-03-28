@@ -1,10 +1,7 @@
 package com.englishweb.h2t_backside.model.lesson;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractLessonEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,7 +24,7 @@ public class Reading extends AbstractLessonEntity {
     @Builder.Default
     private String questions = "";
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "preparation_id")
     @Comment("Preparation object associated with this reading lesson")
     private Preparation preparation;

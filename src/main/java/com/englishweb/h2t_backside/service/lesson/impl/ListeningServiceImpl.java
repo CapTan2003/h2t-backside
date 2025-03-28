@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
+import com.englishweb.h2t_backside.dto.lesson.ListenAndWriteAWordDTO;
 import com.englishweb.h2t_backside.dto.lesson.ListeningDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -13,13 +14,12 @@ import com.englishweb.h2t_backside.repository.lesson.ListeningRepository;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
+import com.englishweb.h2t_backside.service.lesson.ListenAndWriteAWordService;
 import com.englishweb.h2t_backside.service.lesson.ListeningService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
-import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +31,27 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
 
     private final ListeningMapper mapper;
     private final LessonQuestionService lessonQuestionService;
+    private final ListenAndWriteAWordService listenAndWriteAWordService;
 
-    public ListeningServiceImpl(ListeningRepository repository, DiscordNotifierImpl discordNotifier, @Lazy ListeningMapper mapper, LessonQuestionService lessonQuestionService) {
+    public ListeningServiceImpl(ListeningRepository repository,
+                                DiscordNotifierImpl discordNotifier,
+                                @Lazy ListeningMapper mapper,
+                                LessonQuestionService lessonQuestionService,
+                                @Lazy ListenAndWriteAWordService listenAndWriteAWordService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
+        this.listenAndWriteAWordService = listenAndWriteAWordService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        // Delete other resources associated with the grammar
+        ListeningDTO dto = super.findById(id);
+        lessonQuestionService.deleteAll(dto.getQuestions());
+        List<ListenAndWriteAWordDTO> listDTO = listenAndWriteAWordService.findByListeningId(id);
+        listenAndWriteAWordService.deleteAll(listDTO.stream().map(ListenAndWriteAWordDTO::getId).toList());
+        return super.delete(id);
     }
 
     @Override

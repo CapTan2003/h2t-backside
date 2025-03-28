@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -99,6 +100,13 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
     public boolean isExist(Long id) {
         Optional<Entity> entityOptional = repository.findById(id);
         return entityOptional.isPresent();
+    }
+
+    @Override
+    public void deleteAll(List<Long> ids) {
+        log.info("Deleting all entities with IDs: {}", ids);
+        repository.deleteAllById(ids);
+        log.info("Deleted all entities with IDs: {}", ids);
     }
 
     protected abstract void findByIdError(Long id);

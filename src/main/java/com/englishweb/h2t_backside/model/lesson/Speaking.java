@@ -23,7 +23,7 @@ public class Speaking extends AbstractLessonEntity {
     @Comment("Duration of the speaking lesson in seconds")
     private Integer duration;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "preparation_id")
     @Comment("Preparation object associated with this speaking lesson")
     private Preparation preparation;

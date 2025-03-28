@@ -10,10 +10,16 @@ import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.repository.lesson.PreparationRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.lesson.PreparationClassifyService;
+import com.englishweb.h2t_backside.service.lesson.PreparationMakeSentencesService;
+import com.englishweb.h2t_backside.service.lesson.PreparationMatchWordSentencesService;
 import com.englishweb.h2t_backside.service.lesson.PreparationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -21,12 +27,37 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
         implements PreparationService {
 
     private final PreparationMapper mapper;
+    private final PreparationClassifyService preparationClassifyService;
+    private final PreparationMakeSentencesService preparationMakeSentencesService;
+    private final PreparationMatchWordSentencesService preparationMatchWordSentencesService;
 
     public PreparationServiceImpl(PreparationRepository repository,
                                   DiscordNotifier discordNotifier,
-                                  PreparationMapper mapper) {
+                                  PreparationMapper mapper,
+                                  @Lazy PreparationClassifyService preparationClassifyService,
+                                  @Lazy PreparationMakeSentencesService preparationMakeSentencesService,
+                                  @Lazy PreparationMatchWordSentencesService preparationMatchWordSentencesService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.preparationClassifyService = preparationClassifyService;
+        this.preparationMakeSentencesService = preparationMakeSentencesService;
+        this.preparationMatchWordSentencesService = preparationMatchWordSentencesService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        // Delete other resources associated with the preparation
+        PreparationDTO dto = super.findById(id);
+        List<Long> questionIds = dto.getQuestions();
+
+        if (!questionIds.isEmpty()) {
+            switch (dto.getType()) {
+                case CLASSIFY -> preparationClassifyService.deleteAll(questionIds);
+                case WORDS_MAKE_SENTENCES -> preparationMakeSentencesService.deleteAll(questionIds);
+                default -> preparationMatchWordSentencesService.deleteAll(questionIds);
+            }
+        }
+        return super.delete(id);
     }
 
     @Override

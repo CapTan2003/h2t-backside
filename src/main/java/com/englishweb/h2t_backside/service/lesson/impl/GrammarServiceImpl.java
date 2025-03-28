@@ -9,6 +9,7 @@ import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.GrammarMapper;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
+import com.englishweb.h2t_backside.model.lesson.LessonQuestion;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
@@ -35,6 +36,14 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        // Delete other resources associated with the grammar
+        GrammarDTO dto = super.findById(id);
+        lessonQuestionService.deleteAll(dto.getQuestions());
+        return super.delete(id);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Writing extends AbstractLessonEntity {
     @Comment("List of answers related to the writing lesson")
     private List<WritingAnswer> answers;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "preparation_id")
     @Comment("Preparation object associated with this writing lesson")
     private Preparation preparation;
