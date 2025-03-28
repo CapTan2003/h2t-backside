@@ -38,7 +38,7 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
 
     @Override
     public boolean delete(Long id) {
-        // Delete other resources associated with the grammar
+        // Delete other resources associated with the reading
         ReadingDTO dto = super.findById(id);
         lessonQuestionService.deleteAll(dto.getQuestions());
         return super.delete(id);
