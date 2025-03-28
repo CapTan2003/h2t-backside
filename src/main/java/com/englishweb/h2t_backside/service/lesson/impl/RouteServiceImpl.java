@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.RouteDTO;
+import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.filter.RouteFilterDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -12,10 +13,12 @@ import com.englishweb.h2t_backside.repository.RouteRepository;
 import com.englishweb.h2t_backside.repository.specifications.RouteSpecification;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.lesson.RouteNodeService;
 import com.englishweb.h2t_backside.service.lesson.RouteService;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,11 +29,24 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepository> implements RouteService {
 
+    private final RouteNodeService routeNodeService;
     RouteMapper mapper;
 
-    public RouteServiceImpl(RouteRepository repository, RouteMapper mapper, DiscordNotifier discordNotifier) {
+    public RouteServiceImpl(RouteRepository repository, RouteMapper mapper, DiscordNotifier discordNotifier,@Lazy RouteNodeService routeNodeService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.routeNodeService = routeNodeService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        // Delete other resources associated with the route
+        RouteDTO dto = super.findById(id);
+        for(RouteNodeDTO node : dto.getRouteNodes()) {
+            // Call delete service to delete other resources
+            routeNodeService.delete(node.getId());
+        }
+        return super.delete(id);
     }
 
     @Override
