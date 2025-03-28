@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
+import com.englishweb.h2t_backside.dto.lesson.ReadingDTO;
 import com.englishweb.h2t_backside.dto.lesson.TopicDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -35,6 +36,14 @@ public class TopicServiceImpl extends BaseServiceImpl<TopicDTO, Topic, TopicRepo
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        // Delete other resources associated with the grammar
+        TopicDTO dto = super.findById(id);
+        lessonQuestionService.deleteAll(dto.getQuestions());
+        return super.delete(id);
     }
 
     @Override

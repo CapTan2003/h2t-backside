@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @Service
 @Slf4j
@@ -60,6 +61,24 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
         this.speakingService = speakingService;
         this.listeningService = listeningService;
         this.testService = testService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        log.info("Deleting route node with ID: {}", id);
+        // Delete other resources associated with the route node
+        RouteNodeDTO routeNode = super.findById(id);
+        Map<RouteNodeEnum, Consumer<Long>> serviceMap = Map.of(
+                RouteNodeEnum.VOCABULARY, topicService::delete,
+                RouteNodeEnum.GRAMMAR, grammarService::delete,
+                RouteNodeEnum.READING, readingService::delete,
+                RouteNodeEnum.WRITING, writingService::delete,
+                RouteNodeEnum.SPEAKING, speakingService::delete,
+                RouteNodeEnum.LISTENING, listeningService::delete
+        );
+        serviceMap.getOrDefault(routeNode.getType(), testService::delete)
+                .accept(routeNode.getNodeId());
+        return super.delete(id);
     }
 
     @Override

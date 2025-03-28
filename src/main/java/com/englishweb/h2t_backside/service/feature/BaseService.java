@@ -1,5 +1,7 @@
 package com.englishweb.h2t_backside.service.feature;
 
+import java.util.List;
+
 public interface BaseService<DTO> {
 
     DTO findById(Long id);
@@ -13,4 +15,6 @@ public interface BaseService<DTO> {
     boolean delete(Long id);
 
     boolean isExist(Long id);
+
+    void deleteAll(List<Long> ids);
 }

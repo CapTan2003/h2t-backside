@@ -15,11 +15,9 @@ import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.service.lesson.ReadingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
-import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +34,14 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        // Delete other resources associated with the grammar
+        ReadingDTO dto = super.findById(id);
+        lessonQuestionService.deleteAll(dto.getQuestions());
+        return super.delete(id);
     }
 
     @Override
