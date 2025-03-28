@@ -46,7 +46,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
 
     @Override
     public boolean delete(Long id) {
-        // Delete other resources associated with the grammar
+        // Delete other resources associated with the listening
         ListeningDTO dto = super.findById(id);
         lessonQuestionService.deleteAll(dto.getQuestions());
         List<ListenAndWriteAWordDTO> listDTO = listenAndWriteAWordService.findByListeningId(id);
