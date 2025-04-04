@@ -6,6 +6,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.PreparationMapper;
+import com.englishweb.h2t_backside.model.enummodel.PreparationEnum;
 import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.repository.lesson.PreparationRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -45,19 +46,41 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
     }
 
     @Override
+    public PreparationDTO update(PreparationDTO dto, Long id) {
+        PreparationDTO exitingPreparation = super.findById(id);
+        if (exitingPreparation.getType() != dto.getType()) {
+            deleteQuestions(exitingPreparation, dto.getType());
+        }
+        return super.update(dto, id);
+    }
+
+    @Override
+    public PreparationDTO patch(PreparationDTO dto, Long id) {
+        PreparationDTO exitingPreparation = super.findById(id);
+        if (exitingPreparation.getType() != dto.getType()) {
+            deleteQuestions(exitingPreparation, dto.getType());
+        }
+        return super.patch(dto, id);
+    }
+
+    @Override
     public boolean delete(Long id) {
         // Delete other resources associated with the preparation
         PreparationDTO dto = super.findById(id);
+        deleteQuestions(dto, dto.getType());
+        return super.delete(id);
+    }
+
+    private void deleteQuestions(PreparationDTO dto, PreparationEnum type) {
         List<Long> questionIds = dto.getQuestions();
 
         if (!questionIds.isEmpty()) {
-            switch (dto.getType()) {
+            switch (type) {
                 case CLASSIFY -> preparationClassifyService.deleteAll(questionIds);
                 case WORDS_MAKE_SENTENCES -> preparationMakeSentencesService.deleteAll(questionIds);
                 default -> preparationMatchWordSentencesService.deleteAll(questionIds);
             }
         }
-        return super.delete(id);
     }
 
     @Override

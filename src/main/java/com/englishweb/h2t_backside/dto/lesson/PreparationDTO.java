@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.dto.lesson;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.PreparationEnum;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,6 @@ public class PreparationDTO extends AbstractBaseDTO {
 
     private List<Long> questions;
 
-    @NotBlank(message = "Type cannot be empty")
+    @NotNull(message = "Type cannot be empty")
     private PreparationEnum type;
 }
