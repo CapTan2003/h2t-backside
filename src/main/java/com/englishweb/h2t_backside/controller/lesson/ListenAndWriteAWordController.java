@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/listen-and-write-a-word")
@@ -74,6 +76,18 @@ public class ListenAndWriteAWordController {
         return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Listen and write a word deleted successfully" : "Failed to delete listen and write a word")
+                .build();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<ListenAndWriteAWordDTO>> findByListeningId(@RequestParam Long listeningId) {
+        List<ListenAndWriteAWordDTO> listenAndWriteAWords = service.findByListeningId(listeningId);
+
+        return ResponseDTO.<List<ListenAndWriteAWordDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(listenAndWriteAWords)
+                .message("Listen and write a words retrieved successfully")
                 .build();
     }
 }

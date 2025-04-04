@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.dto.lesson;
 
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,6 @@ public class ListenAndWriteAWordDTO extends AbstractBaseDTO {
     @NotBlank(message = "Correct answer cannot be empty")
     private String correctAnswer;
 
-    @NotBlank(message = "Listening id cannot be empty")
+    @NotNull(message = "Listening id cannot be empty")
     private Long listeningId;
 }
