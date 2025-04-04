@@ -2,8 +2,13 @@ package com.englishweb.h2t_backside.mapper.lesson;
 
 import com.englishweb.h2t_backside.dto.lesson.SpeakingDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
+import com.englishweb.h2t_backside.model.Route;
+import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.model.lesson.Speaking;
+import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -22,7 +27,7 @@ public interface SpeakingMapper {
     @Mapping(target = "views", source = "dto.views", defaultValue = "0L")
     @Mapping(target = "topic", source = "dto.topic")
     @Mapping(target = "duration", source = "dto.duration")
-    @Mapping(target = "preparation", source = "dto.preparation")
+    @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     Speaking convertToEntity(SpeakingDTO dto);
 
@@ -37,7 +42,7 @@ public interface SpeakingMapper {
     @Mapping(target = "views", source = "entity.views")
     @Mapping(target = "topic", source = "entity.topic")
     @Mapping(target = "duration", source = "entity.duration")
-    @Mapping(target = "preparation", source = "entity.preparation")
+    @Mapping(target = "preparationId", source = "entity.preparation.id")
     @Mapping(target = "routeNode", source = "entity.routeNode")
     SpeakingDTO convertToDTO(Speaking entity);
 
@@ -50,7 +55,15 @@ public interface SpeakingMapper {
     @Mapping(target = "views", source = "dto.views")
     @Mapping(target = "topic", source = "dto.topic")
     @Mapping(target = "duration", source = "dto.duration")
-    @Mapping(target = "preparation", source = "dto.preparation")
+    @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     void patchEntityFromDTO(SpeakingDTO dto, @MappingTarget Speaking entity);
+
+    @Named("mapPreparationIdToPreparation")
+    default Preparation stringToLongList(Long preparationId) {
+        if (preparationId == null) return null;
+        Preparation preparation = new Preparation();
+        preparation.setId(preparationId);
+        return preparation;
+    }
 }

@@ -25,5 +25,5 @@ public class ListeningDTO extends AbstractLessonDTO {
 
     private List<Long> questions;
 
-    private PreparationDTO preparation;
+    private Long preparationId;
 }

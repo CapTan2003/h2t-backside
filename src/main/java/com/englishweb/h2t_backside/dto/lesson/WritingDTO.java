@@ -30,5 +30,5 @@ public class WritingDTO extends AbstractLessonDTO {
     @NotNull(message = "Tips cannot be empty")
     private List<String> tips;
 
-    private PreparationDTO preparation;
+    private Long preparationId;
 }
