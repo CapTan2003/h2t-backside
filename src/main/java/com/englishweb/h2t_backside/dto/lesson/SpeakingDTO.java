@@ -22,5 +22,5 @@ public class SpeakingDTO extends AbstractLessonDTO {
     @NotNull(message = "Duration for speaking cannot be empty")
     private Integer duration;
 
-    private PreparationDTO preparation;
+    private Long preparationId;
 }

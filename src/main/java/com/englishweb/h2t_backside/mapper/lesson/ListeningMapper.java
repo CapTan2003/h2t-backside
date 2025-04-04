@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.mapper.lesson;
 import com.englishweb.h2t_backside.dto.lesson.ListeningDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.lesson.Listening;
+import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
 
@@ -26,7 +27,7 @@ public interface ListeningMapper {
     @Mapping(target = "audio", source = "dto.audio")
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
-    @Mapping(target = "preparation", source = "dto.preparation")
+    @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     Listening convertToEntity(ListeningDTO dto);
 
@@ -42,7 +43,7 @@ public interface ListeningMapper {
     @Mapping(target = "audio", source = "entity.audio")
     @Mapping(target = "transcript", source = "entity.transcript")
     @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList") // Đã khai báo bên trong PreparationMapper.class
-    @Mapping(target = "preparation", source = "entity.preparation")
+    @Mapping(target = "preparationId", source = "entity.preparation.id")
     @Mapping(target = "routeNode", source = "entity.routeNode")
     ListeningDTO convertToDTO(Listening entity);
 
@@ -56,8 +57,15 @@ public interface ListeningMapper {
     @Mapping(target = "audio", source = "dto.audio")
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString") // Đã khai báo bên trong PreparationMapper.class
-    @Mapping(target = "preparation", source = "dto.preparation")
+    @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     void patchEntityFromDTO(ListeningDTO dto, @MappingTarget Listening entity);
 
+    @Named("mapPreparationIdToPreparation")
+    default Preparation stringToLongList(Long preparationId) {
+        if (preparationId == null) return null;
+        Preparation preparation = new Preparation();
+        preparation.setId(preparationId);
+        return preparation;
+    }
 }

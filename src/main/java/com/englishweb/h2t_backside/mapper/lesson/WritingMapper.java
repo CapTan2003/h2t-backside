@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.mapper.lesson;
 
 import com.englishweb.h2t_backside.dto.lesson.WritingDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
+import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.model.lesson.Writing;
 import org.mapstruct.*;
 
@@ -24,7 +25,7 @@ public interface WritingMapper {
     @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "paragraph", source = "dto.paragraph")
     @Mapping(target = "tips", source = "dto.tips")
-    @Mapping(target = "preparation", source = "dto.preparation")
+    @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     Writing convertToEntity(WritingDTO dto);
 
@@ -41,7 +42,7 @@ public interface WritingMapper {
     @Mapping(target = "file", source = "entity.file")
     @Mapping(target = "paragraph", source = "entity.paragraph")
     @Mapping(target = "tips", source = "entity.tips")
-    @Mapping(target = "preparation", source = "entity.preparation")
+    @Mapping(target = "preparationId", source = "entity.preparation.id")
     @Mapping(target = "routeNode", source = "entity.routeNode")
     WritingDTO convertToDTO(Writing entity);
 
@@ -56,7 +57,15 @@ public interface WritingMapper {
     @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "paragraph", source = "dto.paragraph")
     @Mapping(target = "tips", source = "dto.tips")
-    @Mapping(target = "preparation", source = "dto.preparation")
+    @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
     @Mapping(target = "routeNode", source = "dto.routeNode")
     void patchEntityFromDTO(WritingDTO dto, @MappingTarget Writing entity);
+
+    @Named("mapPreparationIdToPreparation")
+    default Preparation stringToLongList(Long preparationId) {
+        if (preparationId == null) return null;
+        Preparation preparation = new Preparation();
+        preparation.setId(preparationId);
+        return preparation;
+    }
 }
