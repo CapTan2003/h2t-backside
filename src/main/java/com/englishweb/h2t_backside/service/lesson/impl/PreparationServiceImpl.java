@@ -49,16 +49,20 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
     public PreparationDTO update(PreparationDTO dto, Long id) {
         PreparationDTO exitingPreparation = super.findById(id);
         if (exitingPreparation.getType() != dto.getType()) {
-            deleteQuestions(exitingPreparation, dto.getType());
+            deleteQuestions(exitingPreparation, exitingPreparation.getType());
+            dto.setQuestions(null);
         }
         return super.update(dto, id);
     }
 
     @Override
     public PreparationDTO patch(PreparationDTO dto, Long id) {
+        if (dto.getType() == null) return super.patch(dto, id);
+
         PreparationDTO exitingPreparation = super.findById(id);
         if (exitingPreparation.getType() != dto.getType()) {
-            deleteQuestions(exitingPreparation, dto.getType());
+            deleteQuestions(exitingPreparation, exitingPreparation.getType());
+            dto.setQuestions(null);
         }
         return super.patch(dto, id);
     }
