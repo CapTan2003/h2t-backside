@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.dto.lesson;
 
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PreparationMakeSentencesDTO extends AbstractBaseDTO {
 
-    @NotBlank(message = "Sentences cannot be empty")
+    @NotNull(message = "Sentences cannot be empty")
     private List<String> sentences;
 }

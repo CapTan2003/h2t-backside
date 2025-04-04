@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.dto.lesson;
 
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,6 @@ public class PreparationClassifyDTO extends AbstractBaseDTO {
     @NotBlank(message = "Group name cannot be empty")
     private String groupName;
 
-    @NotBlank(message = "Members cannot be empty")
+    @NotNull(message = "Members cannot be empty")
     private List<String> members;
 }
