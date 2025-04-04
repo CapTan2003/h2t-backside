@@ -42,9 +42,9 @@ public class ErrorLogPagination {
             specification = specification.and(ErrorLogSpecification.findBySeverity(filter.getSeverity()));
         }
 
-        // Lọc theo trạng thái fixed (đã fix chưa)
-        if (filter.getFixed() != null) {
-            specification = specification.and(ErrorLogSpecification.findByFixed(filter.getFixed()));
+        // Lọc theo status (đã fix chưa)
+        if (filter.getStatus() != null) {
+            specification = specification.and(ErrorLogSpecification.findByFixed(filter.getStatus()));
         }
 
         // Chuyển đổi string sortFields thành một danh sách các đối tượng Sort.Order

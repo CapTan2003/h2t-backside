@@ -15,10 +15,5 @@ public interface ErrorLogEntity extends BaseEntity {
     SeverityEnum getSeverity();
     void setSeverity(SeverityEnum severity);
 
-    boolean isFixed();
-    void setFixed(boolean fixed);
-
-    LocalDateTime getTimestamp();
-    void setTimestamp(LocalDateTime timestamp);
 }
 

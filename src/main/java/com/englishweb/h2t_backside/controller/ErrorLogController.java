@@ -20,18 +20,6 @@ public class ErrorLogController {
 
     private final ErrorLogService errorLogService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDTO<ErrorLogDTO> create(@Valid @RequestBody ErrorLogDTO errorLogDTO) {
-        ErrorLogDTO createdErrorLog = errorLogService.create(errorLogDTO);
-
-        return ResponseDTO.<ErrorLogDTO>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .data(createdErrorLog)
-                .message("Error log created successfully")
-                .build();
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<ErrorLogDTO> update(@PathVariable Long id, @Valid @RequestBody ErrorLogDTO errorLogDTO) {

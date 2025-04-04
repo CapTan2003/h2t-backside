@@ -88,7 +88,7 @@ public class DiscordNotifierImpl implements DiscordNotifier {
             ErrorLogDTO errorLogDTO = ErrorLogDTO.builder()
                     .message(errorDTO.getMessage())
                     .errorCode(errorDTO.getErrorCode())
-                    .timestamp(errorDTO.getTimestamp())
+                    .createdAt(errorDTO.getTimestamp())
                     .build();
             errorLogService.create(errorLogDTO);
         } catch (JsonProcessingException e) {

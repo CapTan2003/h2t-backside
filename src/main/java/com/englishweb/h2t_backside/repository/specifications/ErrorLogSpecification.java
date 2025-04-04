@@ -2,7 +2,6 @@ package com.englishweb.h2t_backside.repository.specifications;
 
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.interfacemodel.ErrorLogEntity;
-import com.englishweb.h2t_backside.model.log.ErrorLog;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
@@ -21,16 +20,16 @@ public class ErrorLogSpecification {
                 criteriaBuilder.equal(root.get("severity"), severity);
     }
 
-    // Tìm theo trạng thái fixed (đã được fix chưa)
-    public static <T extends ErrorLogEntity> Specification<T> findByFixed(Boolean fixed) {
+    // Tìm theo statusEnum (đã được fix chưa)
+    public static <T extends ErrorLogEntity> Specification<T> findByFixed(Boolean statusEnum) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("fixed"), fixed);
+                criteriaBuilder.equal(root.get("statusEnum"), statusEnum);
     }
 
     // Tìm theo timestamp (thời gian xảy ra lỗi)
-    public static <T extends ErrorLogEntity> Specification<T> findByTimestamp(LocalDateTime timestamp) {
+    public static <T extends ErrorLogEntity> Specification<T> findByTimestamp(LocalDateTime createdAt) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("timestamp"), timestamp);
+                criteriaBuilder.equal(root.get("createdAt"), createdAt);
     }
 }
 

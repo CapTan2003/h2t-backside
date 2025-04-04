@@ -15,6 +15,5 @@ import lombok.experimental.SuperBuilder;
 public class ErrorLogFilterDTO extends BaseFilterDTO{
     private String message;
     private SeverityEnum severity;
-    private Boolean fixed;
 }
 

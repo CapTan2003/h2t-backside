@@ -8,8 +8,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
-import java.time.LocalDateTime;
-
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
@@ -17,10 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorLog extends AbstractBaseEntity implements ErrorLogEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false)
     @Comment("Message for error log")
     private String message;             // Lời nhắn lỗi
@@ -30,14 +24,7 @@ public class ErrorLog extends AbstractBaseEntity implements ErrorLogEntity {
     private String errorCode;           // Mã lỗi
 
     @Column(nullable = false)
-    @Comment("Timestamp for error log")
-    private LocalDateTime timestamp;    // Thời gian xảy ra lỗi
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Comment("Severity level for error log")
     private SeverityEnum severity;      // Mức độ nghiêm trọng
-
-    @Column(nullable = false)
-    private boolean fixed = false;      // Đã fix lỗi hay chưa
 }
