@@ -22,6 +22,5 @@ public class WritingAnswerDTO extends AbstractBaseDTO {
     @NotBlank(message = "Correct answer cannot be empty")
     private String correctAnswer;
 
-    @NotBlank(message = "Writing id cannot be empty")
     private Long writingId;
 }

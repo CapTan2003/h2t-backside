@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/writing-answers")
@@ -74,6 +76,18 @@ public class WritingAnswerController {
         return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Writing answer deleted successfully" : "Failed to delete writing answer")
+                .build();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<WritingAnswerDTO>> findByWritingId(@RequestParam Long writingId) {
+        List<WritingAnswerDTO> writingAnswers = service.findByWritingId(writingId);
+
+        return ResponseDTO.<List<WritingAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(writingAnswers)
+                .message("Writing answers retrieved successfully")
                 .build();
     }
 }
