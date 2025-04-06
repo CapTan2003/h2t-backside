@@ -112,4 +112,21 @@ public class GrammarController {
                 .message("Questions retrieved successfully")
                 .build();
     }
+
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidLesson(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Grammar verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Grammar not valid")
+                    .build();
+        }
+    }
 }

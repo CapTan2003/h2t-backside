@@ -152,6 +152,28 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
                 .toList();
     }
 
+    @Override
+    public boolean verifyValidRouteNode(Long id) {
+        RouteNodeDTO node = super.findById(id);
+        return switch (node.getType()) {
+            case VOCABULARY ->
+                    topicService.findById(node.getNodeId()).getStatus() && topicService.verifyValidLesson(node.getNodeId());
+            case GRAMMAR ->
+                    grammarService.findById(node.getNodeId()).getStatus() && grammarService.verifyValidLesson(node.getNodeId());
+            case READING ->
+                    readingService.findById(node.getNodeId()).getStatus() && readingService.verifyValidLesson(node.getNodeId());
+            case WRITING ->
+                    writingService.findById(node.getNodeId()).getStatus() && writingService.verifyValidLesson(node.getNodeId());
+            case SPEAKING ->
+                    speakingService.findById(node.getNodeId()).getStatus() && speakingService.verifyValidLesson(node.getNodeId());
+            case LISTENING ->
+                    listeningService.findById(node.getNodeId()).getStatus() && listeningService.verifyValidLesson(node.getNodeId());
+            // TODO: Verify test
+            case READING_TEST, WRITING_TEST, SPEAKING_TEST, LISTENING_TEST, MIXING_TEST -> true;
+            default -> false;
+        };
+    }
+
     private void processTopic(RouteNodeDTO node, Long nodeId) {
         TopicDTO dto = topicService.findById(nodeId);
         setCommonFields(node, dto);

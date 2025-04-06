@@ -13,4 +13,6 @@ public interface GrammarService extends BaseService<GrammarDTO> {
     Page<GrammarDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter);
 
     List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId);
+
+    boolean verifyValidLesson(Long lessonId);
 }

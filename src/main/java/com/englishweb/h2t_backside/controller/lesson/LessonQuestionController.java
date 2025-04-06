@@ -76,4 +76,21 @@ public class LessonQuestionController {
                 .message(result ? "Lesson question deleted successfully" : "Failed to delete lesson question")
                 .build();
     }
+
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidQuestion(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Lesson question verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Lesson question not valid")
+                    .build();
+        }
+    }
 }

@@ -1,6 +1,10 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
+import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
+import com.englishweb.h2t_backside.dto.lesson.PreparationClassifyDTO;
 import com.englishweb.h2t_backside.dto.lesson.PreparationDTO;
+import com.englishweb.h2t_backside.dto.lesson.PreparationMakeSentencesDTO;
+import com.englishweb.h2t_backside.dto.lesson.PreparationMatchWordSentencesDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -130,5 +134,27 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
     @Override
     protected PreparationDTO convertToDTO(Preparation entity) {
         return mapper.convertToDTO(entity);
+    }
+
+    @Override
+    public boolean verifyValidPreparation(Long preparationId) {
+        PreparationDTO dto = findById(preparationId);
+        if (dto.getQuestions().isEmpty())
+            return false;
+        // Check if at least one question is valid and active
+        switch (dto.getType()) {
+            case CLASSIFY -> {
+                List<PreparationClassifyDTO> preparationClassifies = preparationClassifyService.findByIds(dto.getQuestions());
+                return preparationClassifies.stream().anyMatch(AbstractBaseDTO::getStatus);
+            }
+            case WORDS_MAKE_SENTENCES -> {
+                List<PreparationMakeSentencesDTO> preparationMakeSentences = preparationMakeSentencesService.findByIds(dto.getQuestions());
+                return preparationMakeSentences.stream().anyMatch(AbstractBaseDTO::getStatus);
+            }
+            default -> {
+                List<PreparationMatchWordSentencesDTO> preparationMatchWordSentences = preparationMatchWordSentencesService.findByIds(dto.getQuestions());
+                return preparationMatchWordSentences.stream().anyMatch(AbstractBaseDTO::getStatus);
+            }
+        }
     }
 }

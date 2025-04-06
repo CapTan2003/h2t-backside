@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
+import com.englishweb.h2t_backside.dto.lesson.PreparationDTO;
 import com.englishweb.h2t_backside.dto.lesson.ReadingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -13,6 +14,7 @@ import com.englishweb.h2t_backside.repository.lesson.ReadingRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
+import com.englishweb.h2t_backside.service.lesson.PreparationService;
 import com.englishweb.h2t_backside.service.lesson.ReadingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +31,13 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
 
     private final ReadingMapper mapper;
     private final LessonQuestionService lessonQuestionService;
+    private final PreparationService preparationService;
 
-    public ReadingServiceImpl(ReadingRepository repository, DiscordNotifier discordNotifier, @Lazy ReadingMapper mapper, LessonQuestionService lessonQuestionService) {
+    public ReadingServiceImpl(ReadingRepository repository, DiscordNotifier discordNotifier, @Lazy ReadingMapper mapper, LessonQuestionService lessonQuestionService, PreparationService preparationService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
+        this.preparationService = preparationService;
     }
 
     @Override
@@ -105,5 +109,26 @@ public class ReadingServiceImpl extends BaseServiceImpl<ReadingDTO, Reading, Rea
             String errorMessage = String.format("Error finding questions for reading with ID '%d': %s", lessonId, ex.getMessage());
             throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
         }
+    }
+
+    @Override
+    public boolean verifyValidLesson(Long lessonId) {
+        ReadingDTO dto = super.findById(lessonId);
+
+        if (dto.getQuestions().isEmpty() ||
+                dto.getPreparationId() == null) {
+            return false;
+        }
+
+        // Check if at least one question is valid
+        List<LessonQuestionDTO> questions = lessonQuestionService.findByIds(dto.getQuestions());
+        if (questions.stream().allMatch(question -> !lessonQuestionService.verifyValidQuestion(question.getId()) || !question.getStatus())) {
+            return false;
+        }
+
+        // Check if the preparation is valid
+        PreparationDTO preparation = preparationService.findById(dto.getPreparationId());
+        return preparation.getStatus() &&
+                preparationService.verifyValidPreparation(dto.getPreparationId());
     }
 }
