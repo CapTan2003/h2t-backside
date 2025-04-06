@@ -58,6 +58,7 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
                 return null;
             }
         } catch (HttpStatusCodeException e) {
+            log.error("Error converting text to speech: {}", e.getMessage(), e);
             return null;
         }
     }
@@ -71,7 +72,8 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
             try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
                 byte[] fileData = fileInputStream.readAllBytes();
                 VoiceDTO voiceDTO = VoiceDTO.builder()
-                        .voice(voiceName.name())
+                        .voice(voiceName.voice())
+                        .name(voiceName.name())
                         .fileData(fileData)
                         .build();
                 voiceDTOs.add(voiceDTO);
