@@ -9,18 +9,15 @@ import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.GrammarMapper;
 import com.englishweb.h2t_backside.model.lesson.Grammar;
-import com.englishweb.h2t_backside.model.lesson.LessonQuestion;
 import com.englishweb.h2t_backside.repository.lesson.GrammarRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.GrammarService;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
-import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -109,5 +106,15 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
             String errorMessage = String.format("Error finding questions for grammar with ID '%d': %s", lessonId, ex.getMessage());
             throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
         }
+    }
+
+    @Override
+    public boolean verifyValidLesson(Long lessonId) {
+        GrammarDTO dto = super.findById(lessonId);
+        if (dto.getTips().isEmpty() || dto.getQuestions().isEmpty())
+            return false;
+        List<LessonQuestionDTO> questions = lessonQuestionService.findByIds(dto.getQuestions());
+        // Check if at least one question is valid and active
+        return questions.stream().anyMatch((question) -> lessonQuestionService.verifyValidQuestion(question.getId()) && question.getStatus());
     }
 }

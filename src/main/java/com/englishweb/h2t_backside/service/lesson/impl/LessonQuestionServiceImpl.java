@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
+import com.englishweb.h2t_backside.dto.lesson.LessonAnswerDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -101,5 +102,14 @@ public class LessonQuestionServiceImpl
             result.add(findById(id));
         }
         return result;
+    }
+
+    @Override
+    public boolean verifyValidQuestion(Long questionId) {
+        LessonQuestionDTO question = this.findById(questionId);
+
+        return !question.getAnswers().isEmpty() && // Check if there are answers
+                question.getAnswers().stream()
+                        .anyMatch(answer -> answer.isCorrect() && answer.getStatus()); // Check if there is at least one correct answer
     }
 }

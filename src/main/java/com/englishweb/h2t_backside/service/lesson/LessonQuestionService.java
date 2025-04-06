@@ -8,4 +8,6 @@ import java.util.List;
 public interface LessonQuestionService extends BaseService<LessonQuestionDTO> {
 
     List<LessonQuestionDTO> findByIds(List<Long> ids);
+
+    boolean verifyValidQuestion(Long questionId);
 }

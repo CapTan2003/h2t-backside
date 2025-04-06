@@ -1,6 +1,8 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
+import com.englishweb.h2t_backside.dto.lesson.PreparationDTO;
+import com.englishweb.h2t_backside.dto.lesson.SpeakingConversationDTO;
 import com.englishweb.h2t_backside.dto.lesson.SpeakingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -11,6 +13,8 @@ import com.englishweb.h2t_backside.model.lesson.Speaking;
 import com.englishweb.h2t_backside.repository.lesson.SpeakingRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.lesson.PreparationService;
+import com.englishweb.h2t_backside.service.lesson.SpeakingConversationService;
 import com.englishweb.h2t_backside.service.lesson.SpeakingService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +23,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, SpeakingRepository> implements SpeakingService {
 
     private final SpeakingMapper mapper;
+    private final PreparationService preparationService;
+    private final SpeakingConversationService speakingConversationService;
 
-    public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, @Lazy SpeakingMapper mapper) {
+    public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, @Lazy SpeakingMapper mapper, PreparationService preparationService, SpeakingConversationService speakingConversationService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.preparationService = preparationService;
+        this.speakingConversationService = speakingConversationService;
     }
 
     @Override
@@ -80,5 +90,21 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
         return LessonPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, Speaking.class
         ).map(this::convertToDTO);
+    }
+
+    @Override
+    public boolean verifyValidLesson(Long lessonId) {
+        SpeakingDTO dto = super.findById(lessonId);
+        if (dto.getPreparationId() == null)
+            return false;
+        // Check if the preparation is valid
+        PreparationDTO preparation = preparationService.findById(dto.getPreparationId());
+        if (!preparation.getStatus() ||
+                !preparationService.verifyValidPreparation(dto.getPreparationId())) {
+            return false;
+        }
+        // Check if at least one conversation is active
+        List<SpeakingConversationDTO> speakingConversations = speakingConversationService.findBySpeakingId(lessonId);
+        return speakingConversations.stream().anyMatch(SpeakingConversationDTO::getStatus);
     }
 }

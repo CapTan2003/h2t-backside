@@ -76,4 +76,21 @@ public class PreparationController {
                 .message(result ? "Preparation deleted successfully" : "Failed to delete preparation")
                 .build();
     }
+
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidPreparation(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Preparation verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Preparation not valid")
+                    .build();
+        }
+    }
 }

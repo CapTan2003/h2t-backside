@@ -8,4 +8,6 @@ import org.springframework.data.domain.Page;
 public interface RouteService extends BaseService<RouteDTO> {
 
     Page<RouteDTO> findByOwnerId(int page, int size, String sortFields, RouteFilterDTO filter, Long ownerId);
+
+    boolean verifyValidRoute(Long id);
 }

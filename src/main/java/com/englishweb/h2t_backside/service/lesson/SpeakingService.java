@@ -8,4 +8,6 @@ import org.springframework.data.domain.Page;
 public interface SpeakingService extends BaseService<SpeakingDTO> {
 
     Page<SpeakingDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter);
+
+    boolean verifyValidLesson(Long lessonId);
 }

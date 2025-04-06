@@ -8,4 +8,6 @@ import java.util.List;
 public interface RouteNodeService extends BaseService<RouteNodeDTO> {
 
     List<RouteNodeDTO> findByRouteId(Long routeId);
+
+    boolean verifyValidRouteNode(Long id);
 }

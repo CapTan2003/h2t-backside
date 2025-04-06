@@ -13,5 +13,7 @@ public interface ListeningService extends BaseService<ListeningDTO> {
     Page<ListeningDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter);
 
     List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId);
+
+    boolean verifyValidLesson(Long lessonId);
 }
 

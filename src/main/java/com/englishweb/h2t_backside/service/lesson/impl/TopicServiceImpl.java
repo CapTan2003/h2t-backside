@@ -1,9 +1,12 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
+import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
+import com.englishweb.h2t_backside.dto.filter.VocabularyFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.lesson.ReadingDTO;
 import com.englishweb.h2t_backside.dto.lesson.TopicDTO;
+import com.englishweb.h2t_backside.dto.lesson.VocabularyDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -15,6 +18,7 @@ import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.service.lesson.TopicService;
+import com.englishweb.h2t_backside.service.lesson.VocabularyService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +35,13 @@ import java.util.List;
 public class TopicServiceImpl extends BaseServiceImpl<TopicDTO, Topic, TopicRepository> implements TopicService {
     private final TopicMapper mapper;
     private final LessonQuestionService lessonQuestionService;
+    private final VocabularyService vocabularyService;
 
-    public TopicServiceImpl(TopicRepository repository, DiscordNotifier discordNotifier, @Lazy TopicMapper mapper, LessonQuestionService lessonQuestionService) {
+    public TopicServiceImpl(TopicRepository repository, DiscordNotifier discordNotifier, @Lazy TopicMapper mapper, LessonQuestionService lessonQuestionService, VocabularyService vocabularyService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
+        this.vocabularyService = vocabularyService;
     }
 
     @Override
@@ -110,5 +116,22 @@ public class TopicServiceImpl extends BaseServiceImpl<TopicDTO, Topic, TopicRepo
             String errorMessage = String.format("Error finding questions for topic with ID '%d': %s", lessonId, ex.getMessage());
             throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
         }
+    }
+
+    @Override
+    public boolean verifyValidLesson(Long lessonId) {
+        TopicDTO dto = super.findById(lessonId);
+        if (dto.getQuestions().isEmpty())
+            return false;
+
+        // Check if at least one question is valid
+        List<LessonQuestionDTO> questions = lessonQuestionService.findByIds(dto.getQuestions());
+        if (questions.stream().allMatch(question -> !lessonQuestionService.verifyValidQuestion(question.getId()) || !question.getStatus())) {
+            return false;
+        }
+
+        Page<VocabularyDTO> vocabularies = vocabularyService.searchWithFiltersTopicId(0, 10, "", null, lessonId);
+        return vocabularies.getTotalElements() > 0
+                && vocabularies.getContent().stream().anyMatch(AbstractBaseDTO::getStatus);
     }
 }

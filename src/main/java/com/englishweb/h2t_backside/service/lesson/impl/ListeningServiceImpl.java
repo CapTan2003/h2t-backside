@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.lesson.ListenAndWriteAWordDTO;
 import com.englishweb.h2t_backside.dto.lesson.ListeningDTO;
+import com.englishweb.h2t_backside.dto.lesson.PreparationDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -16,6 +17,7 @@ import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.service.lesson.ListenAndWriteAWordService;
 import com.englishweb.h2t_backside.service.lesson.ListeningService;
+import com.englishweb.h2t_backside.service.lesson.PreparationService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -32,16 +34,18 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
     private final ListeningMapper mapper;
     private final LessonQuestionService lessonQuestionService;
     private final ListenAndWriteAWordService listenAndWriteAWordService;
+    private final PreparationService preparationService;
 
     public ListeningServiceImpl(ListeningRepository repository,
                                 DiscordNotifierImpl discordNotifier,
                                 @Lazy ListeningMapper mapper,
                                 LessonQuestionService lessonQuestionService,
-                                @Lazy ListenAndWriteAWordService listenAndWriteAWordService) {
+                                @Lazy ListenAndWriteAWordService listenAndWriteAWordService, PreparationService preparationService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
         this.listenAndWriteAWordService = listenAndWriteAWordService;
+        this.preparationService = preparationService;
     }
 
     @Override
@@ -117,5 +121,35 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
             String errorMessage = String.format("Error finding questions for listening with ID '%d': %s", lessonId, ex.getMessage());
             throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
         }
+    }
+
+    @Override
+    public boolean verifyValidLesson(Long lessonId) {
+        ListeningDTO dto = super.findById(lessonId);
+        if (dto.getQuestions().isEmpty() ||
+                dto.getPreparationId() == null) {
+            return false;
+        }
+        // Check if at least one question is valid
+        List<LessonQuestionDTO> questions = lessonQuestionService.findByIds(dto.getQuestions());
+        if (questions.stream().allMatch(question -> !lessonQuestionService.verifyValidQuestion(question.getId()) || !question.getStatus())) {
+            return false;
+        }
+
+        // Check if the preparation is valid
+        PreparationDTO preparation = preparationService.findById(dto.getPreparationId());
+        if (!preparation.getStatus() ||
+                !preparationService.verifyValidPreparation(dto.getPreparationId())) {
+            return false;
+        }
+
+        // Check if there are listenAndWriteAWords
+        List<ListenAndWriteAWordDTO> listenAndWriteAWords = listenAndWriteAWordService.findByListeningId(lessonId);
+        if (listenAndWriteAWords.isEmpty()) {
+            return false;
+        }
+
+        // Check if at least one listenAndWriteAWord is active
+        return listenAndWriteAWords.stream().anyMatch(ListenAndWriteAWordDTO::getStatus);
     }
 }

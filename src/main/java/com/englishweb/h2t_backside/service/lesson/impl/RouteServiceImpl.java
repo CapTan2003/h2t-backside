@@ -107,4 +107,10 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
 
         return repository.findAll(specification, pageable).map(this::convertToDTO);
     }
+
+    @Override
+    public boolean verifyValidRoute(Long id) {
+        RouteDTO route = super.findById(id);
+        return route.getRouteNodes().stream().anyMatch((routeNodeDTO -> routeNodeService.verifyValidRouteNode(routeNodeDTO.getId())));
+    }
 }

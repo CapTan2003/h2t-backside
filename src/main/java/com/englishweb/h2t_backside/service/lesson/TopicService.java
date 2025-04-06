@@ -13,4 +13,6 @@ public interface TopicService extends BaseService<TopicDTO> {
     Page<TopicDTO> searchWithFilters(int page, int size, String sortFields, LessonFilterDTO filter);
 
     List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId);
+
+    boolean verifyValidLesson(Long lessonId);
 }
