@@ -13,5 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class VoiceDTO {
     private String voice;
+    private String name;
     private byte[] fileData;
 }

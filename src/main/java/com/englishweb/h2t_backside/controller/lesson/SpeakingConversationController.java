@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/speaking-conversations")
@@ -74,6 +76,18 @@ public class SpeakingConversationController {
         return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Speaking conversation deleted successfully" : "Failed to delete speaking conversation")
+                .build();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SpeakingConversationDTO>> findBySpeakingId(@RequestParam Long speakingId) {
+        List<SpeakingConversationDTO> speakingConversations = service.findBySpeakingId(speakingId);
+
+        return ResponseDTO.<List<SpeakingConversationDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(speakingConversations)
+                .message("Speaking conversations retrieved successfully")
                 .build();
     }
 }

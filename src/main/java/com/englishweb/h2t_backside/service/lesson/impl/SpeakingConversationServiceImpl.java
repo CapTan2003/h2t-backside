@@ -85,6 +85,10 @@ public class SpeakingConversationServiceImpl
         if(!speakingService.isExist(speakingId)) {
             throw new ResourceNotFoundException(speakingId, String.format("Speaking with ID '%d' not found.", speakingId));
         }
-        return repository.findBySpeaking_Id(speakingId).stream().map(this::convertToDTO).toList();
+        // TODO: Get audio url from firebase
+        return repository.findBySpeaking_Id(speakingId).stream()
+                .map(this::convertToDTO)
+                .peek(dto -> dto.setAudioUrl("/basic_listening.mp3"))
+                .toList();
     }
 }
