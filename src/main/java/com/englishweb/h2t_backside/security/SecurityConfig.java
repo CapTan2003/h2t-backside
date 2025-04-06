@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.security;
 
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -92,7 +93,7 @@ public class SecurityConfig {
             // Kiểm tra loại token
             String tokenType = jwt.getClaimAsString("token_type");
             if (!"access".equals(tokenType)) {
-                throw new ResourceNotFoundException("Invalid token type: Only access tokens are allowed");
+                throw new ResourceNotFoundException("Invalid token type: Only access tokens are allowed", SeverityEnum.HIGH);
             }
 
             // Trích xuất quyền hạn từ token

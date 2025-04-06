@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.TestPartMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.test.Test;
 import com.englishweb.h2t_backside.model.test.TestPart;
 import com.englishweb.h2t_backside.repository.test.TestPartRepository;
@@ -51,7 +52,7 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
     protected void findByIdError(Long id) {
         String errorMessage = String.format("TestPart with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
         log.error("Error creating test part: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating test part: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override

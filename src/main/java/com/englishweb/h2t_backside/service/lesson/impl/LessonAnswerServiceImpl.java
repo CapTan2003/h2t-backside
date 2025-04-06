@@ -6,6 +6,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.LessonAnswerMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.lesson.LessonAnswer;
 import com.englishweb.h2t_backside.repository.lesson.LessonAnswerRepository;
 import com.englishweb.h2t_backside.service.feature.impl.DiscordNotifierImpl;
@@ -30,7 +31,7 @@ public class LessonAnswerServiceImpl extends BaseServiceImpl<LessonAnswerDTO, Le
     protected void findByIdError(Long id) {
         String errorMessage = String.format("LessonAnswer with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class LessonAnswerServiceImpl extends BaseServiceImpl<LessonAnswerDTO, Le
         log.error("Error creating LessonAnswer: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating LessonAnswer: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_ANSWER_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class LessonAnswerServiceImpl extends BaseServiceImpl<LessonAnswerDTO, Le
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override

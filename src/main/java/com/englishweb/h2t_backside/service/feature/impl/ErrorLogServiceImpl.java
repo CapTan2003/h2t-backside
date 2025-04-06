@@ -62,6 +62,7 @@ public class ErrorLogServiceImpl implements ErrorLogService {
                 .createdAt(entity.getCreatedAt())
                 .severity(entity.getSeverity())
                 .status(entity.getStatus())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 
@@ -70,6 +71,8 @@ public class ErrorLogServiceImpl implements ErrorLogService {
                 .id(dto.getId())
                 .message(dto.getMessage())
                 .errorCode(dto.getErrorCode())
+                .severity(dto.getSeverity())
+                .status(dto.getStatus())
                 .createdAt(dto.getCreatedAt())
                 .build();
     }

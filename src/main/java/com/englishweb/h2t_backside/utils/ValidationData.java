@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.utils;
 
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.InvalidArgumentException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import org.springframework.data.domain.Sort;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class ValidationData {
 
     public static boolean isValidFieldInSortList(Class<?> clazz, List<Sort.Order> orders) {
         if (clazz == null || orders == null) {
-            throw new InvalidArgumentException("Class and orders must not be null.", null, ErrorApiCodeContent.SORT_FIELD_INVALID);
+            throw new InvalidArgumentException("Class and orders must not be null.", null, ErrorApiCodeContent.SORT_FIELD_INVALID, SeverityEnum.LOW);
         }
 
         List<Field> fields = getAllFields(clazz);

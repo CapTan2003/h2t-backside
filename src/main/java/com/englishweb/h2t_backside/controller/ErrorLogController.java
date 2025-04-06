@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/error-logs")
+@RequestMapping("/api/error-logs")
 @RequiredArgsConstructor
 @Slf4j
 public class ErrorLogController {

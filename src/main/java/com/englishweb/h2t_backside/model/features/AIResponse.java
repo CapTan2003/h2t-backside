@@ -22,7 +22,6 @@ public class AIResponse extends AbstractBaseEntity {
     @Comment("Response from AI")
     private String response;
 
-    @Column(nullable = false)
     @Comment("Evaluate of real teacher")
     private String evaluate;
 

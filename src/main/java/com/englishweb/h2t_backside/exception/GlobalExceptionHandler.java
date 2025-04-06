@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.exception;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ErrorDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.ARGUMENT_DTO_INVALID)
                 .data(ex.getBindingResult().getTarget())
+                .severity(SeverityEnum.LOW)
                 .build();
 
         // Gửi thông báo lỗi đến Discord
@@ -74,6 +76,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.RESOURCE_NOT_FOUND)
                 .data(ex.getResourceId())
+                .severity(SeverityEnum.LOW)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
 
@@ -113,6 +116,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ex.getErrorCode())
                 .data(ex.getData())
+                .severity(SeverityEnum.LOW)
                 .build();
 
         // Gửi thông báo lỗi đến Discord
@@ -135,6 +139,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(errorCode)
                 .data(data)
+                .severity(SeverityEnum.LOW)
                 .build();
 
         // Gửi thông báo lỗi đến Discord
@@ -165,6 +170,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.ARGUMENT_TYPE_MISMATCH)
                 .data(ex.getName())
+                .severity(SeverityEnum.LOW)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
 
@@ -191,6 +197,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.ARGUMENT_TYPE_MISMATCH)
                 .data(ex.getMessage())
+                .severity(SeverityEnum.LOW)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
 
@@ -217,6 +224,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.MISSING_REQUEST_PARAMETER)
                 .data(ex.getParameterName())
+                .severity(SeverityEnum.LOW)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
 
@@ -242,6 +250,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.IO_EXCEPTION)
                 .data(ex.getMessage())
+                .severity(SeverityEnum.LOW)
                 .build();
 
         discordNotifier.buildErrorAndSend(errorDTO);
@@ -267,6 +276,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.UNEXPECTED_ERROR)
                 .data(ex.getMessage())
+                .severity(SeverityEnum.LOW)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
         return ResponseDTO.<String>builder()

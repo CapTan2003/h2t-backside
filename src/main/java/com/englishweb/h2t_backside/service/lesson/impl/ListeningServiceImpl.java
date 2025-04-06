@@ -9,6 +9,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.ListeningMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.lesson.Listening;
 import com.englishweb.h2t_backside.repository.lesson.ListeningRepository;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
@@ -59,7 +60,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
         String errorMessage = String.format("Listening with ID '%d' not found.", id);
         log.warn(errorMessage);
 
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
         String errorMessage = "Unexpected error creating listening: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override
@@ -115,7 +116,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
             return lessonQuestionService.findByIds(listQuestion);
         } catch (ResourceNotFoundException ex) {
             String errorMessage = String.format("Error finding questions for listening with ID '%d': %s", lessonId, ex.getMessage());
-            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage);
+            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage, SeverityEnum.LOW);
         }
     }
 }

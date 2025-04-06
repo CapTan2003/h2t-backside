@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.service.feature.impl;
 import com.englishweb.h2t_backside.dto.EmailDTO;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.EmailService;
 import com.englishweb.h2t_backside.utils.SendEmail;
@@ -50,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
         Optional<User> userOptional = repository.findAllByEmail(emailDTO.getEmail());
 
         if (userOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Email does not exist.");
+            throw new ResourceNotFoundException("Email does not exist.", SeverityEnum.LOW);
         }
 
         String otp = generateOtp();
@@ -65,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
         EmailServiceImpl.OtpData otpData = otpCache.get(email);
 
         if (otpData == null) {
-            throw new ResourceNotFoundException("OTP code is null.");
+            throw new ResourceNotFoundException("OTP code is null.", SeverityEnum.LOW);
         }
 
         long currentTime = System.currentTimeMillis();
@@ -73,11 +74,11 @@ public class EmailServiceImpl implements EmailService {
 
         if (elapsedTime > 120 * 1000) {
             otpCache.remove(email);
-            throw new ResourceNotFoundException("OTP code has expired.");
+            throw new ResourceNotFoundException("OTP code has expired.", SeverityEnum.LOW);
         }
 
         if (!otpData.otp.trim().equals(emailDTO.getOtp().trim())) {
-            throw new ResourceNotFoundException("OTP code is not valid.");
+            throw new ResourceNotFoundException("OTP code is not valid.", SeverityEnum.LOW);
         }
 
         otpCache.remove(email);
@@ -86,11 +87,11 @@ public class EmailServiceImpl implements EmailService {
 
     public void resetPassword(EmailDTO emailDTO) {
         if (!otpVerifiedCache.getOrDefault(emailDTO.getEmail().trim(), false)) {
-            throw new ResourceNotFoundException("You need to verify the OTP code before changing your password.");
+            throw new ResourceNotFoundException("You need to verify the OTP code before changing your password.", SeverityEnum.LOW);
         }
 
         User user = repository.findAllByEmail(emailDTO.getEmail().trim())
-                .orElseThrow(() -> new ResourceNotFoundException("User with email '" + emailDTO.getEmail() + "' not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User with email '" + emailDTO.getEmail() + "' not found.", SeverityEnum.LOW));
 
         String hashedPassword = passwordEncoder.encode(emailDTO.getNewPassword());
         user.setPassword(hashedPassword);

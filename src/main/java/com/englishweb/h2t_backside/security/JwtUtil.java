@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.security;
 
 import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -57,7 +58,7 @@ public class JwtUtil {
 
             return signedJWT.serialize();
         } catch (JOSEException e) {
-            throw new AuthenticateException("Failed to generate token", e);
+            throw new AuthenticateException("Failed to generate token", e, SeverityEnum.HIGH);
         }
     }
 
@@ -86,7 +87,7 @@ public class JwtUtil {
             SignedJWT signedJWT = SignedJWT.parse(token);
             return signedJWT.getJWTClaimsSet().getExpirationTime();
         } catch (ParseException e) {
-            throw new AuthenticateException("Failed to get expiration from token", e);
+            throw new AuthenticateException("Failed to get expiration from token", e, SeverityEnum.MEDIUM);
         }
     }
 
@@ -95,7 +96,7 @@ public class JwtUtil {
             SignedJWT signedJWT = SignedJWT.parse(token);
             return signedJWT.getJWTClaimsSet().getSubject();
         } catch (ParseException e) {
-            throw new AuthenticateException("Failed to get email from token", e);
+            throw new AuthenticateException("Failed to get email from token", e, SeverityEnum.MEDIUM);
         }
     }
 
@@ -104,7 +105,7 @@ public class JwtUtil {
             SignedJWT signedJWT = SignedJWT.parse(token);
             return signedJWT.getJWTClaimsSet().getLongClaim("id");
         } catch (ParseException e) {
-            throw new AuthenticateException("Failed to get id from token", e);
+            throw new AuthenticateException("Failed to get id from token", e, SeverityEnum.MEDIUM);
         }
     }
 }
