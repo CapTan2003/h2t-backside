@@ -590,6 +590,9 @@ mvn spring-boot:run -Dspring-boot.run.profiles=prod
 
 # OR using the JAR file
 java -jar -Dspring.profiles.active=prod target/h2t-backside-0.0.1-SNAPSHOT.jar
+
+# API Speech to text
+docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
 ```
 
 ## 📚 API Documentation
