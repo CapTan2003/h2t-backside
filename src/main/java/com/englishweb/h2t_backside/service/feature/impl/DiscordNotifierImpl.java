@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.response.ErrorDTO;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.utils.CustomLocalDateTimeSerializer;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.ErrorLogService;
@@ -89,6 +90,8 @@ public class DiscordNotifierImpl implements DiscordNotifier {
                     .message(errorDTO.getMessage())
                     .errorCode(errorDTO.getErrorCode())
                     .createdAt(errorDTO.getTimestamp())
+                    .severity(errorDTO.getSeverity())
+                    .status(false)
                     .build();
             errorLogService.create(errorLogDTO);
         } catch (JsonProcessingException e) {

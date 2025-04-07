@@ -13,14 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/error-logs")
+@RequestMapping("/api/error-logs")
 @RequiredArgsConstructor
 @Slf4j
 public class ErrorLogController {
 
     private final ErrorLogService errorLogService;
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<ErrorLogDTO> update(@PathVariable Long id, @Valid @RequestBody ErrorLogDTO errorLogDTO) {
         ErrorLogDTO updatedErrorLog = errorLogService.update(id, errorLogDTO);

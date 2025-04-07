@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.dto.response;
 
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,4 +18,5 @@ public class ErrorDTO {
     private LocalDateTime timestamp; // Thời gian xảy ra lỗi
     private String errorCode;   // Mã lỗi tùy chỉnh
     private Object data;        // Dữ liệu liên quan (nếu có)
+    private SeverityEnum severity;  // Muc do nghiem trong
 }

@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.VocabularyMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.lesson.Vocabulary;
 import com.englishweb.h2t_backside.repository.lesson.VocabularyRepository;
 import com.englishweb.h2t_backside.repository.specifications.VocabularySpecification;
@@ -39,7 +40,7 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
     protected void findByIdError(Long id) {
         String errorMessage = String.format("Vocabulary with ID '%d' not found", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -50,7 +51,8 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
                 dto,
                 errorMessage,
                 ErrorApiCodeContent.VOCABULARY_CREATED_FAIL,
-                HttpStatus.INTERNAL_SERVER_ERROR
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                SeverityEnum.HIGH
         );
     }
 
@@ -69,7 +71,8 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
                 dto,
                 errorMessage,
                 ErrorApiCodeContent.VOCABULARY_UPDATED_FAIL,
-                status
+                status,
+                SeverityEnum.LOW
         );
     }
 

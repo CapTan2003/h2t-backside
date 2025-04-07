@@ -11,6 +11,7 @@ import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.PreparationMapper;
 import com.englishweb.h2t_backside.model.enummodel.PreparationEnum;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.repository.lesson.PreparationRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -95,7 +96,7 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
     protected void findByIdError(Long id) {
         String errorMessage = String.format("Preparation with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
         log.error("Error creating preparation: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating preparation: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.PREPARATION_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class PreparationServiceImpl extends BaseServiceImpl<PreparationDTO, Prep
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override

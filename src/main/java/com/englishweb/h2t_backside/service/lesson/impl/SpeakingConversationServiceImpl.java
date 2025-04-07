@@ -6,6 +6,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.SpeakingConversationMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.lesson.SpeakingConversation;
 import com.englishweb.h2t_backside.repository.lesson.SpeakingConversationRepository;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
@@ -39,7 +40,7 @@ public class SpeakingConversationServiceImpl
     protected void findByIdError(Long id) {
         String errorMessage = String.format("SpeakingConversation with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class SpeakingConversationServiceImpl
         log.error("Error creating SpeakingConversation: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating SpeakingConversation: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class SpeakingConversationServiceImpl
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class SpeakingConversationServiceImpl
     @Override
     public List<SpeakingConversationDTO> findBySpeakingId(Long speakingId) {
         if(!speakingService.isExist(speakingId)) {
-            throw new ResourceNotFoundException(speakingId, String.format("Speaking with ID '%d' not found.", speakingId));
+            throw new ResourceNotFoundException(speakingId, String.format("Speaking with ID '%d' not found.", speakingId), SeverityEnum.LOW);
         }
         // TODO: Get audio url from firebase
         return repository.findBySpeaking_Id(speakingId).stream()

@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.interfacedto.BaseDTO;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.interfacemodel.BaseEntity;
 import com.englishweb.h2t_backside.service.feature.BaseService;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -70,7 +71,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
         log.info("Updating with patch entity with DTO");
         try{
             Entity existingEntity = repository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException(id, "Resource not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(id, "Resource not found", SeverityEnum.MEDIUM));
 
             patchEntityFromDTO(dto, existingEntity);
             Entity savedEntity = repository.save(existingEntity);

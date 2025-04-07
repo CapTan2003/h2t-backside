@@ -9,6 +9,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.lesson.SpeakingMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.lesson.Speaking;
 import com.englishweb.h2t_backside.repository.lesson.SpeakingRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -45,7 +46,7 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
     protected void findByIdError(Long id) {
         String errorMessage = String.format("Speaking with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
         log.error("Error creating speaking: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating speaking: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override

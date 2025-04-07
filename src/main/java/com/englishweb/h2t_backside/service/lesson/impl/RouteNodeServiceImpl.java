@@ -11,6 +11,7 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
 import com.englishweb.h2t_backside.model.RouteNode;
 import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.RouteNodeRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
@@ -85,7 +86,7 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
     protected void findByIdError(Long id) {
         String errorMessage = String.format("Route node with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
         log.error("Error creating route node: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating route node: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.ROUTE_NODE_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
     @Override
     public List<RouteNodeDTO> findByRouteId(Long routeId) {
         if (!routeService.isExist(routeId)) {
-            throw new ResourceNotFoundException(routeId, String.format("Route with ID '%d' not found.", routeId));
+            throw new ResourceNotFoundException(routeId, String.format("Route with ID '%d' not found.", routeId), SeverityEnum.LOW);
         }
 
         Map<RouteNodeEnum, BiConsumer<RouteNodeDTO, Long>> typeProcessor = new EnumMap<>(RouteNodeEnum.class);

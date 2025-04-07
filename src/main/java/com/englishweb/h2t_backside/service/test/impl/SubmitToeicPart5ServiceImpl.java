@@ -6,6 +6,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.SubmitToeicPart5Mapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.test.SubmitToeicPart5;
 import com.englishweb.h2t_backside.repository.test.SubmitToeicPart5Repository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -29,7 +30,7 @@ public class SubmitToeicPart5ServiceImpl extends BaseServiceImpl<SubmitToeicPart
     protected void findByIdError(Long id) {
         String errorMessage = String.format("SubmitToeicPart5 with ID '%d' not found.", id);
         log.warn(errorMessage);
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class SubmitToeicPart5ServiceImpl extends BaseServiceImpl<SubmitToeicPart
         log.error("Error creating submit toeic part 5: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating submit toeic part 5: " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
-        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class SubmitToeicPart5ServiceImpl extends BaseServiceImpl<SubmitToeicPart
             status = HttpStatus.NOT_FOUND;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override

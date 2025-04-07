@@ -2,6 +2,9 @@ package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.filter.ErrorLogFilterDTO;
+import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.mapper.ErrorLogMapper;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.log.ErrorLog;
 import com.englishweb.h2t_backside.repository.ErrorLogRepository;
 import com.englishweb.h2t_backside.service.feature.ErrorLogService;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class ErrorLogServiceImpl implements ErrorLogService {
     ErrorLogRepository repository;
+    private final ErrorLogMapper mapper;
 
     @Override
     public ErrorLogDTO create(ErrorLogDTO dto) {
@@ -34,11 +38,18 @@ public class ErrorLogServiceImpl implements ErrorLogService {
 
     @Override
     public ErrorLogDTO update(Long id, ErrorLogDTO dto) {
+        log.info("Updating error log entity with PATCH-style update");
+
         try {
-            ErrorLog entity = convertToEntity(dto);
-            entity.setId(id);
-            ErrorLogDTO savedDTO = convertToDTO(repository.save(entity));
+            ErrorLog existingEntity = repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(id, "ErrorLog not found", SeverityEnum.MEDIUM));
+
+            patchEntityFromDTO(dto, existingEntity);
+
+            ErrorLog savedEntity = repository.save(existingEntity);
+            ErrorLogDTO savedDTO = convertToDTO(savedEntity);
             log.info("Updated error log with ID: {}", savedDTO.getId());
+
             return savedDTO;
         } catch (Exception e) {
             log.error("Error updating error log with ID {}: {}", id, e.getMessage());
@@ -54,24 +65,10 @@ public class ErrorLogServiceImpl implements ErrorLogService {
         return errorLogs.map(this::convertToDTO);
     }
 
-    private ErrorLogDTO convertToDTO(ErrorLog entity) {
-        return ErrorLogDTO.builder()
-                .id(entity.getId())
-                .message(entity.getMessage())
-                .errorCode(entity.getErrorCode())
-                .createdAt(entity.getCreatedAt())
-                .severity(entity.getSeverity())
-                .status(entity.getStatus())
-                .build();
-    }
+    protected void patchEntityFromDTO(ErrorLogDTO dto, ErrorLog entity) { mapper.patchEntityFromDTO(dto, entity); }
 
-    private ErrorLog convertToEntity(ErrorLogDTO dto) {
-        return ErrorLog.builder()
-                .id(dto.getId())
-                .message(dto.getMessage())
-                .errorCode(dto.getErrorCode())
-                .createdAt(dto.getCreatedAt())
-                .build();
-    }
+    protected ErrorLog convertToEntity(ErrorLogDTO dto) { return mapper.convertToEntity(dto); }
+
+    protected ErrorLogDTO convertToDTO(ErrorLog entity) { return mapper.convertToDTO(entity); }
 
 }

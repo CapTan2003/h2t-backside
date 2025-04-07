@@ -7,6 +7,7 @@ import com.englishweb.h2t_backside.exception.AuthenticateException;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import com.englishweb.h2t_backside.service.feature.UserService;
@@ -30,7 +31,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final UserRepository repository;
-    private final UserService userService;
 
     @Value("${gg_client_id}")
     private String ggClientId;
@@ -40,23 +40,22 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.repository = repository;
-        this.userService = userService;
     }
 
     public AuthenticateDTO login(LoginDTO dto) {
         User user = repository.findAllByEmail(dto.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Invalid email: {}", dto.getEmail());
-                    return new ResourceNotFoundException("Invalid email or password.");
+                    return new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH);
                 });
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.warn("Invalid password for email: {}", dto.getEmail());
-            throw new ResourceNotFoundException("Invalid email or password.");
+            throw new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH);
         }
 
         if(!user.getStatus()){
-            throw new ResourceNotFoundException("Account has been locked!");
+            throw new ResourceNotFoundException("Account has been locked!", SeverityEnum.LOW);
         }
 
         String accessToken = jwtUtil.generateAccessToken(user);
@@ -122,7 +121,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                     .build();
 
         } catch (Exception e) {
-            throw new AuthenticateException("Failed to verify Google ID Token", e);
+            throw new AuthenticateException("Failed to verify Google ID Token", e, SeverityEnum.HIGH);
         }
     }
 
@@ -132,7 +131,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
 
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid refresh token."));
+                .orElseThrow(() -> new AuthenticateException("Invalid refresh token.", SeverityEnum.HIGH));
 
         // Xóa refresh token khỏi database để vô hiệu hóa nó
         user.setRefreshToken(null);
@@ -146,12 +145,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         // Kiểm tra token hợp lệ
         if (!jwtUtil.validateToken(refreshToken, false)) {
-            throw new ResourceNotFoundException("Invalid or expired refresh token.");
+            throw new AuthenticateException("Invalid or expired refresh token.", SeverityEnum.HIGH);
         }
 
         // Kiểm tra xem refresh token có trong DB không
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new ResourceNotFoundException("Refresh token is invalid or already used."));
+                .orElseThrow(() -> new AuthenticateException("Refresh token is invalid or already used.", SeverityEnum.HIGH));
 
         String newAccessToken = jwtUtil.generateAccessToken(user);
         String newRefreshToken = jwtUtil.generateRefreshToken(user);

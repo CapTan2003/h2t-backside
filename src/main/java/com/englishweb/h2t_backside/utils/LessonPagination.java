@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.utils;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.InvalidArgumentException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.interfacemodel.LessonEntity;
 import com.englishweb.h2t_backside.repository.specifications.LessonSpecification;
 import org.springframework.data.domain.Page;
@@ -22,11 +23,11 @@ public class LessonPagination {
             R repository, Class<T> entityClass) {
 
         if (page < 0) {
-            throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID);
+            throw new InvalidArgumentException("Page index must not be less than 0.", page, ErrorApiCodeContent.PAGE_INDEX_INVALID, SeverityEnum.LOW);
         }
 
         if (size <= 0) {
-            throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID);
+            throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID, SeverityEnum.LOW);
         }
 
         Specification<T> specification = Specification.where(BaseFilterSpecification.applyBaseFilters(filter));
@@ -38,7 +39,7 @@ public class LessonPagination {
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
 
         if (!ValidationData.isValidFieldInSortList(entityClass, orders)) {
-            throw new InvalidArgumentException("Invalid sort field.", sortFields, ErrorApiCodeContent.SORT_FIELD_INVALID);
+            throw new InvalidArgumentException("Invalid sort field.", sortFields, ErrorApiCodeContent.SORT_FIELD_INVALID, SeverityEnum.LOW);
         }
 
         Sort sort = Sort.by(orders);

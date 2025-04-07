@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
 import com.englishweb.h2t_backside.exception.*;
 import com.englishweb.h2t_backside.mapper.UserMapper;
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.EmailService;
@@ -44,7 +45,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String errorMessage = String.format("User with ID '%d' not found.", id);
         log.warn(errorMessage);
 
-        throw new ResourceNotFoundException(id, errorMessage);
+        throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
             status = HttpStatus.BAD_REQUEST;
         }
 
-        throw new CreateResourceException(dto, errorMessage, errorCode, status);
+        throw new CreateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.HIGH);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
             status = HttpStatus.BAD_REQUEST;
         }
 
-        throw new UpdateResourceException(dto, errorMessage, errorCode, status);
+        throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
     @Override
