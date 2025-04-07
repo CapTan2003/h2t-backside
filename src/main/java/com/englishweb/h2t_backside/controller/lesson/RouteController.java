@@ -95,4 +95,21 @@ public class RouteController {
                 .message("Routes retrieved successfully")
                 .build();
     }
+
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidRoute(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Route verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Route not valid")
+                    .build();
+        }
+    }
 }
