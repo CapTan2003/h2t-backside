@@ -119,12 +119,12 @@ public class ListeningController {
         if (result) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.SUCCESS)
-                    .message("Listening verified successfully")
+                    .message("Listening lesson verified successfully")
                     .build();
         } else {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
-                    .message("Listening not valid")
+                    .message("Listening lesson not valid")
                     .build();
         }
     }

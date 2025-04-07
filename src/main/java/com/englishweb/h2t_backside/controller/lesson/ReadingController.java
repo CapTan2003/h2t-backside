@@ -118,12 +118,12 @@ public class ReadingController {
         if (result) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.SUCCESS)
-                    .message("Reading verified successfully")
+                    .message("Reading lesson verified successfully")
                     .build();
         } else {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
-                    .message("Reading not valid")
+                    .message("Reading lesson not valid")
                     .build();
         }
     }

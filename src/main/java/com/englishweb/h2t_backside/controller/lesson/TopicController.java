@@ -118,12 +118,12 @@ public class TopicController {
         if (result) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.SUCCESS)
-                    .message("Topic verified successfully")
+                    .message("Topic lesson verified successfully")
                     .build();
         } else {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
-                    .message("Topic not valid")
+                    .message("Topic lesson not valid")
                     .build();
         }
     }

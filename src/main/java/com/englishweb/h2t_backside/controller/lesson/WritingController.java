@@ -103,12 +103,12 @@ public class WritingController {
         if (result) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.SUCCESS)
-                    .message("Topic verified successfully")
+                    .message("Writing lesson verified successfully")
                     .build();
         } else {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
-                    .message("Topic not valid")
+                    .message("Writing lesson not valid")
                     .build();
         }
     }

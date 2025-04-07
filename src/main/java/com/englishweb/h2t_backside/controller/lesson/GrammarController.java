@@ -120,12 +120,12 @@ public class GrammarController {
         if (result) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.SUCCESS)
-                    .message("Grammar verified successfully")
+                    .message("Grammar lesson verified successfully")
                     .build();
         } else {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
-                    .message("Grammar not valid")
+                    .message("Grammar lesson not valid")
                     .build();
         }
     }

@@ -33,7 +33,9 @@ public class WritingServiceImpl extends BaseServiceImpl<WritingDTO, Writing, Wri
     private final PreparationService preparationService;
     private final WritingAnswerService writingAnswerService;
 
-    public WritingServiceImpl(WritingRepository repository, DiscordNotifier discordNotifier, @Lazy WritingMapper mapper, PreparationService preparationService, WritingAnswerService writingAnswerService) {
+    public WritingServiceImpl(WritingRepository repository, DiscordNotifier discordNotifier,
+                              @Lazy WritingMapper mapper, PreparationService preparationService,
+                              @Lazy WritingAnswerService writingAnswerService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.preparationService = preparationService;
