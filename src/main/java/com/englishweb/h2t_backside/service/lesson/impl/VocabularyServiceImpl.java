@@ -94,11 +94,11 @@ public class VocabularyServiceImpl extends BaseServiceImpl<VocabularyDTO, Vocabu
         Specification<Vocabulary> specification = Specification.where(VocabularySpecification.findByTopicId(topicId))
                 .and(BaseFilterSpecification.applyBaseFilters(filter));
 
-        if (filter.getWord() != null && !filter.getWord().isEmpty()) {
+        if (filter != null && filter.getWord() != null && !filter.getWord().isEmpty()) {
             specification = specification.and(VocabularySpecification.findByWord(filter.getWord()));
         }
 
-        if (filter.getWordType() != null) {
+        if (filter != null && filter.getWordType() != null) {
             specification = specification.and(VocabularySpecification.findByWordType(filter.getWordType()));
         }
 

@@ -33,7 +33,8 @@ public class SpeakingServiceImpl extends BaseServiceImpl<SpeakingDTO, Speaking, 
     private final PreparationService preparationService;
     private final SpeakingConversationService speakingConversationService;
 
-    public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, @Lazy SpeakingMapper mapper, PreparationService preparationService, SpeakingConversationService speakingConversationService) {
+    public SpeakingServiceImpl(SpeakingRepository repository, DiscordNotifier discordNotifier, @Lazy SpeakingMapper mapper,
+                              @Lazy PreparationService preparationService,@Lazy SpeakingConversationService speakingConversationService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.preparationService = preparationService;

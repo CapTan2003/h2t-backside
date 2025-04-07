@@ -104,12 +104,12 @@ public class SpeakingController {
         if (result) {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.SUCCESS)
-                    .message("Speaking verified successfully")
+                    .message("Speaking lesson verified successfully")
                     .build();
         } else {
             return ResponseDTO.<String>builder()
                     .status(ResponseStatusEnum.FAIL)
-                    .message("Speaking not valid")
+                    .message("Speaking lesson not valid")
                     .build();
         }
     }

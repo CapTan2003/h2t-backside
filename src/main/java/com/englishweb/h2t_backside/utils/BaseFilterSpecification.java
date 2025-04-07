@@ -11,18 +11,18 @@ public class BaseFilterSpecification {
         return (root, query, criteriaBuilder) -> {
             Specification<T> spec = Specification.where(null);
 
-            if (filter.getStatus() != null) {
+            if (filter != null && filter.getStatus() != null) {
                 spec = spec.and(BaseEntitySpecification.<T>hasStatus(filter.getStatus()));
             }
 
-            if (filter.getStartCreatedAt() != null || filter.getEndCreatedAt() != null) {
+            if (filter != null && (filter.getStartCreatedAt() != null || filter.getEndCreatedAt() != null)) {
                 spec = spec.and(BaseEntitySpecification.<T>findByCreatedAtRange(
                         filter.getStartCreatedAt(),
                         filter.getEndCreatedAt()
                 ));
             }
 
-            if (filter.getStartUpdatedAt() != null || filter.getEndUpdatedAt() != null) {
+            if (filter != null && (filter.getStartUpdatedAt() != null || filter.getEndUpdatedAt() != null)) {
                 spec = spec.and(BaseEntitySpecification.<T>findByUpdatedAtRange(
                         filter.getStartUpdatedAt(),
                         filter.getEndUpdatedAt()
