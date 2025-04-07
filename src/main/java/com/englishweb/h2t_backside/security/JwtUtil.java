@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 
 @Component
 public class JwtUtil {
@@ -58,7 +59,12 @@ public class JwtUtil {
 
             return signedJWT.serialize();
         } catch (JOSEException e) {
-            throw new AuthenticateException("Failed to generate token", e, SeverityEnum.HIGH);
+            throw new AuthenticateException("Failed to generate token",  SeverityEnum.HIGH,
+                    new HashMap<String, Object>() {{
+                        put("user", user);
+                        put("expirationTime", expirationTime);
+                        put("tokenType", tokenType);
+                    }});
         }
     }
 
@@ -87,7 +93,10 @@ public class JwtUtil {
             SignedJWT signedJWT = SignedJWT.parse(token);
             return signedJWT.getJWTClaimsSet().getExpirationTime();
         } catch (ParseException e) {
-            throw new AuthenticateException("Failed to get expiration from token", e, SeverityEnum.MEDIUM);
+            throw new AuthenticateException("Failed to get expiration from token", SeverityEnum.MEDIUM,
+                    new HashMap<String, Object>() {{
+                        put("token", token);
+                    }});
         }
     }
 
@@ -96,7 +105,10 @@ public class JwtUtil {
             SignedJWT signedJWT = SignedJWT.parse(token);
             return signedJWT.getJWTClaimsSet().getSubject();
         } catch (ParseException e) {
-            throw new AuthenticateException("Failed to get email from token", e, SeverityEnum.MEDIUM);
+            throw new AuthenticateException("Failed to get email from token", SeverityEnum.MEDIUM,
+                    new HashMap<String, Object>() {{
+                        put("token", token);
+                    }});
         }
     }
 
@@ -105,7 +117,10 @@ public class JwtUtil {
             SignedJWT signedJWT = SignedJWT.parse(token);
             return signedJWT.getJWTClaimsSet().getLongClaim("id");
         } catch (ParseException e) {
-            throw new AuthenticateException("Failed to get id from token", e, SeverityEnum.MEDIUM);
+            throw new AuthenticateException("Failed to get id from token", SeverityEnum.MEDIUM,
+                    new HashMap<String, Object>() {{
+                put("token", token);
+            }});
         }
     }
 }

@@ -11,17 +11,20 @@ public class AuthenticateException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private final String errorDetail;
     private final SeverityEnum severityEnum;
+    private final Object data;
 
-    public AuthenticateException(String message, SeverityEnum severityEnum) {
+    public AuthenticateException(String message, SeverityEnum severityEnum, Object data) {
         super(message);
         this.severityEnum = severityEnum;
+        this.data = data;
         this.errorDetail = null;
     }
 
-    public AuthenticateException(String message, Throwable cause, SeverityEnum severityEnum) {
+    public AuthenticateException(String message, Throwable cause, SeverityEnum severityEnum, Object data) {
         super(message, cause);
         this.errorDetail = cause.getMessage();
         this.severityEnum = severityEnum;
+        this.data = data;
     }
 
 }
