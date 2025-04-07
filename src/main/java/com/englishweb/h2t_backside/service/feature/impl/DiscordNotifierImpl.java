@@ -90,7 +90,7 @@ public class DiscordNotifierImpl implements DiscordNotifier {
                     .message(errorDTO.getMessage())
                     .errorCode(errorDTO.getErrorCode())
                     .createdAt(errorDTO.getTimestamp())
-                    .severity(SeverityEnum.LOW)
+                    .severity(errorDTO.getSeverity())
                     .status(false)
                     .build();
             errorLogService.create(errorLogDTO);

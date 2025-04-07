@@ -76,7 +76,34 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.RESOURCE_NOT_FOUND)
                 .data(ex.getResourceId())
-                .severity(SeverityEnum.LOW)
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .data(ex.getMessage())
+                .message(errorMessage)
+                .build();
+    }
+
+    // Lỗi xác thực thất bại
+    @ExceptionHandler(AuthenticateException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseDTO<String> handleAuthenticateException(AuthenticateException ex, HttpServletRequest request) {
+        log.warn("Authentication failed: {}", ex.getMessage());
+        String errorMessage = "Authentication Failed";
+
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.AUTHENTICATION_FAILED)
+                .data(ex.getErrorDetail())
+                .severity(ex.getSeverityEnum())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
 
@@ -90,13 +117,13 @@ public class GlobalExceptionHandler {
     // Loi khoi tao tai nguyen
     @ExceptionHandler(CreateResourceException.class)
     public ResponseEntity<ResponseDTO<String>> handleCreateResourceException(CreateResourceException ex, HttpServletRequest request) {
-        return handleResourceException(ex.getStatus(), ex.getMessage(), ex.getErrorCode(), ex.getData(), request, "Failed to Create Resource");
+        return handleResourceException(ex.getStatus(), ex.getMessage(), ex.getErrorCode(), ex.getData(), ex.getSeverityEnum(), ex.getSeverityEnum(), request, "Failed to Create Resource");
     }
 
     // Loi cap nhat tai nguyen
     @ExceptionHandler(UpdateResourceException.class)
     public ResponseEntity<ResponseDTO<String>> handleUpdateResourceException(UpdateResourceException ex, HttpServletRequest request) {
-        return handleResourceException(ex.getStatus(), ex.getMessage(), ex.getErrorCode(), ex.getData(), request, "Failed to Update Resource");
+        return handleResourceException(ex.getStatus(), ex.getMessage(), ex.getErrorCode(), ex.getData(), ex.getSeverityEnum(), ex.getSeverityEnum(), request, "Failed to Update Resource");
     }
 
 
@@ -116,7 +143,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ex.getErrorCode())
                 .data(ex.getData())
-                .severity(SeverityEnum.LOW)
+                .severity(ex.getSeverityEnum())
                 .build();
 
         // Gửi thông báo lỗi đến Discord
@@ -128,7 +155,7 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    private ResponseEntity<ResponseDTO<String>> handleResourceException(HttpStatus status, String message, String errorCode, Object data, HttpServletRequest request, String errorMessage) {
+    private ResponseEntity<ResponseDTO<String>> handleResourceException(HttpStatus status, String message, String errorCode, Object data, SeverityEnum severityEnum, SeverityEnum anEnum, HttpServletRequest request, String errorMessage) {
         log.warn("{}: {}", errorMessage, message);
 
         ErrorDTO errorDTO = ErrorDTO.builder()
@@ -139,7 +166,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(errorCode)
                 .data(data)
-                .severity(SeverityEnum.LOW)
+                .severity(severityEnum)
                 .build();
 
         // Gửi thông báo lỗi đến Discord
@@ -250,7 +277,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.IO_EXCEPTION)
                 .data(ex.getMessage())
-                .severity(SeverityEnum.LOW)
+                .severity(SeverityEnum.HIGH)
                 .build();
 
         discordNotifier.buildErrorAndSend(errorDTO);
@@ -276,7 +303,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.UNEXPECTED_ERROR)
                 .data(ex.getMessage())
-                .severity(SeverityEnum.LOW)
+                .severity(SeverityEnum.HIGH)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
         return ResponseDTO.<String>builder()

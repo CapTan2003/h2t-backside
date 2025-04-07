@@ -20,7 +20,7 @@ public class ErrorLogController {
 
     private final ErrorLogService errorLogService;
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<ErrorLogDTO> update(@PathVariable Long id, @Valid @RequestBody ErrorLogDTO errorLogDTO) {
         ErrorLogDTO updatedErrorLog = errorLogService.update(id, errorLogDTO);

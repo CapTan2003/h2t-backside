@@ -11,7 +11,10 @@ public class ErrorApiCodeContent {
     public static final String USER_NAME_EMPTY = "105"; // Không tìm thấy user
     public static final String USER_UPDATED_FAIL = "106"; // Cap nhat user that bai
 
-
+    // Loi lien quan den authen
+    public static final String AUTHENTICATION_FAILED = "201"; // Xác thực thất bại
+    public static final String TOKEN_EXPIRED = "202";         // Token hết hạn
+    public static final String TOKEN_INVALID = "203";         // Token không hợp lệ
 
     // Lỗi liên quan đến bài học
     public static final String LESSON_CREATED_FAIL = "201"; // Tao moi bai hoc that bai

@@ -31,7 +31,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final UserRepository repository;
-    private final UserService userService;
 
     @Value("${gg_client_id}")
     private String ggClientId;
@@ -41,19 +40,18 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.repository = repository;
-        this.userService = userService;
     }
 
     public AuthenticateDTO login(LoginDTO dto) {
         User user = repository.findAllByEmail(dto.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Invalid email: {}", dto.getEmail());
-                    return new ResourceNotFoundException("Invalid email or password.", SeverityEnum.LOW);
+                    return new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH);
                 });
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.warn("Invalid password for email: {}", dto.getEmail());
-            throw new ResourceNotFoundException("Invalid email or password.", SeverityEnum.LOW);
+            throw new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH);
         }
 
         if(!user.getStatus()){
@@ -133,7 +131,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
 
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid refresh token.", SeverityEnum.HIGH));
+                .orElseThrow(() -> new AuthenticateException("Invalid refresh token.", SeverityEnum.HIGH));
 
         // Xóa refresh token khỏi database để vô hiệu hóa nó
         user.setRefreshToken(null);
@@ -147,12 +145,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         // Kiểm tra token hợp lệ
         if (!jwtUtil.validateToken(refreshToken, false)) {
-            throw new ResourceNotFoundException("Invalid or expired refresh token.", SeverityEnum.HIGH);
+            throw new AuthenticateException("Invalid or expired refresh token.", SeverityEnum.HIGH);
         }
 
         // Kiểm tra xem refresh token có trong DB không
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new ResourceNotFoundException("Refresh token is invalid or already used.", SeverityEnum.HIGH));
+                .orElseThrow(() -> new AuthenticateException("Refresh token is invalid or already used.", SeverityEnum.HIGH));
 
         String newAccessToken = jwtUtil.generateAccessToken(user);
         String newRefreshToken = jwtUtil.generateRefreshToken(user);
