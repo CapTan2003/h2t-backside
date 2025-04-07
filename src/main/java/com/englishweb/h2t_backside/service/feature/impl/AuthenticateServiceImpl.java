@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -46,12 +47,18 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         User user = repository.findAllByEmail(dto.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Invalid email: {}", dto.getEmail());
-                    return new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH);
+                    return new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH,
+                            new HashMap<String, Object>() {{
+                        put("email", dto.getEmail());
+                    }});
                 });
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.warn("Invalid password for email: {}", dto.getEmail());
-            throw new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH);
+            throw new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH,
+                    new HashMap<String, Object>() {{
+                        put("email", dto.getEmail());
+                    }});
         }
 
         if(!user.getStatus()){
@@ -121,7 +128,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                     .build();
 
         } catch (Exception e) {
-            throw new AuthenticateException("Failed to verify Google ID Token", e, SeverityEnum.HIGH);
+            throw new AuthenticateException("Failed to verify Google ID Token", SeverityEnum.HIGH,
+                    new HashMap<String, Object>() {{
+                        put("ggLoginData", request);
+                    }});
         }
     }
 
@@ -131,7 +141,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
 
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthenticateException("Invalid refresh token.", SeverityEnum.HIGH));
+                .orElseThrow(() -> new AuthenticateException("Invalid refresh token.", SeverityEnum.HIGH,
+                        new HashMap<String, Object>() {{
+                            put("refreshToken", refreshToken);
+                        }}));
 
         // Xóa refresh token khỏi database để vô hiệu hóa nó
         user.setRefreshToken(null);
@@ -145,12 +158,18 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         // Kiểm tra token hợp lệ
         if (!jwtUtil.validateToken(refreshToken, false)) {
-            throw new AuthenticateException("Invalid or expired refresh token.", SeverityEnum.HIGH);
+            throw new AuthenticateException("Invalid or expired refresh token.", SeverityEnum.HIGH,
+                    new HashMap<String, Object>() {{
+                        put("refreshToken", refreshToken);
+                    }});
         }
 
         // Kiểm tra xem refresh token có trong DB không
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthenticateException("Refresh token is invalid or already used.", SeverityEnum.HIGH));
+                .orElseThrow(() -> new AuthenticateException("Refresh token is invalid or already used.", SeverityEnum.HIGH,
+                        new HashMap<String, Object>() {{
+                            put("refreshToken", refreshToken);
+                        }}));
 
         String newAccessToken = jwtUtil.generateAccessToken(user);
         String newRefreshToken = jwtUtil.generateRefreshToken(user);

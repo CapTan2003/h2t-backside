@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
                 .instance(request.getMethod() + " " + request.getRequestURI())
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.AUTHENTICATION_FAILED)
-                .data(ex.getErrorDetail())
+                .data(ex.getData())
                 .severity(ex.getSeverityEnum())
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
