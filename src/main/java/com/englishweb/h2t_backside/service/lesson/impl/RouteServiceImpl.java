@@ -99,8 +99,11 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
     public Page<RouteDTO> findByOwnerId(int page, int size, String sortFields, RouteFilterDTO filter, Long ownerId) {
         Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Route.class);
 
-        Specification<Route> specification = Specification.where(RouteSpecification.findByOwnerId(ownerId))
-                .and(BaseFilterSpecification.applyBaseFilters(filter));
+        Specification<Route> specification = BaseFilterSpecification.applyBaseFilters(filter);
+
+        if (ownerId != null) {
+            specification = specification.and(RouteSpecification.findByOwnerId(ownerId));
+        }
 
         if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
             specification = specification.and(RouteSpecification.findByTitle(filter.getTitle()));
