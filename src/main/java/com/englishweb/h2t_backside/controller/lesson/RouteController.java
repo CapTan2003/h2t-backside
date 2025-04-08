@@ -86,7 +86,7 @@ public class RouteController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
             @ModelAttribute RouteFilterDTO filter,
-            @RequestParam Long ownerId) {
+            @RequestParam(required = false) Long ownerId) {
         Page<RouteDTO> result = service.findByOwnerId(page, size, sortFields, filter, ownerId);
 
         return ResponseDTO.<Page<RouteDTO>>builder()
