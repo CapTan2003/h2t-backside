@@ -27,78 +27,10 @@ public class ToeicPart3_4 extends AbstractBaseEntity {
     private String image;
 
     @Column(nullable = false)
-    @Comment("Content of question 1 in the conversation or talk")
-    private String contentQuestion1;
-
-    @Column(nullable = false)
-    @Comment("Content of question 2 in the conversation or talk")
-    private String contentQuestion2;
-
-    @Column(nullable = false)
-    @Comment("Content of question 3 in the conversation or talk")
-    private String contentQuestion3;
-
-    @Column(nullable = false)
-    @Comment("Answer 1 for question 1")
-    private String answer1Q1;
-
-    @Column(nullable = false)
-    @Comment("Answer 2 for question 1")
-    private String answer2Q1;
-
-    @Column(nullable = false)
-    @Comment("Answer 3 for question 1")
-    private String answer3Q1;
-
-    @Column(nullable = false)
-    @Comment("Answer 4 for question 1")
-    private String answer4Q1;
-
-    @Column(nullable = false)
-    @Comment("Answer 1 for question 2")
-    private String answer1Q2;
-
-    @Column(nullable = false)
-    @Comment("Answer 2 for question 2")
-    private String answer2Q2;
-
-    @Column(nullable = false)
-    @Comment("Answer 3 for question 2")
-    private String answer3Q2;
-
-    @Column(nullable = false)
-    @Comment("Answer 4 for question 2")
-    private String answer4Q2;
-
-    @Column(nullable = false)
-    @Comment("Answer 1 for question 3")
-    private String answer1Q3;
-
-    @Column(nullable = false)
-    @Comment("Answer 2 for question 3")
-    private String answer2Q3;
-
-    @Column(nullable = false)
-    @Comment("Answer 3 for question 3")
-    private String answer3Q3;
-
-    @Column(nullable = false)
-    @Comment("Answer 4 for question 3")
-    private String answer4Q3;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    @Comment("Correct answer for question 1")
-    private AnswerEnum correctAnswer1;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    @Comment("Correct answer for question 2")
-    private AnswerEnum correctAnswer2;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    @Comment("Correct answer for question 3")
-    private AnswerEnum correctAnswer3;
+    @Comment("Transcript shown with the question set")
+    private String transcript;
+    @Builder.Default
+    @Comment("List of question IDs of Toeic Part 3 and 4")
+    private String questions = "";
 }
 
