@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
+import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
@@ -16,6 +17,7 @@ import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.lesson.GrammarService;
 import com.englishweb.h2t_backside.service.lesson.LessonQuestionService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
+import com.englishweb.h2t_backside.utils.LessonQuestionFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ import java.util.List;
 public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, GrammarRepository> implements GrammarService {
     private final GrammarMapper mapper;
     private final LessonQuestionService lessonQuestionService;
+    private static final String RESOURCE_NAME = "Grammar";
 
     public GrammarServiceImpl(GrammarRepository repository, DiscordNotifier discordNotifier, @Lazy GrammarMapper mapper, LessonQuestionService lessonQuestionService) {
         super(repository, discordNotifier);
@@ -46,7 +49,7 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
     @Override
     protected void findByIdError(Long id) {
-        String errorMessage = String.format("Grammar with ID '%d' not found.", id);
+        String errorMessage = String.format("%s with ID '%d' not found.", RESOURCE_NAME, id);
         log.warn(errorMessage);
 
         throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
@@ -54,8 +57,8 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
     @Override
     protected void createError(GrammarDTO dto, Exception ex) {
-        log.error("Error creating grammar: {}", ex.getMessage());
-        String errorMessage = "Unexpected error creating grammar: " + ex.getMessage();
+        log.error("Error creating {}: {}", RESOURCE_NAME.toLowerCase(), ex.getMessage());
+        String errorMessage = String.format("Unexpected error creating %s: %s", RESOURCE_NAME.toLowerCase(), ex.getMessage());
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
@@ -63,13 +66,13 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
 
     @Override
     protected void updateError(GrammarDTO dto, Long id, Exception ex) {
-        log.error("Error updating grammar: {}", ex.getMessage());
-        String errorMessage = "Unexpected error updating grammar: " + ex.getMessage();
+        log.error("Error updating {}: {}", RESOURCE_NAME.toLowerCase(), ex.getMessage());
+        String errorMessage = String.format("Unexpected error updating %s: %s", RESOURCE_NAME.toLowerCase(), ex.getMessage());
         String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)){
-            errorMessage = String.format("Grammar with ID '%d' not found.", id);
+            errorMessage = String.format("%s with ID '%d' not found.", RESOURCE_NAME, id);
             status = HttpStatus.NOT_FOUND;
         }
 
@@ -99,14 +102,15 @@ public class GrammarServiceImpl extends BaseServiceImpl<GrammarDTO, Grammar, Gra
     }
 
     @Override
-    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
-        try {
-            List<Long> listQuestion = findById(lessonId).getQuestions();
-            return lessonQuestionService.findByIds(listQuestion);
-        } catch (ResourceNotFoundException ex) {
-            String errorMessage = String.format("Error finding questions for grammar with ID '%d': %s", lessonId, ex.getMessage());
-            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage, SeverityEnum.LOW);
-        }
+    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId, Boolean status) {
+        return LessonQuestionFinder.findQuestionsByLessonId(
+                lessonId,
+                status,
+                RESOURCE_NAME,
+                lessonQuestionService,
+                GrammarDTO::getQuestions, // Function to extract questions from DTO
+                this::findById             // Function to find Grammar by ID
+        );
     }
 
     @Override

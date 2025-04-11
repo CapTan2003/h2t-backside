@@ -104,8 +104,11 @@ public class GrammarController {
 
     @GetMapping("/questions")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByGrammarId(@RequestParam Long lessonId) {
-        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(lessonId);
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByTopicId(
+            @RequestParam Long lessonId,
+            @RequestParam (required = false) Boolean status) {
+        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(lessonId, status);
+
         return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(questions)

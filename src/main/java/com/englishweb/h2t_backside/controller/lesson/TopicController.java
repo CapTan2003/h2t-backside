@@ -101,13 +101,15 @@ public class TopicController {
 
     @GetMapping("/questions")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByTopicId(@RequestParam Long lessonId) {
-        List<LessonQuestionDTO> lessons = service.findQuestionByLessonId(lessonId);
+    public ResponseDTO<List<LessonQuestionDTO>> findQuestionByTopicId(
+            @RequestParam Long lessonId,
+            @RequestParam (required = false) Boolean status) {
+        List<LessonQuestionDTO> questions = service.findQuestionByLessonId(lessonId, status);
 
         return ResponseDTO.<List<LessonQuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
-                .data(lessons)
-                .message("Lessons retrieved successfully for the topic")
+                .data(questions)
+                .message("Questions retrieved successfully for the topic")
                 .build();
     }
 
