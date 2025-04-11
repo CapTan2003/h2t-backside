@@ -20,6 +20,7 @@ import com.englishweb.h2t_backside.service.lesson.ListenAndWriteAWordService;
 import com.englishweb.h2t_backside.service.lesson.ListeningService;
 import com.englishweb.h2t_backside.service.lesson.PreparationService;
 import com.englishweb.h2t_backside.utils.LessonPagination;
+import com.englishweb.h2t_backside.utils.LessonQuestionFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -36,12 +37,14 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
     private final LessonQuestionService lessonQuestionService;
     private final ListenAndWriteAWordService listenAndWriteAWordService;
     private final PreparationService preparationService;
+    private static final String RESOURCE_NAME = "Listening";
 
     public ListeningServiceImpl(ListeningRepository repository,
                                 DiscordNotifierImpl discordNotifier,
                                 @Lazy ListeningMapper mapper,
                                 LessonQuestionService lessonQuestionService,
-                                @Lazy ListenAndWriteAWordService listenAndWriteAWordService, PreparationService preparationService) {
+                                @Lazy ListenAndWriteAWordService listenAndWriteAWordService,
+                                PreparationService preparationService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.lessonQuestionService = lessonQuestionService;
@@ -61,7 +64,7 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
 
     @Override
     protected void findByIdError(Long id) {
-        String errorMessage = String.format("Listening with ID '%d' not found.", id);
+        String errorMessage = String.format(RESOURCE_NAME + " with ID '%d' not found.", id);
         log.warn(errorMessage);
 
         throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
@@ -69,8 +72,8 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
 
     @Override
     protected void createError(ListeningDTO dto, Exception ex) {
-        log.error("Error creating listening: {}", ex.getMessage());
-        String errorMessage = "Unexpected error creating listening: " + ex.getMessage();
+        log.error("Error creating " + RESOURCE_NAME.toLowerCase() + ": {}", ex.getMessage());
+        String errorMessage = "Unexpected error creating " + RESOURCE_NAME.toLowerCase() + ": " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
 
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
@@ -78,13 +81,13 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
 
     @Override
     protected void updateError(ListeningDTO dto, Long id, Exception ex) {
-        log.error("Error updating listening: {}", ex.getMessage());
-        String errorMessage = "Unexpected error updating listening: " + ex.getMessage();
+        log.error("Error updating " + RESOURCE_NAME.toLowerCase() + ": {}", ex.getMessage());
+        String errorMessage = "Unexpected error updating " + RESOURCE_NAME.toLowerCase() + ": " + ex.getMessage();
         String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)){
-            errorMessage = String.format("Listening with ID '%d' not found.", id);
+            errorMessage = String.format(RESOURCE_NAME + " with ID '%d' not found.", id);
             status = HttpStatus.NOT_FOUND;
         }
 
@@ -114,14 +117,15 @@ public class ListeningServiceImpl extends BaseServiceImpl<ListeningDTO, Listenin
     }
 
     @Override
-    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId) {
-        try {
-            List<Long> listQuestion = findById(lessonId).getQuestions();
-            return lessonQuestionService.findByIds(listQuestion);
-        } catch (ResourceNotFoundException ex) {
-            String errorMessage = String.format("Error finding questions for listening with ID '%d': %s", lessonId, ex.getMessage());
-            throw new ResourceNotFoundException(ex.getResourceId(), errorMessage, SeverityEnum.LOW);
-        }
+    public List<LessonQuestionDTO> findQuestionByLessonId(Long lessonId, Boolean status) {
+        return LessonQuestionFinder.findQuestionsByLessonId(
+                lessonId,
+                status,
+                RESOURCE_NAME,
+                lessonQuestionService,
+                ListeningDTO::getQuestions, // Function to extract questions from DTO
+                this::findById             // Function to find Listening by ID
+        );
     }
 
     @Override
