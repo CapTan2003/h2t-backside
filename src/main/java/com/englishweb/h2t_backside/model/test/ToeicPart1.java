@@ -26,6 +26,10 @@ public class ToeicPart1 extends AbstractBaseEntity {
     @Comment("Audio file for the TOEIC Part 1 question")
     private String audio;
 
+    @Column(nullable = false)
+    @Comment("Transcript shown with the question set")
+    private String transcript;
+
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     @Comment("Correct answer for the TOEIC Part 1 question")
