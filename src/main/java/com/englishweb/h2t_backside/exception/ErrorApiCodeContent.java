@@ -48,4 +48,9 @@ public class ErrorApiCodeContent {
     public static final String ARGUMENT_TYPE_MISMATCH = "605";
     public static final String MISSING_REQUEST_PARAMETER = "606";
     public static final String IO_EXCEPTION = "607";
+    public static final String BUCKET_CREATED_FAIL = "608";
+    public static final String FILE_UPLOAD_FAIL = "609";
+    public static final String URL_GENERATION_FAIL = "610";
+    public  static final String FILE_DOWNLOAD_FAIL = "611";
+    public static final String FILE_DELETE_FAIL = "612";
 }
