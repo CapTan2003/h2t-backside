@@ -593,6 +593,13 @@ java -jar -Dspring.profiles.active=prod target/h2t-backside-0.0.1-SNAPSHOT.jar
 
 # API Speech to text
 docker run -d -p 9000:9000 -e ASR_MODEL=base -e ASR_ENGINE=openai_whisper onerahmet/openai-whisper-asr-webservice:latest
+
+# MinIO Server - store data
+docker run -p 9000:9000 -p 9001:9001 --name minio \
+  -v /path/to/minio/data:/data \
+  -e "MINIO_ROOT_USER=minioadmin" \
+  -e "MINIO_ROOT_PASSWORD=minioadmin" \
+  quay.io/minio/minio server /data --console-address ":9001"
 ```
 
 ## 📚 API Documentation
