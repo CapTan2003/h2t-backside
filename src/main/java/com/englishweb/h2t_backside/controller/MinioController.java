@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -47,9 +46,9 @@ public class MinioController {
                 "File downloaded successfully");
     }
 
-    @DeleteMapping("/{objectName}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<String> deleteFile(@PathVariable String objectName) {
+    public ResponseDTO<String> deleteFile(@RequestParam String objectName) {
         service.deleteFile(objectName);
         return new ResponseDTO<>(
                 ResponseStatusEnum.SUCCESS,
