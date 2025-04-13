@@ -1,12 +1,16 @@
 package com.englishweb.h2t_backside.model.test;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ToeicAnswer extends AbstractBaseEntity {
 
     @Column(nullable = false)

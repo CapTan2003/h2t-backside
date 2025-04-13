@@ -3,12 +3,19 @@ package com.englishweb.h2t_backside.model.test;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.util.List;
-
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ToeicQuestion extends AbstractBaseEntity {
 
     @Column(nullable = false)

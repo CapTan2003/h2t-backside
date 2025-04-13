@@ -2,7 +2,10 @@ package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.ToeicPart6DTO;
 import com.englishweb.h2t_backside.model.test.ToeicPart6;
+import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -11,94 +14,22 @@ import org.mapstruct.*;
 )
 public interface ToeicPart6Mapper {
 
-    // Chuyển đổi từ ToeicPart6DTO sang ToeicPart6 Entity
-    @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "file", source = "dto.file")
-    @Mapping(target = "contentQuestion1", source = "dto.contentQuestion1")
-    @Mapping(target = "contentQuestion2", source = "dto.contentQuestion2")
-    @Mapping(target = "contentQuestion3", source = "dto.contentQuestion3")
-    @Mapping(target = "contentQuestion4", source = "dto.contentQuestion4")
-    @Mapping(target = "answer1Q1", source = "dto.answer1Q1")
-    @Mapping(target = "answer2Q1", source = "dto.answer2Q1")
-    @Mapping(target = "answer3Q1", source = "dto.answer3Q1")
-    @Mapping(target = "answer4Q1", source = "dto.answer4Q1")
-    @Mapping(target = "answer1Q2", source = "dto.answer1Q2")
-    @Mapping(target = "answer2Q2", source = "dto.answer2Q2")
-    @Mapping(target = "answer3Q2", source = "dto.answer3Q2")
-    @Mapping(target = "answer4Q2", source = "dto.answer4Q2")
-    @Mapping(target = "answer1Q3", source = "dto.answer1Q3")
-    @Mapping(target = "answer2Q3", source = "dto.answer2Q3")
-    @Mapping(target = "answer3Q3", source = "dto.answer3Q3")
-    @Mapping(target = "answer4Q3", source = "dto.answer4Q3")
-    @Mapping(target = "answer1Q4", source = "dto.answer1Q4")
-    @Mapping(target = "answer2Q4", source = "dto.answer2Q4")
-    @Mapping(target = "answer3Q4", source = "dto.answer3Q4")
-    @Mapping(target = "answer4Q4", source = "dto.answer4Q4")
-    @Mapping(target = "correctAnswer1", source = "dto.correctAnswer1")
-    @Mapping(target = "correctAnswer2", source = "dto.correctAnswer2")
-    @Mapping(target = "correctAnswer3", source = "dto.correctAnswer3")
-    @Mapping(target = "correctAnswer4", source = "dto.correctAnswer4")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     ToeicPart6 convertToEntity(ToeicPart6DTO dto);
 
-    // Chuyển đổi từ ToeicPart6 Entity sang ToeicPart6DTO
-    @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "file", source = "entity.file")
-    @Mapping(target = "contentQuestion1", source = "entity.contentQuestion1")
-    @Mapping(target = "contentQuestion2", source = "entity.contentQuestion2")
-    @Mapping(target = "contentQuestion3", source = "entity.contentQuestion3")
-    @Mapping(target = "contentQuestion4", source = "entity.contentQuestion4")
-    @Mapping(target = "answer1Q1", source = "entity.answer1Q1")
-    @Mapping(target = "answer2Q1", source = "entity.answer2Q1")
-    @Mapping(target = "answer3Q1", source = "entity.answer3Q1")
-    @Mapping(target = "answer4Q1", source = "entity.answer4Q1")
-    @Mapping(target = "answer1Q2", source = "entity.answer1Q2")
-    @Mapping(target = "answer2Q2", source = "entity.answer2Q2")
-    @Mapping(target = "answer3Q2", source = "entity.answer3Q2")
-    @Mapping(target = "answer4Q2", source = "entity.answer4Q2")
-    @Mapping(target = "answer1Q3", source = "entity.answer1Q3")
-    @Mapping(target = "answer2Q3", source = "entity.answer2Q3")
-    @Mapping(target = "answer3Q3", source = "entity.answer3Q3")
-    @Mapping(target = "answer4Q3", source = "entity.answer4Q3")
-    @Mapping(target = "answer1Q4", source = "entity.answer1Q4")
-    @Mapping(target = "answer2Q4", source = "entity.answer2Q4")
-    @Mapping(target = "answer3Q4", source = "entity.answer3Q4")
-    @Mapping(target = "answer4Q4", source = "entity.answer4Q4")
-    @Mapping(target = "correctAnswer1", source = "entity.correctAnswer1")
-    @Mapping(target = "correctAnswer2", source = "entity.correctAnswer2")
-    @Mapping(target = "correctAnswer3", source = "entity.correctAnswer3")
-    @Mapping(target = "correctAnswer4", source = "entity.correctAnswer4")
-    @Mapping(target = "status", source = "entity.status")
-    @Mapping(target = "createdAt", source = "entity.createdAt")
-    @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList")
     ToeicPart6DTO convertToDTO(ToeicPart6 entity);
 
-    // Cập nhật dữ liệu từ DTO vào Entity (chỉ cập nhật trường có giá trị)
-    @Mapping(target = "file", source = "dto.file")
-    @Mapping(target = "contentQuestion1", source = "dto.contentQuestion1")
-    @Mapping(target = "contentQuestion2", source = "dto.contentQuestion2")
-    @Mapping(target = "contentQuestion3", source = "dto.contentQuestion3")
-    @Mapping(target = "contentQuestion4", source = "dto.contentQuestion4")
-    @Mapping(target = "answer1Q1", source = "dto.answer1Q1")
-    @Mapping(target = "answer2Q1", source = "dto.answer2Q1")
-    @Mapping(target = "answer3Q1", source = "dto.answer3Q1")
-    @Mapping(target = "answer4Q1", source = "dto.answer4Q1")
-    @Mapping(target = "answer1Q2", source = "dto.answer1Q2")
-    @Mapping(target = "answer2Q2", source = "dto.answer2Q2")
-    @Mapping(target = "answer3Q2", source = "dto.answer3Q2")
-    @Mapping(target = "answer4Q2", source = "dto.answer4Q2")
-    @Mapping(target = "answer1Q3", source = "dto.answer1Q3")
-    @Mapping(target = "answer2Q3", source = "dto.answer2Q3")
-    @Mapping(target = "answer3Q3", source = "dto.answer3Q3")
-    @Mapping(target = "answer4Q3", source = "dto.answer4Q3")
-    @Mapping(target = "answer1Q4", source = "dto.answer1Q4")
-    @Mapping(target = "answer2Q4", source = "dto.answer2Q4")
-    @Mapping(target = "answer3Q4", source = "dto.answer3Q4")
-    @Mapping(target = "answer4Q4", source = "dto.answer4Q4")
-    @Mapping(target = "correctAnswer1", source = "dto.correctAnswer1")
-    @Mapping(target = "correctAnswer2", source = "dto.correctAnswer2")
-    @Mapping(target = "correctAnswer3", source = "dto.correctAnswer3")
-    @Mapping(target = "correctAnswer4", source = "dto.correctAnswer4")
-    @Mapping(target = "status", source = "dto.status")
+    @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     void patchEntityFromDTO(ToeicPart6DTO dto, @MappingTarget ToeicPart6 entity);
+
+    @Named("stringToLongList")
+    default List<Long> stringToLongList(String str) {
+        return ParseData.parseStringToLongList(str);
+    }
+
+    @Named("longListToString")
+    default String longListToString(List<Long> list) {
+        return ParseData.parseLongListToString(list);
+    }
 }
