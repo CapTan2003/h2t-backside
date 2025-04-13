@@ -13,11 +13,14 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ToeicPart7DTO extends AbstractBaseDTO {
+public class ToeicQuestionDTO extends AbstractBaseDTO {
 
-    @NotBlank(message = "File path cannot be blank")
-    private String file;
+    @NotBlank(message = "Question content cannot be blank")
+    private String content;
 
-    @NotNull(message = "Questions list cannot be null")
-    private List<Long> questions;
+    @NotBlank(message = "Explanation cannot be blank")
+    private String explanation;
+
+    @NotNull(message = "Answers list cannot be null")
+    private List<ToeicAnswerDTO> toeicAnswers;
 }
