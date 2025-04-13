@@ -1,14 +1,11 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
-import com.englishweb.h2t_backside.dto.test.ToeicPart3_4DTO;
 import com.englishweb.h2t_backside.dto.test.ToeicPart5DTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
-import com.englishweb.h2t_backside.mapper.test.ToeicPart5Mapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
-import com.englishweb.h2t_backside.model.test.ToeicPart5;
 import com.englishweb.h2t_backside.repository.test.ToeicPart5Repository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;

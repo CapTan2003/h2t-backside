@@ -3,7 +3,6 @@ package com.englishweb.h2t_backside.mapper.test;
 import com.englishweb.h2t_backside.dto.test.SubmitToeicPart5DTO;
 import com.englishweb.h2t_backside.model.test.SubmitToeic;
 import com.englishweb.h2t_backside.model.test.SubmitToeicPart5;
-import com.englishweb.h2t_backside.model.test.ToeicPart5;
 import org.mapstruct.*;
 
 @Mapper(
