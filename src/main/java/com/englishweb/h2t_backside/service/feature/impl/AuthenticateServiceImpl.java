@@ -47,7 +47,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         User user = repository.findAllByEmail(dto.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Invalid email: {}", dto.getEmail());
-                    return new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH,
+                    return new AuthenticateException("Invalid email or password.", SeverityEnum.LOW,
                             new HashMap<String, Object>() {{
                         put("email", dto.getEmail());
                     }});
@@ -55,9 +55,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.warn("Invalid password for email: {}", dto.getEmail());
-            throw new AuthenticateException("Invalid email or password.", SeverityEnum.HIGH,
+            throw new AuthenticateException("Invalid email or password.", SeverityEnum.LOW,
                     new HashMap<String, Object>() {{
-                        put("email", dto.getEmail());
+                        put("password", dto.getPassword());
                     }});
         }
 
