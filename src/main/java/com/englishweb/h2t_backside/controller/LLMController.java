@@ -3,7 +3,6 @@ package com.englishweb.h2t_backside.controller;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.feature.LLMService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

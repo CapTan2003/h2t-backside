@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ScoreSpeakingService {
 
-    SpeakingScoreDTO scoreSpeaking(MultipartFile audioFile);
+    SpeakingScoreDTO evaluateSpeaking(MultipartFile audioFile, String topic) throws Exception;
 }

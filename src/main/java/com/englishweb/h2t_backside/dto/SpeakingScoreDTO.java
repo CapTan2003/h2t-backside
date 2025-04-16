@@ -1,10 +1,12 @@
 package com.englishweb.h2t_backside.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SpeakingScoreDTO {
     private String score;
     private List<String> strengths;
