@@ -602,6 +602,12 @@ docker run -p 9000:9000 -p 9001:9001 --name minio \
   quay.io/minio/minio server /data --console-address ":9001"
 ```
 
+# Vosk scoring speech
+
+```bash
+docker run -d -p 5000:5000 trunghauad02/speech-scoring-api
+```
+
 ## 📚 API Documentation
 
 API documentation can be generated and accessed using SpringDoc OpenAPI:
