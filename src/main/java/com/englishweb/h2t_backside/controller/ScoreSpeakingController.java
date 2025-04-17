@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/score-speaking")
@@ -25,10 +27,10 @@ public class ScoreSpeakingController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<SpeakingScoreDTO> evaluateSpeaking(
             @RequestParam("audio") MultipartFile audioFile,
-            @RequestParam("topic") String topic) {
+            @RequestParam("expectedText") String expectedText) {
 
         try {
-            SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeaking(audioFile, topic);
+            SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeaking(audioFile, expectedText);
 
             return ResponseDTO.<SpeakingScoreDTO>builder()
                     .status(ResponseStatusEnum.SUCCESS)
@@ -46,6 +48,68 @@ public class ScoreSpeakingController {
             return ResponseDTO.<SpeakingScoreDTO>builder()
                     .status(ResponseStatusEnum.FAIL)
                     .message("Error evaluating speaking: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @PostMapping(path = "/pronunciation-only", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<SpeakingScoreDTO> evaluateSpeechInTopic(
+            @RequestParam("audio") MultipartFile audioFile,
+            @RequestParam("topic") String topic
+    ) {
+
+        try {
+            SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeechInTopic(audioFile, topic);
+
+            return ResponseDTO.<SpeakingScoreDTO>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .data(scoreResult)
+                    .message("Pronunciation evaluation completed successfully")
+                    .build();
+        } catch (IOException e) {
+            log.error("Error reading audio file: {}", e.getMessage());
+            return ResponseDTO.<SpeakingScoreDTO>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Error reading audio file: " + e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            log.error("Error evaluating pronunciation: {}", e.getMessage());
+            return ResponseDTO.<SpeakingScoreDTO>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Error evaluating pronunciation: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @PostMapping(path = "/multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<SpeakingScoreDTO> evaluateMultipleFiles(
+            @RequestParam("files") MultipartFile[] audioFiles,
+            @RequestParam("expectedTexts") String[] expectedTexts) {
+
+        try {
+            List<MultipartFile> filesList = Arrays.asList(audioFiles);
+            List<String> textsList = Arrays.asList(expectedTexts);
+
+            SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateMultipleFiles(filesList, textsList);
+
+            return ResponseDTO.<SpeakingScoreDTO>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .data(scoreResult)
+                    .message("Multiple files evaluation completed successfully")
+                    .build();
+        } catch (IOException e) {
+            log.error("Error reading audio files: {}", e.getMessage());
+            return ResponseDTO.<SpeakingScoreDTO>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Error reading audio files: " + e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            log.error("Error evaluating multiple files: {}", e.getMessage());
+            return ResponseDTO.<SpeakingScoreDTO>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Error evaluating multiple files: " + e.getMessage())
                     .build();
         }
     }
