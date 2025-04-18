@@ -52,7 +52,7 @@ public class ScoreSpeakingController {
         }
     }
 
-    @PostMapping(path = "/pronunciation-only", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/speech-in-topic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<SpeakingScoreDTO> evaluateSpeechInTopic(
             @RequestParam("audio") MultipartFile audioFile,
