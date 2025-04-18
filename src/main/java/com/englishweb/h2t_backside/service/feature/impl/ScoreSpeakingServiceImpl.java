@@ -1,7 +1,9 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.SpeakingScoreDTO;
+import com.englishweb.h2t_backside.dto.WritingScoreDTO;
 import com.englishweb.h2t_backside.service.feature.ScoreSpeakingService;
+import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -31,10 +36,12 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     private static final String PROCESS_AUDIO_URL = BASE_API_URL + "/process-audio";
     private static final String EVALUATE_PRONUNCIATION_URL = BASE_API_URL + "/evaluate-pronunciation";
     private static final String EVALUATE_MULTIPLE_URL = BASE_API_URL + "/evaluate-multiple";
+    private final ScoreWritingService scoreWritingService;
 
-    public ScoreSpeakingServiceImpl(ObjectMapper objectMapper) {
+    public ScoreSpeakingServiceImpl(ObjectMapper objectMapper, ScoreWritingService scoreWritingService) {
         this.restTemplate = new RestTemplate();
         this.objectMapper = objectMapper;
+        this.scoreWritingService = scoreWritingService;
     }
 
     @Override
@@ -121,7 +128,21 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             log.info("Received response from pronunciation API with status: {}", response.getStatusCode());
 
             // Parse the response
-            return parseApiResponse(response);
+            SpeakingScoreDTO scoreResult = parseApiResponse(response);
+
+            // Evaluate the relevance of the topic
+            WritingScoreDTO writingScore = scoreWritingService.scoreWriting(scoreResult.getTranscript(), topic);
+            scoreResult.setStrengths(Stream.of(scoreResult.getStrengths(), writingScore.getStrengths())
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList()));
+            scoreResult.setAreas_to_improve(Stream.of(scoreResult.getAreas_to_improve(), writingScore.getAreas_to_improve())
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList()));
+            scoreResult.setFeedback(scoreResult.getFeedback() + "\n"+ writingScore.getFeedback());
+
+            scoreResult.setScore(((Double.parseDouble(scoreResult.getScore()) * 10 + Double.parseDouble(writingScore.getScore())) / 2) + "");
+
+            return scoreResult;
 
         } catch (RestClientException e) {
             log.error("Error calling pronunciation API: {}", e.getMessage(), e);
