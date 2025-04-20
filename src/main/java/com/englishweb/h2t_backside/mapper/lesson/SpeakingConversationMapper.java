@@ -18,6 +18,7 @@ public interface SpeakingConversationMapper {
     @Mapping(target = "name", source = "dto.name")
     @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "content", source = "dto.content")
+    @Mapping(target = "audioUrl", source = "dto.audioUrl")
     @Mapping(target = "speaking", source = "dto.speakingId", qualifiedByName = "mapSpeakingIdToEntity")
     SpeakingConversation convertToEntity(SpeakingConversationDTO dto);
 
@@ -29,6 +30,7 @@ public interface SpeakingConversationMapper {
     @Mapping(target = "name", source = "entity.name")
     @Mapping(target = "serial", source = "entity.serial")
     @Mapping(target = "content", source = "entity.content")
+    @Mapping(target = "audioUrl", source = "entity.audioUrl")
     @Mapping(target = "speakingId", source = "entity.speaking.id")
     SpeakingConversationDTO convertToDTO(SpeakingConversation entity);
 
@@ -38,6 +40,7 @@ public interface SpeakingConversationMapper {
     @Mapping(target = "name", source = "dto.name")
     @Mapping(target = "serial", source = "dto.serial")
     @Mapping(target = "content", source = "dto.content")
+    @Mapping(target = "audioUrl", source = "dto.audioUrl")
     @Mapping(target = "speaking", source = "dto.speakingId", qualifiedByName = "mapSpeakingIdToEntity")
     void patchEntityFromDTO(SpeakingConversationDTO dto, @MappingTarget SpeakingConversation entity);
 

@@ -28,6 +28,9 @@ public class MinioServiceImpl implements MinioService {
     @Value("${minio.bucketName}")
     private String bucketName;
 
+    @Value("${minio.endpoint}")
+    private String endpoint;
+
     @Autowired
     private MinioClient minioClient;
 
@@ -173,7 +176,7 @@ public class MinioServiceImpl implements MinioService {
     }
 
     private String getStorageUrl(String objectName) {
-        String url = String.format("http://localhost:9000/%s/%s", bucketName, objectName);
+        String url = String.format("%s/%s/%s", endpoint, bucketName, objectName);
         log.debug("Generated storage URL: {}", url);
         return url;
     }
