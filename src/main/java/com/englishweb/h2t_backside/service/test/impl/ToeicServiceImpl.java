@@ -81,12 +81,15 @@ public class ToeicServiceImpl extends BaseServiceImpl<ToeicDTO, Toeic, ToeicRepo
         return mapper.convertToDTO(entity);
     }
     @Override
-    public Page<ToeicDTO> searchWithFilters(int page, int size, String sortFields, ToeicFilterDTO filter, String userId) {
+    public Page<ToeicDTO> searchWithFilters(int page, int size, String sortFields, ToeicFilterDTO filter, Long userId) {
         return ToeicPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, Toeic.class
         ).map(entity -> {
             ToeicDTO dto = mapper.convertToDTO(entity);
-            dto.setScoreLastOfTest(submitToeicService.getScoreOfLastTestByUser(Long.valueOf(userId)));
+            if(userId!=null) {
+                dto.setScoreLastOfTest(submitToeicService.getScoreOfLastTestByUser(Long.valueOf(userId)));
+
+            }
             return dto;
         });
     }

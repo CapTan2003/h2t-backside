@@ -20,6 +20,9 @@ public class ToeicPart1DTO extends AbstractBaseDTO {
     @NotBlank(message = "Audio URL cannot be blank")
     private String audio;
 
+    @NotBlank(message = "Transcript cannot be blank")
+    private String transcript;
+
     @NotNull(message = "Correct answer cannot be null")
     private AnswerEnum correctAnswer;
 }

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/toeic-questions")
@@ -38,6 +40,18 @@ public class ToeicQuestionController {
                 .data(created)
                 .message("ToeicQuestion created successfully")
                 .build());
+    }
+
+
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<ToeicQuestionDTO>> getByIds(@RequestBody List<Long> ids) {
+        List<ToeicQuestionDTO> result = service.findByIds(ids);
+        return ResponseDTO.<List<ToeicQuestionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Toeic questions retrieved successfully")
+                .build();
     }
 
     @PutMapping("/{id}")

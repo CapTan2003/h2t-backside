@@ -18,6 +18,5 @@ public class ToeicPart7DTO extends AbstractBaseDTO {
     @NotBlank(message = "File path cannot be blank")
     private String file;
 
-    @NotNull(message = "Questions list cannot be null")
     private List<Long> questions;
 }
