@@ -25,6 +25,9 @@ public class SpeakingConversation extends AbstractBaseEntity {
     @Comment("Content of the conversation")
     private String content;
 
+    @Comment("Audio URL for the conversation")
+    private String audioUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "speaking_id", nullable = false)
     @Comment("Speaking lesson to which this conversation belongs")

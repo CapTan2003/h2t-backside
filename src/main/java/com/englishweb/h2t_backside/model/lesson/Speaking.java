@@ -28,8 +28,7 @@ public class Speaking extends AbstractLessonEntity {
     @Comment("Preparation object associated with this speaking lesson")
     private Preparation preparation;
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JoinColumn(name = "speaking_id")
+    @OneToMany(mappedBy = "speaking", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Comment("List of conversations related to the speaking lesson")
     private List<SpeakingConversation> conversations;
 }
