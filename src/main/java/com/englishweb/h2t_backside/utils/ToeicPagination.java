@@ -28,11 +28,13 @@ public class ToeicPagination {
             throw new InvalidArgumentException("Page size must be greater than 0.", size, ErrorApiCodeContent.PAGE_SIZE_INVALID, SeverityEnum.LOW);
         }
 
-        Specification<T> specification = Specification.where(null);
+        Specification<T> specification = Specification.where(BaseFilterSpecification.applyBaseFilters(filter));
+
 
         if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
             specification = specification.and((Specification<T>) ToeicSpecification.findByName(filter.getTitle()));
         }
+
 
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
 

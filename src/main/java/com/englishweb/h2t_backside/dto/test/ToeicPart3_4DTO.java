@@ -24,6 +24,6 @@ public class ToeicPart3_4DTO extends AbstractBaseDTO {
     @NotBlank(message = "Transcript cannot be blank")
     private String transcript;
 
-    @NotNull(message = "Questions list cannot be null")
+
     private List<Long> questions;
 }

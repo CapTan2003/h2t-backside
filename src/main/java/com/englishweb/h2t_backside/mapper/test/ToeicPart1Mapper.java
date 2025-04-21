@@ -15,6 +15,7 @@ public interface ToeicPart1Mapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "audio", source = "dto.audio")
+    @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "correctAnswer", source = "dto.correctAnswer")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     ToeicPart1 convertToEntity(ToeicPart1DTO dto);
@@ -23,6 +24,7 @@ public interface ToeicPart1Mapper {
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "image", source = "entity.image")
     @Mapping(target = "audio", source = "entity.audio")
+    @Mapping(target = "transcript", source = "entity.transcript")
     @Mapping(target = "correctAnswer", source = "entity.correctAnswer")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
