@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
+import com.englishweb.h2t_backside.dto.ConversationScoreDTO;
 import com.englishweb.h2t_backside.dto.SpeakingScoreDTO;
 import com.englishweb.h2t_backside.dto.WritingScoreDTO;
 import com.englishweb.h2t_backside.service.feature.ScoreSpeakingService;
@@ -16,9 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,6 +30,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
     // Base API URL
     private static final String BASE_API_URL = "https://speech-scoring-api-production.up.railway.app/api/speech";
+    // private static final String BASE_API_URL = "http://localhost:5000/api/speech";
 
     // Specific endpoints
     private static final String PROCESS_AUDIO_URL = BASE_API_URL + "/process-audio";
@@ -154,7 +154,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     }
 
     @Override
-    public SpeakingScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception {
+    public ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception {
         log.info("Starting evaluation of multiple files, count: {}", audioFiles.size());
 
         // Validate input
@@ -170,53 +170,102 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             }
         }
 
-        // Create HttpHeaders object
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        List<SpeakingScoreDTO> scores = new ArrayList<>();
 
-        // Create MultiValueMap for the request body
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-        // Add all audio files
-        for (MultipartFile audioFile : audioFiles) {
-            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return audioFile.getOriginalFilename();
-                }
-            };
-            body.add("files", resource);
+        for (int i = 0; i < audioFiles.size(); i++) {
+            scores.add(evaluateSpeaking(audioFiles.get(i), expectedTexts.get(i)));
         }
 
-        // Add all topics
-        for (String expectedText : expectedTexts) {
-            body.add("topics", expectedText);
-        }
+        ConversationScoreDTO scoreResult = new ConversationScoreDTO();
 
-        // Create the HTTP entity
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+// Tính điểm trung bình
+        double averageScore = scores.stream()
+                .mapToDouble(score -> Double.parseDouble(score.getScore()))
+                .average()
+                .orElse(0);
+        scoreResult.setScore(String.valueOf(averageScore));
 
-        try {
-            // Send POST request to the multiple files API
-            ResponseEntity<String> response = restTemplate.exchange(
-                    EVALUATE_MULTIPLE_URL,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
+// Thu thập các transcripts theo đúng thứ tự
+        List<String> transcripts = scores.stream()
+                .map(SpeakingScoreDTO::getTranscript)
+                .collect(Collectors.toList());
+        scoreResult.setTranscripts(transcripts);
 
-            log.info("Received response from multiple files API with status: {}", response.getStatusCode());
+// Thu thập strengths, chỉ lấy những cái khác biệt
+        Set<String> uniqueStrengths = new HashSet<>();
+        scores.forEach(score -> {
+            if (score.getStrengths() != null) {
+                uniqueStrengths.addAll(score.getStrengths());
+            }
+        });
+        scoreResult.setStrengths(new ArrayList<>(uniqueStrengths));
 
-            // Parse the response for multiple files
-            return parseMultipleFilesResponse(response);
+// Thu thập areas_to_improve, chỉ lấy những cái khác biệt
+        Set<String> uniqueAreasToImprove = new HashSet<>();
+        scores.forEach(score -> {
+            if (score.getAreas_to_improve() != null) {
+                uniqueAreasToImprove.addAll(score.getAreas_to_improve());
+            }
+        });
+        scoreResult.setAreas_to_improve(new ArrayList<>(uniqueAreasToImprove));
 
-        } catch (RestClientException e) {
-            log.error("Error calling multiple files API: {}", e.getMessage(), e);
-            throw new Exception("Failed to communicate with multiple files API: " + e.getMessage());
-        } catch (Exception e) {
-            log.error("Error evaluating multiple files: {}", e.getMessage(), e);
-            throw new Exception("Error evaluating multiple files: " + e.getMessage());
-        }
+// Thu thập feedback, chỉ lấy những cái khác biệt
+        Set<String> uniqueFeedback = new HashSet<>();
+        scores.forEach(score -> {
+            if (score.getFeedback() != null && !score.getFeedback().isEmpty()) {
+                uniqueFeedback.add(score.getFeedback());
+            }
+        });
+        scoreResult.setFeedback(String.join("\n\n", uniqueFeedback));
+
+        return scoreResult;
+//        // Create HttpHeaders object
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+//
+//        // Create MultiValueMap for the request body
+//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//
+//        // Add all audio files
+//        for (MultipartFile audioFile : audioFiles) {
+//            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
+//                @Override
+//                public String getFilename() {
+//                    return audioFile.getOriginalFilename();
+//                }
+//            };
+//            body.add("files", resource);
+//        }
+//
+//        // Add all topics
+//        for (String expectedText : expectedTexts) {
+//            body.add("topics", expectedText);
+//        }
+//
+//        // Create the HTTP entity
+//        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+//
+//        try {
+//            // Send POST request to the multiple files API
+//            ResponseEntity<String> response = restTemplate.exchange(
+//                    EVALUATE_MULTIPLE_URL,
+//                    HttpMethod.POST,
+//                    requestEntity,
+//                    String.class
+//            );
+//
+//            log.info("Received response from multiple files API with status: {}", response.getStatusCode());
+//
+//            // Parse the response for multiple files
+//            return parseMultipleFilesResponse(response);
+//
+//        } catch (RestClientException e) {
+//            log.error("Error calling multiple files API: {}", e.getMessage(), e);
+//            throw new Exception("Failed to communicate with multiple files API: " + e.getMessage());
+//        } catch (Exception e) {
+//            log.error("Error evaluating multiple files: {}", e.getMessage(), e);
+//            throw new Exception("Error evaluating multiple files: " + e.getMessage());
+//        }
     }
 
     /**
@@ -261,27 +310,25 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     /**
      * Helper method to parse API responses for multiple file evaluations
      */
-    private SpeakingScoreDTO parseMultipleFilesResponse(ResponseEntity<String> response) throws Exception {
+    private ConversationScoreDTO parseMultipleFilesResponse(ResponseEntity<String> response) throws Exception {
         // Parse the response into a SpeakingScoreDTO object
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            SpeakingScoreDTO scoreDTO = new SpeakingScoreDTO();
+            ConversationScoreDTO scoreDTO = new ConversationScoreDTO();
             scoreDTO.setScore(rootNode.path("score").asText());
 
             // For multiple files, join the transcripts
-            StringBuilder transcriptBuilder = new StringBuilder();
+            List<String> transcripts = new ArrayList<>();
             JsonNode transcriptsNode = rootNode.path("transcripts");
+
             if (transcriptsNode.isArray()) {
-                for (int i = 0; i < transcriptsNode.size(); i++) {
-                    if (i > 0) {
-                        transcriptBuilder.append("\n");
-                    }
-                    transcriptBuilder.append("File ").append(i + 1).append(": ")
-                            .append(transcriptsNode.get(i).asText());
+                for (JsonNode node : transcriptsNode) {
+                    transcripts.add(node.asText());
                 }
             }
-            scoreDTO.setTranscript(transcriptBuilder.toString());
+
+            scoreDTO.setTranscripts(transcripts);
 
             scoreDTO.setFeedback(rootNode.path("detailedFeedback").asText());
 

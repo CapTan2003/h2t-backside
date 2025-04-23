@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.WritingScoreDTO;
 import com.englishweb.h2t_backside.service.feature.GeminiService;
+import com.englishweb.h2t_backside.service.feature.LLMService;
 import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ScoreWritingServiceImpl implements ScoreWritingService {
 
-    private final GeminiService geminiService;
+    private final LLMService llmService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -25,14 +26,14 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
         log.info("Scoring writing with topic: {}", topic);
 
         String prompt = buildPrompt(text, topic);
-        log.info("Sending prompt to Gemini service");
+        log.info("Sending prompt to LLM service");
 
         try {
-            String geminiResponse = geminiService.generateText(prompt);
-            log.info("Received response from Gemini: {}", geminiResponse);
+            String llmResponse = llmService.generateText(prompt);
+            log.info("Received response from LLM: {}", llmResponse);
 
             // Process the response to extract the JSON content
-            String jsonContent = extractJsonFromResponse(geminiResponse);
+            String jsonContent = extractJsonFromResponse(llmResponse);
             log.info("Extracted JSON content: {}", jsonContent);
 
             // Parse the JSON response into WritingScoreDTO
@@ -55,7 +56,7 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
     /**
      * Extracts valid JSON from a response that might contain md formatting or other text
      *
-     * @param response the raw response from Gemini
+     * @param response the raw response from LLM
      * @return cleaned JSON string
      */
     private String extractJsonFromResponse(String response) {
