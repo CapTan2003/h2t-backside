@@ -28,7 +28,7 @@ public class Writing extends AbstractLessonEntity {
     @Comment("Paragraph content related to the writing lesson")
     private String paragraph;
 
-    @OneToMany(mappedBy = "writing", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "writing", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Comment("List of answers related to the writing lesson")
     private List<WritingAnswer> answers;
 

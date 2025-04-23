@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.feature;
 
+import com.englishweb.h2t_backside.dto.ConversationScoreDTO;
 import com.englishweb.h2t_backside.dto.SpeakingScoreDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,5 +21,5 @@ public interface ScoreSpeakingService {
     /**
      * Evaluate multiple audio files with their corresponding expected texts
      */
-    SpeakingScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception;
+    ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception;
 }
