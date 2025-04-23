@@ -29,8 +29,8 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     private final ObjectMapper objectMapper;
 
     // Base API URL
-    // private static final String BASE_API_URL = "https://speech-scoring-api-production.up.railway.app/api/speech";
-    private static final String BASE_API_URL = "http://localhost:5000/api/speech";
+    private static final String BASE_API_URL = "https://speech-scoring-api-production.up.railway.app/api/speech";
+    // private static final String BASE_API_URL = "http://localhost:5000/api/speech";
 
     // Specific endpoints
     private static final String PROCESS_AUDIO_URL = BASE_API_URL + "/process-audio";
