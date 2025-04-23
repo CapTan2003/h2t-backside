@@ -22,7 +22,7 @@ public class Topic extends AbstractLessonEntity {
     @Builder.Default
     private String questions = "";
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE, orphanRemoval = false)
     @Comment("List of vocabularies associated with this topic")
     private List<Vocabulary> vocabularies;
 }
