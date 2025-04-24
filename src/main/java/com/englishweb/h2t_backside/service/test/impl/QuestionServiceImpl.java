@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
-import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -12,6 +11,7 @@ import com.englishweb.h2t_backside.model.test.Question;
 import com.englishweb.h2t_backside.repository.test.QuestionRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.AnswerService;
 import com.englishweb.h2t_backside.service.test.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,10 +24,17 @@ import java.util.List;
 @Slf4j
 public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, QuestionRepository> implements QuestionService {
     private final QuestionMapper mapper;
+    private final AnswerService answerService;
 
-    public QuestionServiceImpl(QuestionRepository repository, DiscordNotifier discordNotifier, QuestionMapper mapper) {
+    public QuestionServiceImpl(
+            QuestionRepository repository,
+            DiscordNotifier discordNotifier,
+            QuestionMapper mapper,
+            AnswerService answerService
+    ) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.answerService = answerService;
     }
 
     @Override
@@ -61,6 +68,28 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
     }
 
     @Override
+    public QuestionDTO create(QuestionDTO dto) {
+        dto.setAnswers(dto.getAnswers().stream().peek(answer -> {
+            if (answer.getId() <= 0) {
+                answer.setId(null);
+            }
+        }).toList());
+        return super.create(dto);
+    }
+
+
+    @Override
+    public QuestionDTO update(QuestionDTO dto, Long id) {
+        dto.setAnswers(dto.getAnswers().stream().peek(answer ->{
+            if (answer.getId() <= 0) {
+                answer.setId(null);
+            }
+        }).toList());
+        return super.update(dto, id);
+    }
+
+
+    @Override
     protected void patchEntityFromDTO(QuestionDTO dto, Question entity) {
         mapper.patchEntityFromDTO(dto, entity);
     }
@@ -82,5 +111,23 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
         }
         return result;
     }
+    @Override
+    public boolean delete(Long id) {
+        if (!isExist(id)) {
+            return false;
+        }
+
+        Question question = repository.findById(id).orElse(null);
+        if (question != null && question.getAnswers() != null) {
+            question.getAnswers().forEach(answer -> {
+                if (answer.getId() != null) {
+                    answerService.delete(answer.getId());
+                }
+            });
+        }
+
+        return  super.delete(id);
+    }
+
 
 }

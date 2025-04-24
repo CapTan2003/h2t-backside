@@ -22,6 +22,6 @@ public class ToeicAnswer extends AbstractBaseEntity {
     private boolean correct;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "toeicQuestion_id")
-    private ToeicQuestion toeicQuestion;
+    @JoinColumn(name = "question_id")
+    private ToeicQuestion question;
 }
