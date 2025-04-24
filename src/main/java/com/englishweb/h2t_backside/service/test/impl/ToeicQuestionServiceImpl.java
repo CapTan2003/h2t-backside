@@ -11,6 +11,7 @@ import com.englishweb.h2t_backside.model.test.ToeicQuestion;
 import com.englishweb.h2t_backside.repository.test.ToeicQuestionRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.ToeicAnswerService;
 import com.englishweb.h2t_backside.service.test.ToeicQuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,14 @@ public class ToeicQuestionServiceImpl extends BaseServiceImpl<ToeicQuestionDTO, 
         implements ToeicQuestionService {
 
     private final ToeicQuestionMapper mapper;
+    private final ToeicAnswerService toeicAnswerService;
 
     public ToeicQuestionServiceImpl(ToeicQuestionRepository repository,
                                     DiscordNotifier discordNotifier,
-                                    ToeicQuestionMapper mapper) {
+                                    ToeicQuestionMapper mapper, ToeicAnswerService toeicAnswerService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.toeicAnswerService = toeicAnswerService;
     }
 
     @Override
@@ -49,6 +52,45 @@ public class ToeicQuestionServiceImpl extends BaseServiceImpl<ToeicQuestionDTO, 
         throw new UpdateResourceException(dto, "Error updating ToeicQuestion: " + ex.getMessage(),
                 ErrorApiCodeContent.LESSON_UPDATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
+
+
+    @Override
+    public ToeicQuestionDTO create(ToeicQuestionDTO dto) {
+        dto.setAnswers(dto.getAnswers().stream().peek(answer ->{
+            if (answer.getId() <= 0) {
+                answer.setId(null);
+            }
+        }).toList());
+        return super.create(dto);
+    }
+
+    @Override
+    public ToeicQuestionDTO update(ToeicQuestionDTO dto, Long id) {
+        dto.setAnswers(dto.getAnswers().stream().peek(answer ->{
+            if (answer.getId() <= 0) {
+                answer.setId(null);
+            }
+        }).toList());
+        return super.update(dto, id);
+    }
+    @Override
+    public boolean delete(Long id) {
+        if (!isExist(id)) {
+            return false;
+        }
+
+        ToeicQuestion toeicQuestion = repository.findById(id).orElse(null);
+        if (toeicQuestion != null && toeicQuestion.getAnswers() != null) {
+            toeicQuestion.getAnswers().forEach(answer -> {
+                if (answer.getId() != null) {
+                    toeicAnswerService.delete(answer.getId()); // gọi service xóa answer
+                }
+            });
+        }
+
+        return super.delete(id);
+    }
+
 
     @Override
     protected void patchEntityFromDTO(ToeicQuestionDTO dto, ToeicQuestion entity) {

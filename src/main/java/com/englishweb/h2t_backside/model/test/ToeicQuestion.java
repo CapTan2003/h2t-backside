@@ -25,6 +25,6 @@ public class ToeicQuestion extends AbstractBaseEntity {
     @NotBlank(message = "Explanation cannot be empty")
     private String explanation;
 
-    @OneToMany(mappedBy = "toeicQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ToeicAnswer> toeicAnswers;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ToeicAnswer> answers;
 }

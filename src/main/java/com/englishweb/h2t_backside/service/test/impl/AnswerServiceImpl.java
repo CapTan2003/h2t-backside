@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class AnswerServiceImpl extends BaseServiceImpl<AnswerDTO, Answer, AnswerRepository> implements AnswerService {
@@ -54,6 +56,11 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerDTO, Answer, Answer
         }
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
+    }
+
+    public List<AnswerDTO> findByQuestionId(Long questionId) {
+        List<Answer> answers = repository.findByQuestionId(questionId);
+        return answers.stream().map(mapper::convertToDTO).toList();
     }
 
     @Override
