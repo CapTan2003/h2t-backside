@@ -26,6 +26,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepository> implements RouteService {
@@ -110,6 +112,17 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
         }
 
         return repository.findAll(specification, pageable).map(this::convertToDTO);
+    }
+
+    @Override
+    public List<RouteDTO> findByOwnerId(Long ownerId) {
+        Specification<Route> specification = null;
+
+        if (ownerId != null) {
+            specification = RouteSpecification.findByOwnerId(ownerId);
+        }
+
+        return repository.findAll(specification).stream().map(this::convertToDTO).toList();
     }
 
     @Override
