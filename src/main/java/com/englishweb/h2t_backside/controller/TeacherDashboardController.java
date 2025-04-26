@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TeacherDashboardController {
 
-    TeacherDashboardService service;
+    private final TeacherDashboardService service;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
