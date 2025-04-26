@@ -6,7 +6,7 @@ import com.englishweb.h2t_backside.dto.teacherdashboard.LessonDataDTO;
 import com.englishweb.h2t_backside.dto.teacherdashboard.TeacherDashboardDTO;
 import com.englishweb.h2t_backside.dto.teacherdashboard.TestDataDTO;
 import com.englishweb.h2t_backside.service.feature.TeacherDashboardService;
-import com.englishweb.h2t_backside.service.lesson.RouteService;
+import com.englishweb.h2t_backside.service.lesson.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,21 @@ import java.util.List;
 public class TeacherDashboardServiceImpl implements TeacherDashboardService {
 
     private final RouteService routeService;
+    private final TopicService topicService;
+    private final GrammarService grammarService;
+    private final ReadingService readingService;
+    private final WritingService writingService;
+    private final SpeakingService speakingService;
+    private final ListeningService listeningService;
 
-    public TeacherDashboardServiceImpl(RouteService routeService) {
+    public TeacherDashboardServiceImpl(RouteService routeService, TopicService topicService, GrammarService grammarService, ReadingService readingService, WritingService writingService, SpeakingService speakingService, ListeningService listeningService) {
         this.routeService = routeService;
+        this.topicService = topicService;
+        this.grammarService = grammarService;
+        this.readingService = readingService;
+        this.writingService = writingService;
+        this.speakingService = speakingService;
+        this.listeningService = listeningService;
     }
 
     @Override
@@ -39,6 +51,7 @@ public class TeacherDashboardServiceImpl implements TeacherDashboardService {
         long totalReadingTests = 0;
         long activeContent = 0;
         long inactiveContent = 0;
+        long totalViews = 0;
 
         for (RouteDTO route: routes) {
             for (RouteNodeDTO routeNode: route.getRouteNodes()){
@@ -47,12 +60,31 @@ public class TeacherDashboardServiceImpl implements TeacherDashboardService {
                 else
                     ++inactiveContent;
                 switch (routeNode.getType()) {
-                    case VOCABULARY -> ++totalTopics;
-                    case GRAMMAR -> ++totalGrammars;
-                    case READING -> ++totalReadings;
-                    case WRITING -> ++totalWritings;
-                    case SPEAKING -> ++totalSpeakings;
-                    case LISTENING -> ++totalListenings;
+                    case VOCABULARY -> {
+                        ++totalTopics;
+                        totalViews += topicService.findById(routeNode.getNodeId()).getViews();
+                    }
+                    case GRAMMAR -> {
+                        ++totalGrammars;
+                        totalViews += grammarService.findById(routeNode.getNodeId()).getViews();
+                    }
+                    case READING -> {
+                        ++totalReadings;
+                        totalViews += readingService.findById(routeNode.getNodeId()).getViews();
+                    }
+                    case WRITING -> {
+                        ++totalWritings;
+                        totalViews += writingService.findById(routeNode.getNodeId()).getViews();
+                    }
+                    case SPEAKING -> {
+                        ++totalSpeakings;
+                        totalViews += speakingService.findById(routeNode.getNodeId()).getViews();
+                    }
+                    case LISTENING -> {
+                        ++totalListenings;
+                        totalViews += listeningService.findById(routeNode.getNodeId()).getViews();
+                    }
+                    // TODO: COUNT SUBMITTED TEST AND ADD TO TOTAL VIEWS
                     case MIXING_TEST -> ++totalMixingTests;
                     case LISTENING_TEST -> ++totalListeningTests;
                     case READING_TEST -> ++totalReadingTests;
@@ -86,6 +118,7 @@ public class TeacherDashboardServiceImpl implements TeacherDashboardService {
                 .totalRoutes(totalRoutes)
                 .activeContent(activeContent)
                 .inactiveContent(inactiveContent)
+                .totalViews(totalViews)
                 .build();
     }
 }
