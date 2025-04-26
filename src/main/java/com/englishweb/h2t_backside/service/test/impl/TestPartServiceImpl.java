@@ -1,7 +1,9 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
+import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -13,10 +15,8 @@ import com.englishweb.h2t_backside.model.test.TestPart;
 import com.englishweb.h2t_backside.repository.test.TestPartRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
-import com.englishweb.h2t_backside.service.test.TestListeningService;
-import com.englishweb.h2t_backside.service.test.TestPartService;
-import com.englishweb.h2t_backside.service.test.TestReadingService;
-import com.englishweb.h2t_backside.service.test.TestSpeakingService;
+import com.englishweb.h2t_backside.service.test.*;
+import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,18 +33,21 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
     private final TestListeningService testListeningService;
     private final TestSpeakingService testSpeakingService;
     private final TestPartMapper mapper;
+    private final QuestionService questionService;
+    private static final String RESOURCE_NAME = "TestPart";
 
     public TestPartServiceImpl(TestPartRepository repository,
                                DiscordNotifier discordNotifier,
                                TestPartMapper mapper,
                                TestReadingService testReadingService,
                                TestListeningService testListeningService,
-                               TestSpeakingService testSpeakingService) {
+                               TestSpeakingService testSpeakingService, QuestionService questionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.testReadingService = testReadingService;
         this.testListeningService = testListeningService;
         this.testSpeakingService = testSpeakingService;
+        this.questionService = questionService;
     }
 
 
@@ -143,6 +146,17 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
             result.add(findById(id));
         }
         return result;
+    }
+    @Override
+    public List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status) {
+        return QuestionFinder.findQuestionsByTestId(
+                testId,
+                status,
+                RESOURCE_NAME,
+                questionService,
+                TestPartDTO::getQuestions,
+                this::findById
+        );
     }
 
 

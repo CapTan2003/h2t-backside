@@ -1,5 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.QuestionDTO;
+import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
 import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
 import com.englishweb.h2t_backside.dto.test.TestSpeakingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -12,7 +14,9 @@ import com.englishweb.h2t_backside.model.test.TestSpeaking;
 import com.englishweb.h2t_backside.repository.test.TestSpeakingRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.QuestionService;
 import com.englishweb.h2t_backside.service.test.TestSpeakingService;
+import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,10 +28,13 @@ import java.util.List;
 @Slf4j
 public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, TestSpeaking, TestSpeakingRepository> implements TestSpeakingService {
     private final TestSpeakingMapper mapper;
+    private final QuestionService questionService;
+    private static final String RESOURCE_NAME = "TestSpeaking";
 
-    public TestSpeakingServiceImpl(TestSpeakingRepository repository, DiscordNotifier discordNotifier, TestSpeakingMapper mapper) {
+    public TestSpeakingServiceImpl(TestSpeakingRepository repository, DiscordNotifier discordNotifier, TestSpeakingMapper mapper, QuestionService questionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.questionService = questionService;
     }
 
     @Override
@@ -81,5 +88,16 @@ public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, Te
             result.add(findById(id));
         }
         return result;
+    }
+    @Override
+    public List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status) {
+        return QuestionFinder.findQuestionsByTestId(
+                testId,
+                status,
+                RESOURCE_NAME,
+                questionService,
+                TestSpeakingDTO::getQuestions,
+                this::findById
+        );
     }
 }

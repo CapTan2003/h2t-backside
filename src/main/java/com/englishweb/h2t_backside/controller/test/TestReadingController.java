@@ -1,6 +1,7 @@
     package com.englishweb.h2t_backside.controller.test;
 
     import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+    import com.englishweb.h2t_backside.dto.test.QuestionDTO;
     import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
     import com.englishweb.h2t_backside.dto.response.ResponseDTO;
     import com.englishweb.h2t_backside.service.test.TestReadingService;
@@ -39,6 +40,20 @@
                     .status(ResponseStatusEnum.SUCCESS)
                     .data(result)
                     .message("TestReading retrieved successfully")
+                    .build();
+        }
+        @GetMapping("/questions")
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseDTO<List<QuestionDTO>> findQuestionByTestId(
+                @RequestParam Long testId,
+                @RequestParam(required = false) Boolean status) {
+
+            List<QuestionDTO> questions = service.findQuestionByTestId(testId, status);
+
+            return ResponseDTO.<List<QuestionDTO>>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .data(questions)
+                    .message("Questions retrieved successfully for the listening")
                     .build();
         }
 

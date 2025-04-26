@@ -17,6 +17,5 @@ public class TestReadingDTO extends AbstractBaseDTO {
     @NotNull(message = "File cannot be null")
     private String file; // Lưu đường dẫn file docx của Reading
 
-    @NotNull(message = "Questions cannot be null")
     private List<Long> questions; // Lưu danh sách ID các câu hỏi
 }

@@ -16,6 +16,7 @@ public interface TestSpeakingMapper {
 
     // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
+    @Mapping(target = "title", source = "dto.title")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     TestSpeaking convertToEntity(TestSpeakingDTO dto);
@@ -24,6 +25,7 @@ public interface TestSpeakingMapper {
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "questions", source = "entity.questions", qualifiedByName = "stringToLongList")
     @Mapping(target = "status", source = "entity.status")
+    @Mapping(target = "title", source = "entity.title")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     TestSpeakingDTO convertToDTO(TestSpeaking entity);

@@ -14,8 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestPartDTO extends AbstractBaseDTO {
-
-    @NotNull(message = "Questions cannot be null")
     private List<Long> questions;
 
     @NotNull(message = "Type cannot be null")

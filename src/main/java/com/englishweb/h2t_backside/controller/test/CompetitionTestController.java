@@ -85,7 +85,7 @@ public class CompetitionTestController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
-            @RequestParam(defaultValue = "") String userId,
+            @RequestParam(required = false) Long userId,
             @ModelAttribute CompetitionTestFilterDTO filter) {
 
         Page<CompetitionTestDTO> results = service.searchWithFilters(page, size, sortFields, filter, userId);

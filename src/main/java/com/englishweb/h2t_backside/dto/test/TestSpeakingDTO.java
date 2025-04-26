@@ -13,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestSpeakingDTO extends AbstractBaseDTO {
+    @NotNull(message = "Title cannot be null")
+    private String title;
 
-    @NotNull(message = "Questions cannot be null")
     private List<Long> questions; // Lưu danh sách ID các câu hỏi
 }

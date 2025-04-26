@@ -34,8 +34,7 @@ public class CompetitionTest extends AbstractBaseEntity {
     @Comment("End time of the Competition")
     private LocalDateTime endTime;
 
-    @Column(nullable = false)
-    @Comment("Id part of the Competition")
+
     @ColumnDefault("''")
     @Builder.Default
     private String parts = "";
