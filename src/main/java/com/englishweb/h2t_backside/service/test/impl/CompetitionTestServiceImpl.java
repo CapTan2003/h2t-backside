@@ -2,7 +2,6 @@ package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.CompetitionTestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
-import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -11,16 +10,19 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.CompetitionTestMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.enummodel.TestPartEnum;
-import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
+import com.englishweb.h2t_backside.repository.specifications.CompetitionTestSpecification;
 import com.englishweb.h2t_backside.repository.test.CompetitionTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.CompetitionTestService;
 import com.englishweb.h2t_backside.service.test.TestPartService;
-import com.englishweb.h2t_backside.utils.CompetitionTestPagination;
+import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -108,13 +110,33 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
     }
     @Override
     public Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, Long userId) {
-        return CompetitionTestPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, CompetitionTest.class
-        ).map(entity -> {
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, CompetitionTest.class);
+
+        Specification<CompetitionTest> specification = BaseFilterSpecification.applyBaseFilters(filter);
+
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            specification = specification.and(CompetitionTestSpecification.findByName(filter.getTitle()));
+        }
+
+        if (filter.getStartStartTime() != null || filter.getEndStartTime() != null) {
+            specification = specification.and(CompetitionTestSpecification.findByStartTimeRange(
+                    filter.getStartStartTime(), filter.getEndStartTime()
+            ));
+        }
+
+        if (filter.getStartEndTime() != null || filter.getEndEndTime() != null) {
+            specification = specification.and(CompetitionTestSpecification.findByEndTimeRange(
+                    filter.getStartEndTime(), filter.getEndEndTime()
+            ));
+        }
+
+        return repository.findAll(specification, pageable).map(entity -> {
             CompetitionTestDTO dto = mapper.convertToDTO(entity);
             dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts()));
             return dto;
         });
     }
+
+
 
 }

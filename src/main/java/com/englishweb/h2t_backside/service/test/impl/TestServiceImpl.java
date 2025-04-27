@@ -3,7 +3,6 @@ package com.englishweb.h2t_backside.service.test.impl;
 import com.englishweb.h2t_backside.dto.filter.TestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
-import com.englishweb.h2t_backside.dto.test.ToeicQuestionDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -13,14 +12,17 @@ import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.enummodel.TestPartEnum;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import com.englishweb.h2t_backside.model.test.Test;
-import com.englishweb.h2t_backside.model.test.TestPart;
+import com.englishweb.h2t_backside.repository.specifications.TestSpecification;
 import com.englishweb.h2t_backside.repository.test.TestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.*;
-import com.englishweb.h2t_backside.utils.TestPagination;
+import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -118,15 +120,26 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
     }
 
     @Override
-    public Page<TestDTO> searchWithFilters(int page, int size, String sortFields, TestFilterDTO filter, String userId) {
-        return TestPagination.searchWithFiltersGeneric(
-                page, size, sortFields, filter, repository, Test.class
-        ).map(entity -> {
+    public Page<TestDTO> searchWithFilters(int page, int size, String sortFields, TestFilterDTO filter, Long userId) {
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, Test.class);
+
+        Specification<Test> specification = BaseFilterSpecification.applyBaseFilters(filter);
+
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            specification = specification.and(TestSpecification.findByName(filter.getTitle()));
+        }
+
+        if (filter.getType() != null) {
+            specification = specification.and(TestSpecification.findByType(filter.getType()));
+        }
+
+        return repository.findAll(specification, pageable).map(entity -> {
             TestDTO dto = mapper.convertToDTO(entity);
             dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts()));
-            dto.setScoreLastOfTest(submitTestService.getScoreOfLastTestByUser(Long.valueOf(userId)));
+            dto.setScoreLastOfTest(submitTestService.getScoreOfLastTestByUser(userId));
             return dto;
         });
     }
+
 
 }

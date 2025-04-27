@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -11,4 +14,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class CompetitionTestFilterDTO extends BaseFilterDTO {
     private String title;
+
+    private LocalDateTime startStartTime;
+    private LocalDateTime endStartTime;
+
+    private LocalDateTime startEndTime;
+    private LocalDateTime endEndTime;
 }
