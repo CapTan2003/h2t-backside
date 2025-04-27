@@ -1,5 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
+import com.englishweb.h2t_backside.dto.lesson.ListeningDTO;
 import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -12,7 +14,10 @@ import com.englishweb.h2t_backside.model.test.TestListening;
 import com.englishweb.h2t_backside.repository.test.TestListeningRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.QuestionService;
 import com.englishweb.h2t_backside.service.test.TestListeningService;
+import com.englishweb.h2t_backside.utils.LessonQuestionFinder;
+import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,10 +29,14 @@ import java.util.List;
 @Slf4j
 public class TestListeningServiceImpl extends BaseServiceImpl<TestListeningDTO, TestListening, TestListeningRepository> implements TestListeningService {
     private final TestListeningMapper mapper;
+    private final QuestionService questionService;
+    private static final String RESOURCE_NAME = "TestListening";
 
-    public TestListeningServiceImpl(TestListeningRepository repository, DiscordNotifier discordNotifier, TestListeningMapper mapper) {
+
+    public TestListeningServiceImpl(TestListeningRepository repository, DiscordNotifier discordNotifier, TestListeningMapper mapper, QuestionService questionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.questionService = questionService;
     }
 
     @Override
@@ -81,5 +90,17 @@ public class TestListeningServiceImpl extends BaseServiceImpl<TestListeningDTO, 
             result.add(findById(id));
         }
         return result;
+    }
+
+    @Override
+    public List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status) {
+        return QuestionFinder.findQuestionsByTestId(
+                testId,
+                status,
+                RESOURCE_NAME,
+                questionService,
+                TestListeningDTO::getQuestions,
+                this::findById
+        );
     }
 }

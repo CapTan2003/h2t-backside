@@ -24,7 +24,6 @@ public class TestListening extends AbstractBaseEntity {
     @Comment("Transcript of the listening audio")
     private String transcript;
 
-    @Column(nullable = false)
     @ColumnDefault("''")
     @Comment("List of question IDs associated with this listening test")
     private String questions;

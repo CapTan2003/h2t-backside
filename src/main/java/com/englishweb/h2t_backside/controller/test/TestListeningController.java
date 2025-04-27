@@ -1,6 +1,8 @@
 package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
+import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.TestListeningService;
@@ -15,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/test-listening")
+    @RequestMapping("/api/test-listenings")
 @AllArgsConstructor
 public class TestListeningController {
 
@@ -41,8 +43,20 @@ public class TestListeningController {
                 .message("TestListening retrieved successfully")
                 .build();
     }
+    @GetMapping("/questions")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<QuestionDTO>> findQuestionByTestId(
+            @RequestParam Long testId,
+            @RequestParam(required = false) Boolean status) {
 
+        List<QuestionDTO> questions = service.findQuestionByTestId(testId, status);
 
+        return ResponseDTO.<List<QuestionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(questions)
+                .message("Questions retrieved successfully for the listening")
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<TestListeningDTO>> create(@Valid @RequestBody TestListeningDTO dto) {
@@ -67,6 +81,7 @@ public class TestListeningController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<ResponseDTO<TestListeningDTO>> patch(@PathVariable Long id, @RequestBody TestListeningDTO dto) {

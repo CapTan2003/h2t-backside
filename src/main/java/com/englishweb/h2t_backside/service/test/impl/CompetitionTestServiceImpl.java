@@ -2,12 +2,16 @@ package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.CompetitionTestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
+import com.englishweb.h2t_backside.dto.test.TestDTO;
+import com.englishweb.h2t_backside.dto.test.TestPartDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.CompetitionTestMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
+import com.englishweb.h2t_backside.model.enummodel.TestPartEnum;
+import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import com.englishweb.h2t_backside.repository.test.CompetitionTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -19,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -37,6 +44,29 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
         log.warn(errorMessage);
         throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
     }
+
+    @Override
+    public CompetitionTestDTO create(CompetitionTestDTO dto) {
+
+        List<Long> partIds = new ArrayList<>();
+        for (TestPartEnum partType : List.of(
+                TestPartEnum.VOCABULARY,
+                TestPartEnum.GRAMMAR,
+                TestPartEnum.READING,
+                TestPartEnum.LISTENING,
+                TestPartEnum.SPEAKING,
+                TestPartEnum.WRITING
+        )) {
+            TestPartDTO part = new TestPartDTO();
+            part.setType(partType);
+            TestPartDTO savedPart = testPartService.create(part);
+            partIds.add(savedPart.getId());
+        }
+
+        dto.setParts(partIds);
+        return super.create(dto);
+    }
+
 
     @Override
     protected void createError(CompetitionTestDTO dto, Exception ex) {
@@ -61,6 +91,7 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
+
     @Override
     protected void patchEntityFromDTO(CompetitionTestDTO dto, CompetitionTest entity) {
         mapper.patchEntityFromDTO(dto, entity);
@@ -76,7 +107,7 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
         return mapper.convertToDTO(entity);
     }
     @Override
-    public Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, String userId) {
+    public Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, Long userId) {
         return CompetitionTestPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, CompetitionTest.class
         ).map(entity -> {

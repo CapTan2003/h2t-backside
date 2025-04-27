@@ -34,7 +34,6 @@ public class Test extends AbstractBaseEntity {
     @ColumnDefault("'MIXING'")
     private TestTypeEnum type = TestTypeEnum.MIXING;
 
-    @Column(nullable = false)
     @Comment("Id part of the Test")
     @ColumnDefault("''")
     private String parts = "";

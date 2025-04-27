@@ -33,7 +33,6 @@ public class TestDTO extends AbstractBaseDTO {
     @Positive(message = "Duration must be positive")
     private Integer duration;
 
-    @NotNull(message = "Parts cannot be null")
     private List<Long> parts;
 
     private Integer totalQuestions;

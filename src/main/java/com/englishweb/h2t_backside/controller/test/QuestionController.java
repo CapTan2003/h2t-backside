@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.controller.test;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.dto.test.ToeicQuestionDTO;
 import com.englishweb.h2t_backside.service.test.QuestionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,6 +30,16 @@ public class QuestionController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(dto)
                 .message("Question retrieved successfully")
+                .build();
+    }
+    @PostMapping("/by-ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<QuestionDTO>> getByIds(@RequestBody List<Long> ids) {
+        List<QuestionDTO> result = service.findByIds(ids);
+        return ResponseDTO.<List<QuestionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Questions retrieved successfully")
                 .build();
     }
 

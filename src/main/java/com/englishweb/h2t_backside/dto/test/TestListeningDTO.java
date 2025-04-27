@@ -20,6 +20,5 @@ public class TestListeningDTO extends AbstractBaseDTO {
     @NotNull(message = "Transcript cannot be null")
     private String transcript;
 
-    @NotNull(message = "Questions cannot be null")
     private List<Long> questions; // Lưu danh sách ID các câu hỏi
 }

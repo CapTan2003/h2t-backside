@@ -31,7 +31,6 @@ public class CompetitionTestDTO extends AbstractBaseDTO {
     @NotNull(message = "End time cannot be null")
     private LocalDateTime endTime;
 
-    @NotNull(message = "Parts cannot be null")
     private List<Long> parts;
 
     private Integer totalQuestions;

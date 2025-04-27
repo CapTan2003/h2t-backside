@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
 import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -69,11 +70,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
 
     @Override
     public QuestionDTO create(QuestionDTO dto) {
-        dto.setAnswers(dto.getAnswers().stream().peek(answer -> {
-            if (answer.getId() <= 0) {
-                answer.setId(null);
-            }
-        }).toList());
+        dto.setAnswers(dto.getAnswers().stream().peek(answer -> answer.setId(null)).toList());
         return super.create(dto);
     }
 
@@ -127,6 +124,14 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
         }
 
         return  super.delete(id);
+    }
+    @Override
+    public boolean verifyValidQuestion(Long questionId) {
+        QuestionDTO question = this.findById(questionId);
+
+        return !question.getAnswers().isEmpty() && // Check if there are answers
+                question.getAnswers().stream()
+                        .anyMatch(answer -> answer.getCorrect() && answer.getStatus()); // Check if there is at least one correct answer
     }
 
 

@@ -16,7 +16,8 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 public class TestSpeaking extends AbstractBaseEntity {
 
-    @Column(nullable = false)
+    private String title;
+
     @ColumnDefault("''")
     @Comment("List of question IDs associated with this speaking test")
     private String questions;

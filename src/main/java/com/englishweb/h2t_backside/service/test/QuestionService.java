@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface QuestionService extends BaseService<QuestionDTO> {
     List<QuestionDTO> findByIds(List<Long> ids);
+    boolean verifyValidQuestion(Long questionId);
 }

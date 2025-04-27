@@ -18,7 +18,6 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 public class TestPart extends AbstractBaseEntity {
 
-    @Column(nullable = false)
     @ColumnDefault("''")
     @Comment("List of question IDs belonging to this test part")
     private String questions;

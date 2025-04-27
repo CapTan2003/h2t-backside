@@ -20,7 +20,6 @@ public class TestReading extends AbstractBaseEntity {
     @Comment("Path to the DOCX file used for the reading test")
     private String file;
 
-    @Column(nullable = false)
     @ColumnDefault("''")
     @Comment("List of question IDs associated with this reading test")
     private String questions;
