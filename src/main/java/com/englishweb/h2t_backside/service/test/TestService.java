@@ -8,6 +8,6 @@ import org.springframework.data.domain.Page;
 
 public interface TestService extends BaseService<TestDTO> {
 
-    Page<TestDTO> searchWithFilters(int page, int size, String sortFields, TestFilterDTO filter,String userId);
+    Page<TestDTO> searchWithFilters(int page, int size, String sortFields, TestFilterDTO filter,Long userId);
 
 }
