@@ -145,11 +145,13 @@ public abstract class RouteNodeMapper {
         node.setTitle(dto.getTitle());
         node.setDescription(dto.getDescription());
         node.setImage(null);
+        node.setStatus(dto.getStatus());
     }
 
     private void setCommonFields(RouteNodeDTO node, LessonDTO dto) {
         node.setTitle(dto.getTitle());
         node.setDescription(dto.getDescription());
         node.setImage(dto.getImage());
+        node.setStatus(dto.getStatus());
     }
 }
