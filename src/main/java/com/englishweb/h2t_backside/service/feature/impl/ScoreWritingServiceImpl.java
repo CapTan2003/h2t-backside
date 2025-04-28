@@ -1,7 +1,6 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.WritingScoreDTO;
-import com.englishweb.h2t_backside.service.feature.GeminiService;
 import com.englishweb.h2t_backside.service.feature.LLMService;
 import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 @Slf4j
