@@ -3,7 +3,6 @@ package com.englishweb.h2t_backside.dto.abstractdto;
 import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
