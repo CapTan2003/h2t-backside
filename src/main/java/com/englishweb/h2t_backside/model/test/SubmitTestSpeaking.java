@@ -25,7 +25,7 @@ public class SubmitTestSpeaking extends AbstractBaseEntity {
     @Comment("Speaking question that was answered")
     private Question question;
 
-    @Column(nullable = false)
+
     @ColumnDefault("''")
     @Comment("Transcript of the user spoken response")
     private String transcript;
@@ -33,7 +33,7 @@ public class SubmitTestSpeaking extends AbstractBaseEntity {
     @Comment("Audio file path of the spoken response")
     private String file;
 
-    @Column(nullable = false)
+
     @Comment("Score given for the speaking response")
     private Integer score;
 

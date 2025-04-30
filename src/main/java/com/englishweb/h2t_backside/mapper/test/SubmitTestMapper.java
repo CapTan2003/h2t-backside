@@ -14,33 +14,32 @@ import org.mapstruct.*;
 public interface SubmitTestMapper {
 
     // DTO → Entity
-    @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
-    @Mapping(target = "test", source = "dto.testId", qualifiedByName = "mapTestId")
-    @Mapping(target = "score", source = "dto.score")
-    @Mapping(target = "comment", source = "dto.comment", defaultValue = "")
-    @Mapping(target = "status", source = "dto.status", defaultValue = "true")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "user", source = "user_id", qualifiedByName = "mapUserId")
+    @Mapping(target = "test", source = "test_id", qualifiedByName = "mapTestId")
+    @Mapping(target = "score", source = "score")
+    @Mapping(target = "comment", source = "comment", defaultValue = "")
+    @Mapping(target = "status", source = "status", defaultValue = "true")
     SubmitTest convertToEntity(SubmitTestDTO dto);
 
     // Entity → DTO
-    @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "userId", source = "entity.user.id")
-    @Mapping(target = "testId", source = "entity.test.id")
-    @Mapping(target = "score", source = "entity.score")
-    @Mapping(target = "comment", source = "entity.comment")
-    @Mapping(target = "status", source = "entity.status")
-    @Mapping(target = "createdAt", source = "entity.createdAt")
-    @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "user_id", source = "user.id")
+    @Mapping(target = "test_id", source = "test.id")
+    @Mapping(target = "score", source = "score")
+    @Mapping(target = "comment", source = "comment")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     SubmitTestDTO convertToDTO(SubmitTest entity);
 
-    // Patch DTO → Entity
-    @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
-    @Mapping(target = "test", source = "dto.testId", qualifiedByName = "mapTestId")
-    @Mapping(target = "score", source = "dto.score")
-    @Mapping(target = "comment", source = "dto.comment")
-    @Mapping(target = "status", source = "dto.status")
+    // PATCH DTO → Entity
+    @Mapping(target = "user", source = "user_id", qualifiedByName = "mapUserId")
+    @Mapping(target = "test", source = "test_id", qualifiedByName = "mapTestId")
+    @Mapping(target = "score", source = "score")
+    @Mapping(target = "comment", source = "comment")
+    @Mapping(target = "status", source = "status")
     void patchEntityFromDTO(SubmitTestDTO dto, @MappingTarget SubmitTest entity);
-
 
     @Named("mapUserId")
     default User mapUserId(Long id) {

@@ -15,8 +15,8 @@ public interface SubmitTestWritingMapper {
 
     // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitTest", source = "dto.submitTestId", qualifiedByName = "mapSubmitTestId")
-    @Mapping(target = "testWriting", source = "dto.testWritingId", qualifiedByName = "mapTestWritingId")
+    @Mapping(target = "submitTest", source = "dto.submitTest_id", qualifiedByName = "mapSubmitTestId")
+    @Mapping(target = "testWriting", source = "dto.testWriting_id", qualifiedByName = "mapTestWritingId")
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment")
@@ -24,8 +24,8 @@ public interface SubmitTestWritingMapper {
 
     // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitTestId", source = "entity.submitTest.id")
-    @Mapping(target = "testWritingId", source = "entity.testWriting.id")
+    @Mapping(target = "submitTest_id", source = "entity.submitTest.id")
+    @Mapping(target = "testWriting_id", source = "entity.testWriting.id")
     @Mapping(target = "content", source = "entity.content")
     @Mapping(target = "score", source = "entity.score")
     @Mapping(target = "comment", source = "entity.comment")
@@ -33,14 +33,13 @@ public interface SubmitTestWritingMapper {
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     SubmitTestWritingDTO convertToDTO(SubmitTestWriting entity);
 
-    // Patch DTO → Entity
-    @Mapping(target = "submitTest", source = "dto.submitTestId", qualifiedByName = "mapSubmitTestId")
-    @Mapping(target = "testWriting", source = "dto.testWritingId", qualifiedByName = "mapTestWritingId")
+    // PATCH DTO → Entity
+    @Mapping(target = "submitTest", source = "dto.submitTest_id", qualifiedByName = "mapSubmitTestId")
+    @Mapping(target = "testWriting", source = "dto.testWriting_id", qualifiedByName = "mapTestWritingId")
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment")
     void patchEntityFromDTO(SubmitTestWritingDTO dto, @MappingTarget SubmitTestWriting entity);
-
 
     @Named("mapSubmitTestId")
     default SubmitTest mapSubmitTestId(Long id) {

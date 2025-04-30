@@ -19,10 +19,10 @@ public class SubmitTestDTO extends AbstractBaseDTO {
     private Double score;
 
     @NotNull(message = "User id cannot be null")
-    private Long userId;
+    private Long user_id;
 
     @NotNull(message = "Test id cannot be null")
-    private Long testId;
+    private Long test_id;
 
     private String comment;
 

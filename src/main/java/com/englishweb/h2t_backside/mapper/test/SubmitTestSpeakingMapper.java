@@ -13,19 +13,19 @@ import org.mapstruct.*;
 )
 public interface SubmitTestSpeakingMapper {
 
-    // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitTest", source = "dto.submitTestId", qualifiedByName = "mapSubmitTestId")
-    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "submitTest", source = "dto.submitTest_id", qualifiedByName = "mapSubmitTestId")
+    @Mapping(target = "question", source = "dto.question_id", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment")
     SubmitTestSpeaking convertToEntity(SubmitTestSpeakingDTO dto);
 
-    // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitTestId", source = "entity.submitTest.id")
-    @Mapping(target = "questionId", source = "entity.question.id")
+    @Mapping(target = "submitTest_id", source = "entity.submitTest.id")
+    @Mapping(target = "question_id", source = "entity.question.id")
+    @Mapping(target = "file", source = "entity.file")
     @Mapping(target = "transcript", source = "entity.transcript")
     @Mapping(target = "score", source = "entity.score")
     @Mapping(target = "comment", source = "entity.comment")
@@ -33,14 +33,13 @@ public interface SubmitTestSpeakingMapper {
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     SubmitTestSpeakingDTO convertToDTO(SubmitTestSpeaking entity);
 
-    // Patch DTO → Entity
-    @Mapping(target = "submitTest", source = "dto.submitTestId", qualifiedByName = "mapSubmitTestId")
-    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "submitTest", source = "dto.submitTest_id", qualifiedByName = "mapSubmitTestId")
+    @Mapping(target = "question", source = "dto.question_id", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment")
     void patchEntityFromDTO(SubmitTestSpeakingDTO dto, @MappingTarget SubmitTestSpeaking entity);
-
 
     @Named("mapSubmitTestId")
     default SubmitTest mapSubmitTestId(Long id) {

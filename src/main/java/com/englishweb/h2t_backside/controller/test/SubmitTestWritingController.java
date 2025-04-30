@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-test-writing")
@@ -27,6 +29,31 @@ public class SubmitTestWritingController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(dto)
                 .message("SubmitTestWriting retrieved successfully")
+                .build();
+    }
+    @GetMapping("/by-submit-test/{submitTestId}/testwriting/{testWritingId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitTestWritingDTO>> findBySubmitTestIdAndTestWritingId(
+            @PathVariable Long submitTestId,
+            @PathVariable Long testWritingId) {
+        List<SubmitTestWritingDTO> result = service.findBySubmitTestIdAndTestWritingId(submitTestId, testWritingId);
+        return ResponseDTO.<List<SubmitTestWritingDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitTestWriting retrieved by submitTestId and testWritingId")
+                .build();
+    }
+
+    @PostMapping("/by-submit-test/{submitTestId}/testwritings")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitTestWritingDTO>> findBySubmitTestIdAndTestWriting_IdIn(
+            @PathVariable Long submitTestId,
+            @RequestBody List<Long> testWritingIds) {
+        List<SubmitTestWritingDTO> result = service.findBySubmitTestIdAndTestWriting_IdIn(submitTestId, testWritingIds);
+        return ResponseDTO.<List<SubmitTestWritingDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitTestWriting retrieved by submitTestId and testWritingIds")
                 .build();
     }
 

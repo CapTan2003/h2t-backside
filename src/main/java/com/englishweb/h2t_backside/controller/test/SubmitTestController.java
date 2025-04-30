@@ -94,4 +94,19 @@ public class SubmitTestController {
                 .message("SubmitTest stats retrieved")
                 .build();
     }
+    @GetMapping("/by-test-and-user")
+    public ResponseDTO<SubmitTestDTO> findByTestIdAndUserId(
+            @RequestParam Long testId,
+            @RequestParam Long userId
+    ) {
+        SubmitTestDTO dto = service.findByTestIdAndUserIdAndStatusFalse(testId, userId);
+        return ResponseDTO.<SubmitTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("Found successfully")
+                .build();
+    }
+
+
+
 }

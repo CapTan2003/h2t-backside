@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.SubmitTestAnswerDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitTestWritingDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitTestWritingServiceImpl extends BaseServiceImpl<SubmitTestWritingDTO, SubmitTestWriting, SubmitTestWritingRepository> implements SubmitTestWritingService {
@@ -24,6 +27,21 @@ public class SubmitTestWritingServiceImpl extends BaseServiceImpl<SubmitTestWrit
     public SubmitTestWritingServiceImpl(SubmitTestWritingRepository repository, DiscordNotifier discordNotifier, SubmitTestWritingMapper mapper) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+    }
+    @Override
+    public List<SubmitTestWritingDTO> findBySubmitTestIdAndTestWritingId(Long submitTestId, Long questionId) {
+        return repository.findBySubmitTestIdAndTestWritingId(submitTestId, questionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SubmitTestWritingDTO> findBySubmitTestIdAndTestWriting_IdIn(Long submitTestId, List<Long> questionIds) {
+        return repository.findBySubmitTestIdAndTestWriting_IdIn(submitTestId, questionIds)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override
