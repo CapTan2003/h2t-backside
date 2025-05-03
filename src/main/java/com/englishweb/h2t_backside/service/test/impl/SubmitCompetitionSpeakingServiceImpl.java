@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitCompetitionSpeakingServiceImpl extends BaseServiceImpl<SubmitCompetitionSpeakingDTO, SubmitCompetitionSpeaking, SubmitCompetitionSpeakingRepository> implements SubmitCompetitionSpeakingService {
@@ -31,6 +33,21 @@ public class SubmitCompetitionSpeakingServiceImpl extends BaseServiceImpl<Submit
         String errorMessage = String.format("SubmitCompetitionSpeaking with ID '%d' not found.", id);
         log.warn(errorMessage);
         throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
+    }
+    @Override
+    public List<SubmitCompetitionSpeakingDTO> findBySubmitCompetitionIdAndQuestionId(Long submitCompetitionId, Long questionId) {
+        return repository.findBySubmitCompetitionIdAndQuestionId(submitCompetitionId, questionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SubmitCompetitionSpeakingDTO> findBySubmitCompetitionIdAndQuestionIds(Long submitCompetitionId, List<Long> questionIds) {
+        return repository.findBySubmitCompetitionIdAndQuestionIdIn(submitCompetitionId, questionIds)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

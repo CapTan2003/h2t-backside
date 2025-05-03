@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
+import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -8,6 +9,7 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.SubmitCompetitionMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.test.SubmitCompetition;
+import com.englishweb.h2t_backside.model.test.SubmitTest;
 import com.englishweb.h2t_backside.repository.test.SubmitCompetitionRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
@@ -78,5 +80,15 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
     @Override
     public double totalScoreByUserId(Long userId) {
         return repository.sumScoreByUserIdAndStatusTrue(userId);
+    }
+    @Override
+    public SubmitCompetitionDTO findByTestIdAndUserIdAndStatusFalse(Long testId, Long userId) {
+        SubmitCompetition submitTest = repository.findByTestIdAndUserIdAndStatusFalse(testId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        testId,
+                        String.format("Submit Comeptition with test ID '%d', userId '%d' and status=false not found.", testId, userId),
+                        SeverityEnum.LOW
+                ));
+        return convertToDTO(submitTest);
     }
 }

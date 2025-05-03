@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitToeicAnswerServiceImpl extends BaseServiceImpl<SubmitToeicAnswerDTO, SubmitToeicAnswer, SubmitToeicAnswerRepository>
@@ -29,7 +31,21 @@ public class SubmitToeicAnswerServiceImpl extends BaseServiceImpl<SubmitToeicAns
         super(repository, discordNotifier);
         this.mapper = mapper;
     }
+    @Override
+    public List<SubmitToeicAnswerDTO> findBySubmitToeicIdAndQuestionId(Long submitToeicId, Long questionId) {
+        return repository.findBySubmitToeicIdAndQuestionId(submitToeicId, questionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 
+    @Override
+    public List<SubmitToeicAnswerDTO> findBySubmitToeicIdAndQuestionIdIn(Long submitToeicId, List<Long> questionIds) {
+        return repository.findBySubmitToeicIdAndQuestionIdIn(submitToeicId, questionIds)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
     @Override
     protected void findByIdError(Long id) {
         String errorMessage = String.format("SubmitToeicAnswer with ID '%d' not found.", id);

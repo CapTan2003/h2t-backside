@@ -17,7 +17,7 @@ public interface SubmitCompetitionMapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
-    @Mapping(target = "test", source = "dto.competitionTestId", qualifiedByName = "mapTestId")
+    @Mapping(target = "test", source = "dto.competition_id", qualifiedByName = "mapTestId")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitCompetition convertToEntity(SubmitCompetitionDTO dto);
 
@@ -25,7 +25,7 @@ public interface SubmitCompetitionMapper {
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "score", source = "entity.score")
     @Mapping(target = "userId", source = "entity.user.id")
-    @Mapping(target = "competitionTestId", source = "entity.test.id")
+    @Mapping(target = "competition_id", source = "entity.test.id")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
@@ -34,7 +34,7 @@ public interface SubmitCompetitionMapper {
     // Patch DTO → Entity
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
-    @Mapping(target = "test", source = "dto.competitionTestId", qualifiedByName = "mapTestId")
+    @Mapping(target = "test", source = "dto.competition_id", qualifiedByName = "mapTestId")
     @Mapping(target = "status", source = "dto.status")
     void patchEntityFromDTO(SubmitCompetitionDTO dto, @MappingTarget SubmitCompetition entity);
 

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-toeic-answers")
@@ -67,5 +69,28 @@ public class SubmitToeicAnswerController {
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "SubmitToeicAnswer deleted successfully" : "Failed to delete SubmitToeicAnswer")
                 .build());
+    }
+    @GetMapping("/by-submit-toeic/{submitToeicId}/question/{questionId}")
+    public ResponseDTO<List<SubmitToeicAnswerDTO>> findBySubmitToeicIdAndQuestionId(
+            @PathVariable Long submitToeicId,
+            @PathVariable Long questionId) {
+        List<SubmitToeicAnswerDTO> result = service.findBySubmitToeicIdAndQuestionId(submitToeicId, questionId);
+        return ResponseDTO.<List<SubmitToeicAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitToeicAnswer retrieved by submitToeicId and questionId")
+                .build();
+    }
+
+    @PostMapping("/by-submit-toeic/{submitToeicId}/questions")
+    public ResponseDTO<List<SubmitToeicAnswerDTO>> findBySubmitToeicIdAndQuestionIdIn(
+            @PathVariable Long submitToeicId,
+            @RequestBody List<Long> questionIds) {
+        List<SubmitToeicAnswerDTO> result = service.findBySubmitToeicIdAndQuestionIdIn(submitToeicId, questionIds);
+        return ResponseDTO.<List<SubmitToeicAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitToeicAnswer retrieved by submitToeicId and questionIds")
+                .build();
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-competition-answers")
@@ -75,5 +77,28 @@ public class SubmitCompetitionAnswerController {
                 .message(result ? "SubmitCompetitionAnswer deleted successfully" : "Failed to delete SubmitCompetitionAnswer")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/by-submit-competition/{submitCompetitionId}/question/{questionId}")
+    public ResponseDTO<List<SubmitCompetitionAnswerDTO>> findBySubmitCompetitionIdAndQuestionId(
+            @PathVariable Long submitCompetitionId,
+            @PathVariable Long questionId) {
+        List<SubmitCompetitionAnswerDTO> result = service.findBySubmitCompetitionIdAndQuestionId(submitCompetitionId, questionId);
+        return ResponseDTO.<List<SubmitCompetitionAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitCompetitionAnswer retrieved successfully")
+                .build();
+    }
+
+    @PostMapping("/by-submit-competition/{submitCompetitionId}/questions")
+    public ResponseDTO<List<SubmitCompetitionAnswerDTO>> findBySubmitCompetitionIdAndQuestionIds(
+            @PathVariable Long submitCompetitionId,
+            @RequestBody List<Long> questionIds) {
+        List<SubmitCompetitionAnswerDTO> result = service.findBySubmitCompetitionIdAndQuestionIds(submitCompetitionId, questionIds);
+        return ResponseDTO.<List<SubmitCompetitionAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitCompetitionAnswer retrieved successfully")
+                .build();
     }
 }
