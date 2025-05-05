@@ -13,11 +13,11 @@ import lombok.experimental.SuperBuilder;
 public class SubmitTestAnswerDTO extends AbstractBaseDTO {
 
     @NotNull(message = "SubmitTest id cannot be null")
-    private Long submitTestId;
+    private Long submitTest_id;
 
     @NotNull(message = "Question Id cannot be null")
-    private Long questionId;
+    private Long question_id;
 
     @NotNull(message = "Answer Id cannot be null")
-    private Long answerId;
+    private Long answer_id;
 }

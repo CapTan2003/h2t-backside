@@ -24,10 +24,10 @@ public class SubmitToeicAnswer extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "toeicQuestion_id")
     @Comment("Question that was answered")
-    private ToeicQuestion toeicQuestion;
+    private ToeicQuestion question;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "toeicAnswer_id")
     @Comment("Answer selected by the user")
-    private ToeicAnswer toeicAnswer;
+    private ToeicAnswer answer;
 }

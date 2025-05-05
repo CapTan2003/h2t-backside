@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitCompetitionWritingServiceImpl extends BaseServiceImpl<SubmitCompetitionWritingDTO, SubmitCompetitionWriting, SubmitCompetitionWritingRepository> implements SubmitCompetitionWritingService {
@@ -24,6 +26,23 @@ public class SubmitCompetitionWritingServiceImpl extends BaseServiceImpl<SubmitC
     public SubmitCompetitionWritingServiceImpl(SubmitCompetitionWritingRepository repository, DiscordNotifier discordNotifier, SubmitCompetitionWritingMapper mapper) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+    }
+
+
+    @Override
+    public List<SubmitCompetitionWritingDTO> findBySubmitCompetitionIdAndTestWritingId(Long submitCompetitionId, Long testWritingId) {
+        return repository.findBySubmitCompetitionIdAndTestWritingId(submitCompetitionId, testWritingId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SubmitCompetitionWritingDTO> findBySubmitCompetitionIdAndTestWritingIdIn(Long submitCompetitionId, List<Long> testWritingIds) {
+        return repository.findBySubmitCompetitionIdAndTestWritingIdIn(submitCompetitionId, testWritingIds)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

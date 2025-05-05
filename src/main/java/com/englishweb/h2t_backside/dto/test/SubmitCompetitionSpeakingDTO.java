@@ -19,8 +19,9 @@ public class SubmitCompetitionSpeakingDTO extends AbstractBaseDTO {
 
     @NotNull(message = "Question id cannot be null")
     private Long questionId;
+ 
+    private String file;
 
-    @NotBlank(message = "Transcript cannot be empty")
     private String transcript;
 
     @NotNull(message = "Score cannot be null")

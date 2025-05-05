@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitTestSpeakingServiceImpl extends BaseServiceImpl<SubmitTestSpeakingDTO, SubmitTestSpeaking, SubmitTestSpeakingRepository> implements SubmitTestSpeakingService {
@@ -24,6 +26,19 @@ public class SubmitTestSpeakingServiceImpl extends BaseServiceImpl<SubmitTestSpe
     public SubmitTestSpeakingServiceImpl(SubmitTestSpeakingRepository repository, DiscordNotifier discordNotifier, SubmitTestSpeakingMapper mapper) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+    }
+    @Override
+    public List<SubmitTestSpeakingDTO> findBySubmitTestIdAndQuestionId(Long submitTestId, Long questionId) {
+        return repository.findBySubmitTestIdAndQuestionId(submitTestId, questionId).stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SubmitTestSpeakingDTO> findBySubmitTestIdAndQuestionIds(Long submitTestId, List<Long> questionIds) {
+        return repository.findBySubmitTestIdAndQuestionIdIn(submitTestId, questionIds).stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

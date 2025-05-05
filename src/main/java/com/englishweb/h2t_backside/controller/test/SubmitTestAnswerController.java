@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-test-answers")
@@ -29,6 +31,33 @@ public class SubmitTestAnswerController {
                 .message("SubmitTestAnswer retrieved successfully")
                 .build();
     }
+
+    @GetMapping("/by-submit-test/{submitTestId}/question/{questionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitTestAnswerDTO>> findBySubmitTestIdAndQuestionId(
+            @PathVariable Long submitTestId,
+            @PathVariable Long questionId) {
+        List<SubmitTestAnswerDTO> result = service.findBySubmitTestIdAndQuestionId(submitTestId, questionId);
+        return ResponseDTO.<List<SubmitTestAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Answers retrieved by submitTestId and questionId")
+                .build();
+    }
+
+    @PostMapping("/by-submit-test/{submitTestId}/questions")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitTestAnswerDTO>> findBySubmitTestIdAndQuestionIds(
+            @PathVariable Long submitTestId,
+            @RequestBody List<Long> questionIds) {
+        List<SubmitTestAnswerDTO> result = service.findBySubmitTestIdAndQuestionIds(submitTestId, questionIds);
+        return ResponseDTO.<List<SubmitTestAnswerDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Answers retrieved by submitTestId and questionIds")
+                .build();
+    }
+
 
 
     @PostMapping

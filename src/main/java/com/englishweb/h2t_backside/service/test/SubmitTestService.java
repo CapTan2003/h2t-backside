@@ -6,4 +6,6 @@ public interface SubmitTestService extends BaseService<SubmitTestDTO> {
     double getScoreOfLastTestByUser(Long userId);
     int countSubmitByUserId(Long userId);
     double totalScoreByUserId(Long userId);
+    SubmitTestDTO findByTestIdAndUserIdAndStatusFalse(Long testId, Long userId);
+
 }

@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitTestAnswerServiceImpl extends BaseServiceImpl<SubmitTestAnswerDTO, SubmitTestAnswer, SubmitTestAnswerRepository> implements SubmitTestAnswerService {
@@ -31,6 +33,21 @@ public class SubmitTestAnswerServiceImpl extends BaseServiceImpl<SubmitTestAnswe
         String errorMessage = String.format("SubmitTestAnswer with ID '%d' not found.", id);
         log.warn(errorMessage);
         throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
+    }
+    @Override
+    public List<SubmitTestAnswerDTO> findBySubmitTestIdAndQuestionId(Long submitTestId, Long questionId) {
+        return repository.findBySubmitTestIdAndQuestionId(submitTestId, questionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SubmitTestAnswerDTO> findBySubmitTestIdAndQuestionIds(Long submitTestId, List<Long> questionIds) {
+        return repository.findBySubmitTestIdAndQuestionIdIn(submitTestId, questionIds)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

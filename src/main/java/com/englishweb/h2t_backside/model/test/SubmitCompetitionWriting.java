@@ -25,7 +25,6 @@ public class SubmitCompetitionWriting extends AbstractBaseEntity {
     private TestWriting testWriting;
 
     @Lob
-    @Column(nullable = false)
     @Comment("Content written by the user for the writing test")
     private String content;
 

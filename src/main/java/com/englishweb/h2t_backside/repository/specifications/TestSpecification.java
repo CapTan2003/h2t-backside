@@ -10,8 +10,9 @@ public class TestSpecification {
     }
     public static <T extends Test> Specification<T> findByType(TestTypeEnum type) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("type")), "%" + type + "%");
+                criteriaBuilder.equal(root.get("type"), type);
     }
+
     public static <T extends Test> Specification<T> findByUserId(Long userId) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("type")), "%" + userId + "%");

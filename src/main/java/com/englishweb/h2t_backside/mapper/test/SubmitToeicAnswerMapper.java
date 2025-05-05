@@ -15,17 +15,17 @@ import org.mapstruct.*;
 public interface SubmitToeicAnswerMapper {
 
     @Mapping(target = "submitToeic.id", source = "submitToeicId")
-    @Mapping(target = "toeicQuestion.id", source = "toeicQuestionId")
-    @Mapping(target = "toeicAnswer.id", source = "toeicAnswerId")
+    @Mapping(target = "question.id", source = "toeicQuestionId")
+    @Mapping(target = "answer.id", source = "toeicAnswerId")
     SubmitToeicAnswer convertToEntity(SubmitToeicAnswerDTO dto);
 
     @Mapping(target = "submitToeicId", source = "submitToeic.id")
-    @Mapping(target = "toeicQuestionId", source = "toeicQuestion.id")
-    @Mapping(target = "toeicAnswerId", source = "toeicAnswer.id")
+    @Mapping(target = "toeicQuestionId", source = "question.id")
+    @Mapping(target = "toeicAnswerId", source = "answer.id")
     SubmitToeicAnswerDTO convertToDTO(SubmitToeicAnswer entity);
 
     @Mapping(target = "submitToeic.id", source = "submitToeicId")
-    @Mapping(target = "toeicQuestion.id", source = "toeicQuestionId")
-    @Mapping(target = "toeicAnswer.id", source = "toeicAnswerId")
+    @Mapping(target = "question.id", source = "toeicQuestionId")
+    @Mapping(target = "answer.id", source = "toeicAnswerId")
     void patchEntityFromDTO(SubmitToeicAnswerDTO dto, @MappingTarget SubmitToeicAnswer entity);
 }

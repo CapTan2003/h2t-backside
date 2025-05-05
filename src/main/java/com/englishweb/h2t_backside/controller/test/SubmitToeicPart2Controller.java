@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-toeic-part2")
@@ -76,5 +78,30 @@ public class SubmitToeicPart2Controller {
                 .message(result ? "SubmitToeicPart2 deleted successfully" : "Failed to delete SubmitToeicPart2")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/by-submit-toeic/{submitToeicId}/toeicpart2/{toeicPart2Id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitToeicPart2DTO>> findBySubmitToeicIdAndTestPart2Id(
+            @PathVariable Long submitToeicId,
+            @PathVariable Long toeicPart2Id) {
+        List<SubmitToeicPart2DTO> result = service.findBySubmitToeicIdAndToeicPart2Id(submitToeicId, toeicPart2Id);
+        return ResponseDTO.<List<SubmitToeicPart2DTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitToeicPart2 retrieved by submitToeicId and testPart2Id")
+                .build();
+    }
+
+    @PostMapping("/by-submit-toeic/{submitToeicId}/toeicPart2Ids")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitToeicPart2DTO>> findBySubmitToeicIdAndToeicPart2IdIn(
+            @PathVariable Long submitToeicId,
+            @RequestBody List<Long> toeicPart2Ids) {
+        List<SubmitToeicPart2DTO> result = service.findBySubmitToeicIdAndToeicPart2IdIn(submitToeicId, toeicPart2Ids);
+        return ResponseDTO.<List<SubmitToeicPart2DTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitToeicPart2 retrieved by submitToeicId and testPart2Ids")
+                .build();
     }
 }

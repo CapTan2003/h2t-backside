@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.dto.SubmitTestStatsDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -91,6 +92,18 @@ public class SubmitCompetitionController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(stats)
                 .message("SubmitTest stats retrieved")
+                .build();
+    }
+    @GetMapping("/by-test-and-user")
+    public ResponseDTO<SubmitCompetitionDTO> findByTestIdAndUserId(
+            @RequestParam Long testId,
+            @RequestParam Long userId
+    ) {
+        SubmitCompetitionDTO dto = service.findByTestIdAndUserIdAndStatusFalse(testId, userId);
+        return ResponseDTO.<SubmitCompetitionDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("Found successfully")
                 .build();
     }
 

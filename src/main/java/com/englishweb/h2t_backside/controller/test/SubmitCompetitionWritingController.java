@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-competition-writing")
@@ -75,5 +77,31 @@ public class SubmitCompetitionWritingController {
                 .message(result ? "SubmitCompetitionWriting deleted successfully" : "Failed to delete SubmitCompetitionWriting")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/by-submit-competition/{submitCompetitionId}/testwriting/{testWritingId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitCompetitionWritingDTO>> findBySubmitCompetitionIdAndTestWritingId(
+            @PathVariable Long submitCompetitionId,
+            @PathVariable Long testWritingId) {
+        List<SubmitCompetitionWritingDTO> result = service.findBySubmitCompetitionIdAndTestWritingId(submitCompetitionId, testWritingId);
+        return ResponseDTO.<List<SubmitCompetitionWritingDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitCompetitionWriting retrieved by submitCompetitionId and testWritingId")
+                .build();
+    }
+
+    @PostMapping("/by-submit-competition/{submitCompetitionId}/testwritings")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<SubmitCompetitionWritingDTO>> findBySubmitCompetitionIdAndTestWritingIdIn(
+            @PathVariable Long submitCompetitionId,
+            @RequestBody List<Long> testWritingIds) {
+        List<SubmitCompetitionWritingDTO> result = service.findBySubmitCompetitionIdAndTestWritingIdIn(submitCompetitionId, testWritingIds);
+        return ResponseDTO.<List<SubmitCompetitionWritingDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitCompetitionWriting retrieved by submitCompetitionId and testWritingIds")
+                .build();
     }
 }

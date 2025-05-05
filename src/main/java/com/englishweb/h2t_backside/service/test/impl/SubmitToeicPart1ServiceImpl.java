@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitToeicPart1ServiceImpl extends BaseServiceImpl<SubmitToeicPart1DTO, SubmitToeicPart1, SubmitToeicPart1Repository> implements SubmitToeicPart1Service {
@@ -54,6 +56,22 @@ public class SubmitToeicPart1ServiceImpl extends BaseServiceImpl<SubmitToeicPart
         }
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
+    }
+
+    @Override
+    public List<SubmitToeicPart1DTO> findBySubmitToeicIdAndToeicPart1Id(Long submitToeicId, Long testPart1Id) {
+        return repository.findBySubmitToeicIdAndToeicPart1Id(submitToeicId, testPart1Id)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<SubmitToeicPart1DTO> findBySubmitToeicIdAndToeicPart1IdIn(Long submitToeicId, List<Long> toeicPart1Ids) {
+        return repository.findBySubmitToeicIdAndToeicPart1IdIn(submitToeicId, toeicPart1Ids)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

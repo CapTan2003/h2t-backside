@@ -25,12 +25,9 @@ public class SubmitCompetitionSpeaking extends AbstractBaseEntity {
     @Comment("Question associated with this speaking submission")
     private Question question;
 
-    @ColumnDefault("''")
-    @Comment("Transcript of the speaking answer")
+
     private String transcript;
 
-    @Column(nullable = false)
-    @Comment("Audio file path for the speaking submission")
     private String file;
 
     @Column(nullable = false)
