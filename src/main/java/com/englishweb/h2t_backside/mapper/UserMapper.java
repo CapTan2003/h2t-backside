@@ -41,7 +41,7 @@ public interface UserMapper {
 
     @Mapping(target = "name", source = "dto.name")
     @Mapping(target = "avatar", source = "dto.avatar")
-    @Mapping(target = "password", source = "dto.password")
+    @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", source = "dto.role")
     @Mapping(target = "level", source = "dto.level")
     @Mapping(target = "phoneNumber", source = "dto.phoneNumber")

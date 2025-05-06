@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
 import com.englishweb.h2t_backside.exception.*;
 import com.englishweb.h2t_backside.mapper.UserMapper;
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -90,7 +91,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String password = userDTO.getPassword();
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodedPassword);
-//        sendEmail.sendPasswordByEmail(userDTO.getEmail(), password);
+        if (userDTO.getRole() == RoleEnum.TEACHER_ADMIN) {
+            sendEmail.sendPasswordByEmail(userDTO.getEmail(), password);
+        }
         return super.create(userDTO);
     }
 
