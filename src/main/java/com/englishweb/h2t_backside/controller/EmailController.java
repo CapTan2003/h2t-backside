@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/email")
 @AllArgsConstructor
 public class EmailController {
     private final EmailService service;
