@@ -23,7 +23,7 @@ public interface TopicMapper {
     @Mapping(target = "title", source = "dto.title")
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "description", source = "dto.description")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     Topic convertToEntity(TopicDTO dto);
 
@@ -44,7 +44,7 @@ public interface TopicMapper {
     @Mapping(target = "image", source = "dto.image")
     @Mapping(target = "description", source = "dto.description")
     @Mapping(target = "views", source = "dto.views")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     void patchEntityFromDTO(TopicDTO dto, @MappingTarget Topic entity);
 
