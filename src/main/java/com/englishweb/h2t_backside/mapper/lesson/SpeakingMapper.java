@@ -28,7 +28,7 @@ public interface SpeakingMapper {
     @Mapping(target = "topic", source = "dto.topic")
     @Mapping(target = "duration", source = "dto.duration")
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     Speaking convertToEntity(SpeakingDTO dto);
 
     // Convert Entity -> DTO
@@ -56,7 +56,7 @@ public interface SpeakingMapper {
     @Mapping(target = "topic", source = "dto.topic")
     @Mapping(target = "duration", source = "dto.duration")
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     void patchEntityFromDTO(SpeakingDTO dto, @MappingTarget Speaking entity);
 
     @Named("mapPreparationIdToPreparation")

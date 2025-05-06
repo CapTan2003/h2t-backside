@@ -28,7 +28,7 @@ public interface ListeningMapper {
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     Listening convertToEntity(ListeningDTO dto);
 
     // Convert Entity -> DTO
@@ -58,7 +58,7 @@ public interface ListeningMapper {
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString") // Đã khai báo bên trong PreparationMapper.class
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     void patchEntityFromDTO(ListeningDTO dto, @MappingTarget Listening entity);
 
     @Named("mapPreparationIdToPreparation")

@@ -27,7 +27,7 @@ public interface ReadingMapper {
     @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString")
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     Reading convertToEntity(ReadingDTO dto);
 
     // Convert Entity -> DTO
@@ -55,7 +55,7 @@ public interface ReadingMapper {
     @Mapping(target = "file", source = "dto.file")
     @Mapping(target = "questions", source = "dto.questions", qualifiedByName = "longListToString") // Đã khai báo bên trong PreparationMapper.class
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     void patchEntityFromDTO(ReadingDTO dto, @MappingTarget Reading entity);
 
     @Named("mapPreparationIdToPreparation")
