@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -55,6 +57,20 @@ public class ErrorLogServiceImpl implements ErrorLogService {
             log.error("Error updating error log with ID {}: {}", id, e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.info("Deleting error log with ID: {}", id);
+        repository.deleteById(id);
+        log.info("Deleted error log with ID: {}", id);
+    }
+
+    @Override
+    public void deleteAllByStatusFalseAndSeverityIn(List<SeverityEnum> severityList) {
+        log.info("Deleting error logs with status=false and severity in: {}", severityList);
+        repository.deleteAllByStatusFalseAndSeverityIn(severityList);
+        log.info("Deleted error logs with status=false and severity in: {}", severityList);
     }
 
     @Override

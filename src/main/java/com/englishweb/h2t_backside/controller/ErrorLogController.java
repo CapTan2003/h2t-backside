@@ -4,6 +4,7 @@ import com.englishweb.h2t_backside.dto.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.ErrorLogFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.feature.ErrorLogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/error-logs")
@@ -29,6 +33,28 @@ public class ErrorLogController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(updatedErrorLog)
                 .message("Error log updated successfully")
+                .build();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ErrorLogDTO> delete(@PathVariable Long id) {
+        errorLogService.delete(id);
+        return ResponseDTO.<ErrorLogDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Error log deleted successfully")
+                .build();
+    }
+
+    @DeleteMapping("/bulk")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Void> bulkDelete(@RequestBody Map<String, List<SeverityEnum>> request) {
+        List<SeverityEnum> severityList = request.get("severityList");
+        errorLogService.deleteAllByStatusFalseAndSeverityIn(severityList);
+
+        return ResponseDTO.<Void>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Error logs deleted successfully")
                 .build();
     }
 
