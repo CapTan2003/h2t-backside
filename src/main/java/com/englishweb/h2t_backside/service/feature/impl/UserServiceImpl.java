@@ -98,6 +98,19 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
     }
 
     @Override
+    public UserDTO patch(UserDTO dto, Long id) {
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            String password = dto.getPassword();
+            String encodedPassword = passwordEncoder.encode(dto.getPassword());
+            dto.setPassword(encodedPassword);
+            if (dto.getRole() == RoleEnum.TEACHER_ADVANCE) {
+                sendEmail.sendPasswordByEmail(dto.getEmail(), password);
+            }
+        }
+        return super.patch(dto, id);
+    }
+
+    @Override
     public Page<UserDTO> searchWithFilters(int page, int size, String sortFields, UserFilterDTO filter) {
         return UserPagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, User.class

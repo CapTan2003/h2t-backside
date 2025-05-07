@@ -41,7 +41,7 @@ public class SendEmail {
 
             String textContent = "Your account has been created.\n\n"
                     + "Username: " + toEmail + "\n"
-                    + "Pass: " + password + "\n\n"
+                    + "Password: " + password + "\n\n"
                     + "Please change it after your first login.";
 
             helper.setText(textContent);
