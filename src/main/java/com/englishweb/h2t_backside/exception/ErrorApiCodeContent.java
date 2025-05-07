@@ -3,6 +3,10 @@ package com.englishweb.h2t_backside.exception;
 public class ErrorApiCodeContent {
     private ErrorApiCodeContent() {}
 
+    // Loi lien quan den AIResponse
+    public static final String AIRESPONSE_CREATED_FAIL = "201"; // Tao moi AIResponse that bai
+    public static final String AIRESPONSE_UPDATED_FAIL = "202"; // Cap nhat AIResponse that bai
+
     // Lỗi liên quan đến người dùng và xác thực
     public static final String USER_CREATED_FAIL = "101"; // Tao moi user that bai
     public static final String USER_EMAIL_EXIST = "102";

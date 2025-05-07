@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
-import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.lesson.GrammarDTO;
 import com.englishweb.h2t_backside.dto.lesson.LessonQuestionDTO;
