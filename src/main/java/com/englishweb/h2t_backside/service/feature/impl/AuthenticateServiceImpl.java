@@ -62,7 +62,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
 
         if(!user.getStatus()){
-            throw new ResourceNotFoundException("Account has been locked!", SeverityEnum.LOW);
+            throw new AuthenticateException("Account has been locked!", SeverityEnum.LOW, new HashMap<String, Object>() {{
+                put("email", dto.getEmail());
+            }});
         }
 
         String accessToken = jwtUtil.generateAccessToken(user);

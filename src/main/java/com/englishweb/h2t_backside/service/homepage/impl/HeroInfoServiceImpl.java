@@ -57,9 +57,9 @@ public class HeroInfoServiceImpl implements HeroInfoService {
         CompetitionTestFilterDTO competitionTestDTO = new CompetitionTestFilterDTO();
         ToeicFilterDTO toeicFilter = new ToeicFilterDTO();
 
-        studentFilter.setRoleEnumList(List.of(RoleEnum.STUDENT));
+        studentFilter.setRoleList(List.of(RoleEnum.STUDENT));
         studentFilter.setStatus(true);
-        teacherFilter.setRoleEnumList(List.of(RoleEnum.TEACHER, RoleEnum.TEACHER_ADMIN));
+        teacherFilter.setRoleList(List.of(RoleEnum.TEACHER, RoleEnum.TEACHER_ADVANCE));
         teacherFilter.setStatus(true);
         lessonFilterDTO.setStatus(true);
         testFilter.setStatus(true);

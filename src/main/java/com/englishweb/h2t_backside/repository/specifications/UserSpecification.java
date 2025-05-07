@@ -16,7 +16,7 @@ public class UserSpecification {
 
     public static <T extends UserEntity> Specification<T> findByEmail(String email) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(criteriaBuilder.lower(root.get("email")), email.toLowerCase() );
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" +email.toLowerCase() + "%");
     }
 
     public static <T extends UserEntity> Specification<T> findByRoles(List<RoleEnum> roleEnumList) {

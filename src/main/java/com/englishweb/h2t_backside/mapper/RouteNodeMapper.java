@@ -6,7 +6,6 @@ import com.englishweb.h2t_backside.dto.lesson.*;
 import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.model.RouteNode;
-import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;
 import com.englishweb.h2t_backside.service.lesson.*;
 import com.englishweb.h2t_backside.service.test.TestService;
 import org.mapstruct.*;
