@@ -24,6 +24,17 @@ public class ErrorLogController {
 
     private final ErrorLogService errorLogService;
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<ErrorLogDTO> findById(@PathVariable Long id) {
+        ErrorLogDTO errorLog = errorLogService.findById(id);
+        return ResponseDTO.<ErrorLogDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(errorLog)
+                .message("Error log retrieved successfully")
+                .build();
+    }
+
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<ErrorLogDTO> update(@PathVariable Long id, @Valid @RequestBody ErrorLogDTO errorLogDTO) {
