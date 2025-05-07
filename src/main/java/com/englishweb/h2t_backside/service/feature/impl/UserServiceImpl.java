@@ -91,7 +91,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String password = userDTO.getPassword();
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodedPassword);
-        if (userDTO.getRole() == RoleEnum.TEACHER_ADMIN) {
+        if (userDTO.getRole() == RoleEnum.TEACHER_ADVANCE) {
             sendEmail.sendPasswordByEmail(userDTO.getEmail(), password);
         }
         return super.create(userDTO);
