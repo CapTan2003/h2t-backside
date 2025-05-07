@@ -20,16 +20,10 @@ public class ErrorLogSpecification {
                 criteriaBuilder.equal(root.get("severity"), severity);
     }
 
-    // Tìm theo statusEnum (đã được fix chưa)
-    public static <T extends ErrorLogEntity> Specification<T> findByFixed(Boolean statusEnum) {
+    // Tim theo errorCode
+    public static <T extends ErrorLogEntity> Specification<T> findByErrorCode(String errorCode) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("statusEnum"), statusEnum);
-    }
-
-    // Tìm theo timestamp (thời gian xảy ra lỗi)
-    public static <T extends ErrorLogEntity> Specification<T> findByTimestamp(LocalDateTime createdAt) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("createdAt"), createdAt);
+                criteriaBuilder.equal(root.get("errorCode"), errorCode);
     }
 }
 

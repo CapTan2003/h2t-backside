@@ -43,6 +43,11 @@ public class ErrorLogPagination {
             specification = specification.and(ErrorLogSpecification.findBySeverity(filter.getSeverity()));
         }
 
+        // Lọc theo errorCode
+        if (filter.getErrorCode() != null && !filter.getErrorCode().isEmpty()) {
+            specification = specification.and(ErrorLogSpecification.findByErrorCode(filter.getErrorCode()));
+        }
+
         // Chuyển đổi string sortFields thành một danh sách các đối tượng Sort.Order
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
 
