@@ -2,7 +2,6 @@ package com.englishweb.h2t_backside.dto.homepage;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder

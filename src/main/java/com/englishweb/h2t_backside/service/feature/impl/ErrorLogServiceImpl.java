@@ -24,6 +24,15 @@ public class ErrorLogServiceImpl implements ErrorLogService {
     private final ErrorLogMapper mapper;
 
     @Override
+    public ErrorLogDTO findById(Long id) {
+        log.info("Finding error log by ID: {}", id);
+        ErrorLog entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, "ErrorLog not found", SeverityEnum.MEDIUM));
+        log.info("Found error log with ID: {}", id);
+        return convertToDTO(entity);
+    }
+
+    @Override
     public ErrorLogDTO create(ErrorLogDTO dto) {
         try {
             log.info("Creating error log");

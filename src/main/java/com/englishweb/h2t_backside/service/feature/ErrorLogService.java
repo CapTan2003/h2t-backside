@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ErrorLogService {
+    ErrorLogDTO findById(Long id);
+
     ErrorLogDTO create(ErrorLogDTO dto);
 
     ErrorLogDTO update(Long id, ErrorLogDTO dto);

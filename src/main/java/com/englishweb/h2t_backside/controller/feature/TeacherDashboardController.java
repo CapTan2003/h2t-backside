@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.controller;
+package com.englishweb.h2t_backside.controller.feature;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
