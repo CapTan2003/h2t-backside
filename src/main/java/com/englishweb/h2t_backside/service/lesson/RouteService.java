@@ -13,5 +13,7 @@ public interface RouteService extends BaseService<RouteDTO> {
 
     List<RouteDTO> findByOwnerId(Long ownerId);
 
+    List<RouteDTO> findLongestRoutes();
+
     boolean verifyValidRoute(Long id);
 }
