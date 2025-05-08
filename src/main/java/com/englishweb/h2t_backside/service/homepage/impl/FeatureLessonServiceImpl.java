@@ -30,12 +30,12 @@ public class FeatureLessonServiceImpl implements FeatureLessonService {
 
     @Override
     public List<LessonDTO> getMostViewedLessons(Integer limit) {
-        log.info("Fetching {} most viewed lessons", limit);
+        log.info("Fetching {} most viewed lessons", limit != null ? limit : DEFAULT_LIMIT);
         return getFilteredLessons(limit, "views");
     }
     @Override
     public List<LessonDTO> getMostRecentLessons(Integer limit) {
-        log.info("Fetching {} most recent lessons", limit);
+        log.info("Fetching {} most recent lessons", limit != null ? limit : DEFAULT_LIMIT);
         return getFilteredLessons(limit, "-createdAt");
     }
 
