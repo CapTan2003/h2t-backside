@@ -130,4 +130,13 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
         RouteDTO route = super.findById(id);
         return route.getRouteNodes().stream().anyMatch((routeNodeDTO -> routeNodeService.verifyValidRouteNode(routeNodeDTO.getId())));
     }
+
+    @Override
+    public List<RouteDTO> findLongestRoutes() {
+        List<Route> longestRoutes = repository.findTop5ByOrderByRouteNodeCountDesc();
+
+        return longestRoutes.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }
