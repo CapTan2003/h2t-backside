@@ -18,7 +18,7 @@ public class SubmitCompetitionDTO extends AbstractBaseDTO {
     private Double score;
 
     @NotNull(message = "User id cannot be null")
-    private Long userId;
+    private Long user_id;
 
     @NotNull(message = "CompetitionTest id be null")
     private Long competition_id;
