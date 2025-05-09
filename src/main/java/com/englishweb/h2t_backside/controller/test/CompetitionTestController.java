@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/competition-tests")
 @AllArgsConstructor
 public class CompetitionTestController {
+    private final CompetitionTestService service;
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -29,9 +30,6 @@ public class CompetitionTestController {
                 .message("CompetitionTest retrieved successfully")
                 .build();
     }
-
-
-    private final CompetitionTestService service;
 
     @PostMapping
     public ResponseEntity<ResponseDTO<CompetitionTestDTO>> create(@Valid @RequestBody CompetitionTestDTO dto) {
