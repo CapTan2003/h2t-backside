@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.filter.SubmitCompetitionFilterDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -14,7 +15,12 @@ import com.englishweb.h2t_backside.repository.test.SubmitCompetitionRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
+import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -91,4 +97,24 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
                 ));
         return convertToDTO(submitTest);
     }
+    @Override
+    public Page<SubmitCompetitionDTO> searchWithFilters(int page, int size, String sortFields, SubmitCompetitionFilterDTO filter, Long userId) {
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, SubmitCompetition.class);
+
+        Specification<SubmitCompetition> spec = BaseFilterSpecification.applyBaseFilters(filter);
+
+        if (userId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("user").get("id"), userId));
+        }
+
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.join("test").get("title")), "%" + filter.getTitle().toLowerCase() + "%"));
+        }
+
+        return repository.findAll(spec, pageable)
+                .map(mapper::convertToDTO);
+    }
+
 }

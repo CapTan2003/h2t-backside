@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.filter.SubmitTestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -12,7 +13,12 @@ import com.englishweb.h2t_backside.repository.test.SubmitTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.SubmitTestService;
+import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
+import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +108,29 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
         return convertToDTO(submitTest);
     }
 
+    @Override
+    public Page<SubmitTestDTO> searchWithFilters(int page, int size, String sortFields, SubmitTestFilterDTO filter, Long userId) {
+        Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, SubmitTest.class);
 
+        Specification<SubmitTest> specification = BaseFilterSpecification.applyBaseFilters(filter);
+
+        if (userId != null) {
+            specification = specification.and((root, query, cb) ->
+                    cb.equal(root.get("user").get("id"), userId));
+        }
+
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            specification = specification.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("test").get("title")), "%" + filter.getTitle().toLowerCase() + "%"));
+        }
+
+        if (filter.getType() != null) {
+            specification = specification.and((root, query, cb) ->
+                    cb.equal(root.get("test").get("type"), filter.getType()));
+        }
+
+        return repository.findAll(specification, pageable)
+                .map(mapper::convertToDTO);
+    }
 
 }
