@@ -91,6 +91,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
         UserFilterDTO filterActive = new UserFilterDTO();
         filterActive.setStatus(true);
+        filterActive.setRoleList(List.of(RoleEnum.TEACHER_ADVANCE));
         long totalActive = userService.searchWithFilters(0, 1, "-createdAt", filterActive).getTotalElements();
 
         // Get teacher advance level stats
