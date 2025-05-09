@@ -32,7 +32,7 @@ public class DiscordNotifierImpl implements DiscordNotifier {
 
     private final ErrorLogService errorLogService;
 
-    @Value("${discord.webhook.url}")
+    @Value("${discord.webhook.url:}")
     private String discordWebhookUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();

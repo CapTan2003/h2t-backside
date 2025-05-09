@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.SubmitTestStatsDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.filter.SubmitCompetitionFilterDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
@@ -9,6 +10,7 @@ import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,21 +81,6 @@ public class SubmitCompetitionController {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/stats")
-    public ResponseDTO<SubmitTestStatsDTO> getTestStats(@RequestParam Long userId) {
-        int count = service.countSubmitByUserId(userId);
-        double score = service.totalScoreByUserId(userId);
-
-        SubmitTestStatsDTO stats = new SubmitTestStatsDTO();
-        stats.setCount(count);
-        stats.setSumScore(score);
-
-        return ResponseDTO.<SubmitTestStatsDTO>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .data(stats)
-                .message("SubmitTest stats retrieved")
-                .build();
-    }
     @GetMapping("/by-test-and-user")
     public ResponseDTO<SubmitCompetitionDTO> findByTestIdAndUserId(
             @RequestParam Long testId,
@@ -104,6 +91,23 @@ public class SubmitCompetitionController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(dto)
                 .message("Found successfully")
+                .build();
+    }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<SubmitCompetitionDTO>> searchWithFilters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @RequestParam(required = false) Long userId,
+            @ModelAttribute SubmitCompetitionFilterDTO filter) {
+
+        Page<SubmitCompetitionDTO> result = service.searchWithFilters(page, size, sortFields, filter, userId);
+
+        return ResponseDTO.<Page<SubmitCompetitionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("SubmitCompetition retrieved successfully with filters")
                 .build();
     }
 
