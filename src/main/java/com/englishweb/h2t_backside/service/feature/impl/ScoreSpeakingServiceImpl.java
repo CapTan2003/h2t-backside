@@ -8,6 +8,7 @@ import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,10 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    // Base API URL
-    private static final String BASE_API_URL = "https://speech-scoring-api-production.up.railway.app/api/speech";
-    // private static final String BASE_API_URL = "http://localhost:5000/api/speech";
+    // Updated to use correct API URLs based on app.py
+    @Value("${vosk.api.url}")
+    private String BASE_API_URL;
 
-    // Specific endpoints
-    private static final String PROCESS_AUDIO_URL = BASE_API_URL + "/process-audio";
-    private static final String EVALUATE_PRONUNCIATION_URL = BASE_API_URL + "/evaluate-pronunciation";
-    private static final String EVALUATE_MULTIPLE_URL = BASE_API_URL + "/evaluate-multiple";
     private final ScoreWritingService scoreWritingService;
 
     public ScoreSpeakingServiceImpl(ObjectMapper objectMapper, ScoreWritingService scoreWritingService) {
@@ -55,16 +52,16 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
         // Create MultiValueMap to hold the multipart request
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-        // Add the audio file
+        // Add the audio file - using "file" as the parameter name expected by the API
         ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
             @Override
             public String getFilename() {
                 return audioFile.getOriginalFilename();
             }
         };
-        body.add("audio", resource);
+        body.add("file", resource);
 
-        // Add the topic
+        // Add topic parameter as expected by the API
         body.add("topic", expectedText);
 
         // Create the HTTP entity with headers and body
@@ -73,7 +70,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
         try {
             // Send POST request to the API
             ResponseEntity<String> response = restTemplate.exchange(
-                    PROCESS_AUDIO_URL,
+                    BASE_API_URL + "/predict",
                     HttpMethod.POST,
                     requestEntity,
                     String.class
@@ -95,7 +92,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
     @Override
     public SpeakingScoreDTO evaluateSpeechInTopic(MultipartFile audioFile, String topic) throws Exception {
-        log.info("Starting pronunciation-only evaluation for file: {}", audioFile.getOriginalFilename());
+        log.info("Starting speech evaluation in topic for file: {}", audioFile.getOriginalFilename());
 
         // Create HttpHeaders object
         HttpHeaders headers = new HttpHeaders();
@@ -104,33 +101,32 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
         // Create MultiValueMap for the request body
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
-        // Add the audio file
+        // Add the audio file - using "file" as the parameter name expected by the API
         ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
             @Override
             public String getFilename() {
                 return audioFile.getOriginalFilename();
             }
         };
-        body.add("audio", resource);
+        body.add("file", resource);
 
-        // Create the HTTP entity
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         try {
-            // Send POST request to the pronunciation-only API
+            // Send POST request to the regular predict API with topic
             ResponseEntity<String> response = restTemplate.exchange(
-                    EVALUATE_PRONUNCIATION_URL,
+                    BASE_API_URL + "/predict_pronunciation",
                     HttpMethod.POST,
                     requestEntity,
                     String.class
             );
 
-            log.info("Received response from pronunciation API with status: {}", response.getStatusCode());
+            log.info("Received response from speech API with status: {}", response.getStatusCode());
 
             // Parse the response
             SpeakingScoreDTO scoreResult = parseApiResponse(response);
 
-            // Evaluate the relevance of the topic
+            // Additional evaluation with writing service if needed
             WritingScoreDTO writingScore = scoreWritingService.scoreWriting(scoreResult.getTranscript(), topic);
             scoreResult.setStrengths(Stream.of(scoreResult.getStrengths(), writingScore.getStrengths())
                     .flatMap(Collection::stream)
@@ -143,13 +139,9 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             scoreResult.setScore(((Double.parseDouble(scoreResult.getScore()) * 10 + Double.parseDouble(writingScore.getScore())) / 2) + "");
 
             return scoreResult;
-
         } catch (RestClientException e) {
-            log.error("Error calling pronunciation API: {}", e.getMessage(), e);
-            throw new Exception("Failed to communicate with pronunciation API: " + e.getMessage());
-        } catch (Exception e) {
-            log.error("Error evaluating pronunciation: {}", e.getMessage(), e);
-            throw new Exception("Error evaluating pronunciation: " + e.getMessage());
+            log.error("Error calling speech API: {}", e.getMessage(), e);
+            throw new Exception("Failed to communicate with speech API: " + e.getMessage());
         }
     }
 
@@ -170,102 +162,104 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             }
         }
 
-        List<SpeakingScoreDTO> scores = new ArrayList<>();
+        // Create HttpHeaders object
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        for (int i = 0; i < audioFiles.size(); i++) {
-            scores.add(evaluateSpeaking(audioFiles.get(i), expectedTexts.get(i)));
+        // Create MultiValueMap for the request body
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        // Add all audio files - using "files" as expected by the API, not "files[]"
+        for (MultipartFile audioFile : audioFiles) {
+            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return audioFile.getOriginalFilename();
+                }
+            };
+            body.add("files", resource);
         }
 
-        ConversationScoreDTO scoreResult = new ConversationScoreDTO();
+        // Add all topics - using "topics" as expected by the API (will be split by \n in API)
+        body.add("topics", String.join("\n", expectedTexts));
 
-// Tính điểm trung bình
-        double averageScore = scores.stream()
-                .mapToDouble(score -> Double.parseDouble(score.getScore()))
-                .average()
-                .orElse(0);
-        scoreResult.setScore(String.valueOf(averageScore));
+        // Create the HTTP entity
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-// Thu thập các transcripts theo đúng thứ tự
-        List<String> transcripts = scores.stream()
-                .map(SpeakingScoreDTO::getTranscript)
-                .collect(Collectors.toList());
-        scoreResult.setTranscripts(transcripts);
+        try {
+            // Send POST request to the multiple files API
+            ResponseEntity<String> response = restTemplate.exchange(
+                    BASE_API_URL + "/predict_multiple",
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
 
-// Thu thập strengths, chỉ lấy những cái khác biệt
-        Set<String> uniqueStrengths = new HashSet<>();
-        scores.forEach(score -> {
-            if (score.getStrengths() != null) {
-                uniqueStrengths.addAll(score.getStrengths());
+            log.info("Received response from multiple files API with status: {}", response.getStatusCode());
+
+            // Parse the response for multiple files
+            return parseMultipleFilesResponse(response);
+
+        } catch (RestClientException e) {
+            log.error("Error calling multiple files API: {}", e.getMessage(), e);
+
+            // Fall back to individual processing if batch processing fails
+            log.info("Falling back to individual file processing");
+
+            List<SpeakingScoreDTO> scores = new ArrayList<>();
+
+            for (int i = 0; i < audioFiles.size(); i++) {
+                String expectedText = i < expectedTexts.size() ? expectedTexts.get(i) : "";
+                scores.add(evaluateSpeaking(audioFiles.get(i), expectedText));
             }
-        });
-        scoreResult.setStrengths(new ArrayList<>(uniqueStrengths));
 
-// Thu thập areas_to_improve, chỉ lấy những cái khác biệt
-        Set<String> uniqueAreasToImprove = new HashSet<>();
-        scores.forEach(score -> {
-            if (score.getAreas_to_improve() != null) {
-                uniqueAreasToImprove.addAll(score.getAreas_to_improve());
-            }
-        });
-        scoreResult.setAreas_to_improve(new ArrayList<>(uniqueAreasToImprove));
+            ConversationScoreDTO scoreResult = new ConversationScoreDTO();
 
-// Thu thập feedback, chỉ lấy những cái khác biệt
-        Set<String> uniqueFeedback = new HashSet<>();
-        scores.forEach(score -> {
-            if (score.getFeedback() != null && !score.getFeedback().isEmpty()) {
-                uniqueFeedback.add(score.getFeedback());
-            }
-        });
-        scoreResult.setFeedback(String.join("\n\n", uniqueFeedback));
+            // Calculate average score
+            double averageScore = scores.stream()
+                    .mapToDouble(score -> Double.parseDouble(score.getScore()))
+                    .average()
+                    .orElse(0);
+            scoreResult.setScore(String.valueOf(averageScore));
 
-        return scoreResult;
-//        // Create HttpHeaders object
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-//
-//        // Create MultiValueMap for the request body
-//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//
-//        // Add all audio files
-//        for (MultipartFile audioFile : audioFiles) {
-//            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
-//                @Override
-//                public String getFilename() {
-//                    return audioFile.getOriginalFilename();
-//                }
-//            };
-//            body.add("files", resource);
-//        }
-//
-//        // Add all topics
-//        for (String expectedText : expectedTexts) {
-//            body.add("topics", expectedText);
-//        }
-//
-//        // Create the HTTP entity
-//        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-//
-//        try {
-//            // Send POST request to the multiple files API
-//            ResponseEntity<String> response = restTemplate.exchange(
-//                    EVALUATE_MULTIPLE_URL,
-//                    HttpMethod.POST,
-//                    requestEntity,
-//                    String.class
-//            );
-//
-//            log.info("Received response from multiple files API with status: {}", response.getStatusCode());
-//
-//            // Parse the response for multiple files
-//            return parseMultipleFilesResponse(response);
-//
-//        } catch (RestClientException e) {
-//            log.error("Error calling multiple files API: {}", e.getMessage(), e);
-//            throw new Exception("Failed to communicate with multiple files API: " + e.getMessage());
-//        } catch (Exception e) {
-//            log.error("Error evaluating multiple files: {}", e.getMessage(), e);
-//            throw new Exception("Error evaluating multiple files: " + e.getMessage());
-//        }
+            // Collect transcripts in order
+            List<String> transcripts = scores.stream()
+                    .map(SpeakingScoreDTO::getTranscript)
+                    .collect(Collectors.toList());
+            scoreResult.setTranscripts(transcripts);
+
+            // Collect unique strengths
+            Set<String> uniqueStrengths = new HashSet<>();
+            scores.forEach(score -> {
+                if (score.getStrengths() != null) {
+                    uniqueStrengths.addAll(score.getStrengths());
+                }
+            });
+            scoreResult.setStrengths(new ArrayList<>(uniqueStrengths));
+
+            // Collect unique areas to improve
+            Set<String> uniqueAreasToImprove = new HashSet<>();
+            scores.forEach(score -> {
+                if (score.getAreas_to_improve() != null) {
+                    uniqueAreasToImprove.addAll(score.getAreas_to_improve());
+                }
+            });
+            scoreResult.setAreas_to_improve(new ArrayList<>(uniqueAreasToImprove));
+
+            // Collect unique feedback
+            Set<String> uniqueFeedback = new HashSet<>();
+            scores.forEach(score -> {
+                if (score.getFeedback() != null && !score.getFeedback().isEmpty()) {
+                    uniqueFeedback.add(score.getFeedback());
+                }
+            });
+            scoreResult.setFeedback(String.join("\n\n", uniqueFeedback));
+
+            return scoreResult;
+        } catch (Exception e) {
+            log.error("Error evaluating multiple files: {}", e.getMessage(), e);
+            throw new Exception("Error evaluating multiple files: " + e.getMessage());
+        }
     }
 
     /**
@@ -277,9 +271,14 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
             SpeakingScoreDTO scoreDTO = new SpeakingScoreDTO();
+
+            // Map fields from API response to DTO
+            // Based on the API response structure in api.py
             scoreDTO.setScore(rootNode.path("score").asText());
             scoreDTO.setTranscript(rootNode.path("transcript").asText());
-            scoreDTO.setFeedback(rootNode.path("detailedFeedback").asText());
+
+            // The API returns "feedback" but our DTO expects "detailedFeedback"
+            scoreDTO.setFeedback(rootNode.path("feedback").asText());
 
             // Convert JSON arrays to Lists
             List<String> strengths = new ArrayList<>();
@@ -292,13 +291,21 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             scoreDTO.setStrengths(strengths);
 
             List<String> areasToImprove = new ArrayList<>();
-            JsonNode areasNode = rootNode.path("areasToImprove");
+            JsonNode areasNode = rootNode.path("areas_to_improve");
             if (areasNode.isArray()) {
                 for (JsonNode node : areasNode) {
                     areasToImprove.add(node.asText());
                 }
             }
             scoreDTO.setAreas_to_improve(areasToImprove);
+
+            // Handle potential error case
+            if (rootNode.has("error")) {
+                log.warn("API returned an error: {}", rootNode.path("error").asText());
+                if (scoreDTO.getFeedback() == null || scoreDTO.getFeedback().isEmpty()) {
+                    scoreDTO.setFeedback("Error: " + rootNode.path("error").asText());
+                }
+            }
 
             return scoreDTO;
         } else {
@@ -311,14 +318,14 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
      * Helper method to parse API responses for multiple file evaluations
      */
     private ConversationScoreDTO parseMultipleFilesResponse(ResponseEntity<String> response) throws Exception {
-        // Parse the response into a SpeakingScoreDTO object
+        // Parse the response into a ConversationScoreDTO object
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
             ConversationScoreDTO scoreDTO = new ConversationScoreDTO();
             scoreDTO.setScore(rootNode.path("score").asText());
 
-            // For multiple files, join the transcripts
+            // For multiple files, collect the transcripts
             List<String> transcripts = new ArrayList<>();
             JsonNode transcriptsNode = rootNode.path("transcripts");
 
@@ -330,7 +337,8 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
             scoreDTO.setTranscripts(transcripts);
 
-            scoreDTO.setFeedback(rootNode.path("detailedFeedback").asText());
+            // Use "feedback" field instead of "detailedFeedback" to match API response
+            scoreDTO.setFeedback(rootNode.path("feedback").asText());
 
             // Convert JSON arrays to Lists
             List<String> strengths = new ArrayList<>();
@@ -343,13 +351,21 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             scoreDTO.setStrengths(strengths);
 
             List<String> areasToImprove = new ArrayList<>();
-            JsonNode areasNode = rootNode.path("areasToImprove");
+            JsonNode areasNode = rootNode.path("areas_to_improve");
             if (areasNode.isArray()) {
                 for (JsonNode node : areasNode) {
                     areasToImprove.add(node.asText());
                 }
             }
             scoreDTO.setAreas_to_improve(areasToImprove);
+
+            // Handle potential error case
+            if (rootNode.has("error")) {
+                log.warn("API returned an error: {}", rootNode.path("error").asText());
+                if (scoreDTO.getFeedback() == null || scoreDTO.getFeedback().isEmpty()) {
+                    scoreDTO.setFeedback("Error: " + rootNode.path("error").asText());
+                }
+            }
 
             return scoreDTO;
         } else {

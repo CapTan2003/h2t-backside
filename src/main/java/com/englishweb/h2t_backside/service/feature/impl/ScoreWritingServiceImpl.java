@@ -3,12 +3,17 @@ package com.englishweb.h2t_backside.service.feature.impl;
 import com.englishweb.h2t_backside.dto.WritingScoreDTO;
 import com.englishweb.h2t_backside.service.feature.LLMService;
 import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -33,8 +38,16 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
             String jsonContent = extractJsonFromResponse(llmResponse);
             log.info("Extracted JSON content: {}", jsonContent);
 
-            // Parse the JSON response into WritingScoreDTO
-            WritingScoreDTO scoreDTO = objectMapper.readValue(jsonContent, WritingScoreDTO.class);
+            // Parse and normalize the JSON before converting to WritingScoreDTO
+            JsonNode rootNode = objectMapper.readTree(jsonContent);
+            JsonNode normalizedJson = normalizeJsonKeys(rootNode);
+
+            // Convert the normalized JSON to JSON string
+            String normalizedJsonString = objectMapper.writeValueAsString(normalizedJson);
+            log.info("Normalized JSON: {}", normalizedJsonString);
+
+            // Parse the normalized JSON response into WritingScoreDTO
+            WritingScoreDTO scoreDTO = objectMapper.readValue(normalizedJsonString, WritingScoreDTO.class);
             log.info("Successfully parsed response into WritingScoreDTO");
 
             return scoreDTO;
@@ -48,6 +61,89 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
             fallbackDTO.setFeedback("Error processing writing sample. Please try again.");
             return fallbackDTO;
         }
+    }
+
+    /**
+     * Normalizes JSON keys to match the expected DTO structure
+     * This handles variations in the LLM's response format
+     *
+     * @param jsonNode the original JSON node
+     * @return normalized JSON node with standardized keys
+     */
+    private JsonNode normalizeJsonKeys(JsonNode jsonNode) {
+        ObjectNode normalizedNode = objectMapper.createObjectNode();
+
+        // Handle score field
+        if (jsonNode.has("score")) {
+            normalizedNode.put("score", jsonNode.get("score").asText());
+        } else if (jsonNode.has("overall_score")) {
+            normalizedNode.put("score", jsonNode.get("overall_score").asText());
+        } else if (jsonNode.has("totalScore")) {
+            normalizedNode.put("score", jsonNode.get("totalScore").asText());
+        } else {
+            normalizedNode.put("score", "0");
+        }
+
+        // Handle strengths field - check for various possible keys
+        List<String> strengths = new ArrayList<>();
+        List<String> possibleStrengthKeys = Arrays.asList(
+                "strengths", "strength", "strong_points", "strong_areas", "positive_aspects", "positives"
+        );
+
+        for (String key : possibleStrengthKeys) {
+            if (jsonNode.has(key) && jsonNode.get(key).isArray()) {
+                ArrayNode strengthsArray = (ArrayNode) jsonNode.get(key);
+                for (JsonNode item : strengthsArray) {
+                    strengths.add(item.asText());
+                }
+                break;
+            }
+        }
+
+        // Handle areas_to_improve field - check for various possible keys
+        List<String> areasToImprove = new ArrayList<>();
+        List<String> possibleAreasKeys = Arrays.asList(
+                "areas_to_improve", "areas_for_improvement", "improvements", "improvement_areas",
+                "weaknesses", "weak_points", "suggestions", "recommendations"
+        );
+
+        for (String key : possibleAreasKeys) {
+            if (jsonNode.has(key) && jsonNode.get(key).isArray()) {
+                ArrayNode areasArray = (ArrayNode) jsonNode.get(key);
+                for (JsonNode item : areasArray) {
+                    areasToImprove.add(item.asText());
+                }
+                break;
+            }
+        }
+
+        // Handle feedback field
+        String feedback = "";
+        List<String> possibleFeedbackKeys = Arrays.asList(
+                "feedback", "overall_feedback", "assessment", "evaluation", "comments", "summary"
+        );
+
+        for (String key : possibleFeedbackKeys) {
+            if (jsonNode.has(key)) {
+                feedback = jsonNode.get(key).asText();
+                break;
+            }
+        }
+
+        // Create arrays in the normalized node
+        ArrayNode strengthsNode = normalizedNode.putArray("strengths");
+        for (String strength : strengths) {
+            strengthsNode.add(strength);
+        }
+
+        ArrayNode areasNode = normalizedNode.putArray("areas_to_improve");
+        for (String area : areasToImprove) {
+            areasNode.add(area);
+        }
+
+        normalizedNode.put("feedback", feedback);
+
+        return normalizedNode;
     }
 
     /**
@@ -141,6 +237,7 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
                 "- Base your evaluation strictly on the text provided, not assumptions\n" +
                 "- Maintain a professional, constructive tone in your feedback\n" +
                 "- Return ONLY the JSON object with no additional text, explanations, or commentary\n" +
-                "- Ensure the JSON is properly formatted and can be parsed by standard JSON parsers";
+                "- Ensure the JSON is properly formatted and can be parsed by standard JSON parsers\n" +
+                "- Ensure JSON have exactly 4 fields: score, strengths, areas_to_improve, feedback\n";
     }
 }
