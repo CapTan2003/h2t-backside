@@ -10,5 +10,5 @@ public interface TestPartService extends BaseService<TestPartDTO> {
     int countTotalQuestionsOfTest(List<Long> testParts);
     List<TestPartDTO> findByIds(List<Long> ids);
     List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status);
-
+    boolean verifyValidTestPart(Long testPartId);
 }

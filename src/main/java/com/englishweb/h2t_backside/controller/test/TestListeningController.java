@@ -35,14 +35,18 @@ public class TestListeningController {
     }
     @PostMapping("/by-ids")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<TestListeningDTO>> getByIds(@RequestBody List<Long> ids) {
-        List<TestListeningDTO> result = service.findByIds(ids);
+    public ResponseDTO<List<TestListeningDTO>> getByIds(
+            @RequestBody List<Long> ids,
+            @RequestParam(required = false) Boolean status) {
+
+        List<TestListeningDTO> result = service.findByIdsAndStatus(ids, status);
         return ResponseDTO.<List<TestListeningDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
                 .message("TestListening retrieved successfully")
                 .build();
     }
+
     @GetMapping("/questions")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<List<QuestionDTO>> findQuestionByTestId(
@@ -104,5 +108,21 @@ public class TestListeningController {
                 .message(result ? "TestListening deleted successfully" : "Failed to delete TestListening")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidTestListening(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Test listening successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Test listening not valid")
+                    .build();
+        }
     }
 }

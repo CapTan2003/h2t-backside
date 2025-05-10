@@ -1,15 +1,13 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
-import com.englishweb.h2t_backside.dto.test.QuestionDTO;
-import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
-import com.englishweb.h2t_backside.dto.test.TestPartDTO;
-import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
+import com.englishweb.h2t_backside.dto.test.*;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.TestPartMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
+import com.englishweb.h2t_backside.model.enummodel.TestPartEnum;
 import com.englishweb.h2t_backside.model.test.Test;
 import com.englishweb.h2t_backside.model.test.TestPart;
 import com.englishweb.h2t_backside.repository.test.TestPartRepository;
@@ -34,6 +32,7 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
     private final TestSpeakingService testSpeakingService;
     private final TestPartMapper mapper;
     private final QuestionService questionService;
+    private final TestWritingService testWritingService;
     private static final String RESOURCE_NAME = "TestPart";
 
     public TestPartServiceImpl(TestPartRepository repository,
@@ -41,13 +40,14 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
                                TestPartMapper mapper,
                                TestReadingService testReadingService,
                                TestListeningService testListeningService,
-                               TestSpeakingService testSpeakingService, QuestionService questionService) {
+                               TestSpeakingService testSpeakingService, QuestionService questionService, TestWritingService testWritingService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.testReadingService = testReadingService;
         this.testListeningService = testListeningService;
         this.testSpeakingService = testSpeakingService;
         this.questionService = questionService;
+        this.testWritingService = testWritingService;
     }
 
 
@@ -157,6 +157,40 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
                 TestPartDTO::getQuestions,
                 this::findById
         );
+    }
+    @Override
+    public boolean verifyValidTestPart(Long testPartId) {
+        TestPartDTO part = super.findById(testPartId);
+
+        if (part.getQuestions() == null || part.getQuestions().isEmpty() || part.getType() == null) {
+            return false;
+        }
+
+        List<Long> ids = part.getQuestions();
+        TestPartEnum type = part.getType();
+
+        return switch (type) {
+            case VOCABULARY, GRAMMAR -> {
+                List<QuestionDTO> questions = questionService.findByIds(ids);
+                yield questions.stream().anyMatch(q -> questionService.verifyValidQuestion(q.getId()) && q.getStatus());
+            }
+            case READING -> ids.stream()
+                    .map(testReadingService::findById)
+                    .filter(TestReadingDTO::getStatus)
+                    .anyMatch(dto -> testReadingService.verifyValidTestReading(dto.getId()));
+            case LISTENING -> ids.stream()
+                    .map(testListeningService::findById)
+                    .filter(TestListeningDTO::getStatus)
+                    .anyMatch(dto -> testListeningService.verifyValidTestListening(dto.getId()));
+            case SPEAKING -> ids.stream()
+                    .map(testSpeakingService::findById)
+                    .filter(TestSpeakingDTO::getStatus)
+                    .anyMatch(dto -> testSpeakingService.verifyValidTestSpeaking(dto.getId()));
+            case WRITING -> ids.stream()
+                    .map(testWritingService::findById)
+                    .filter(TestWritingDTO::getStatus)
+                    .anyMatch(dto -> testWritingService.verifyValidTestWriting(dto.getId()));
+        };
     }
 
 

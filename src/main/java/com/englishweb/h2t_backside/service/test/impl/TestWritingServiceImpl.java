@@ -59,6 +59,17 @@ public class TestWritingServiceImpl extends BaseServiceImpl<TestWritingDTO, Test
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+    @Override
+    public List<TestWritingDTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
+    }
 
     @Override
     protected void patchEntityFromDTO(TestWritingDTO dto, TestWriting entity) {
@@ -82,5 +93,14 @@ public class TestWritingServiceImpl extends BaseServiceImpl<TestWritingDTO, Test
         }
         return result;
     }
+    @Override
+    public boolean verifyValidTestWriting(Long testWritingId) {
+        TestWritingDTO dto = super.findById(testWritingId);
+
+        return dto.getTopic() != null && !dto.getTopic().isEmpty()
+                && dto.getMinWords() > 0
+                && dto.getMaxWords() > dto.getMinWords() ;
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.test.QuestionDTO;
+import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
 import com.englishweb.h2t_backside.dto.test.TestSpeakingDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.TestSpeakingService;
@@ -34,8 +35,11 @@ public class TestSpeakingController {
     }
     @PostMapping("/by-ids")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<TestSpeakingDTO>> getByIds(@RequestBody List<Long> ids) {
-        List<TestSpeakingDTO> result = service.findByIds(ids);
+    public ResponseDTO<List<TestSpeakingDTO>> getByIds(
+            @RequestBody List<Long> ids,
+            @RequestParam(required = false) Boolean status) {
+
+        List<TestSpeakingDTO> result = service.findByIdsAndStatus(ids, status);
         return ResponseDTO.<List<TestSpeakingDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
@@ -104,5 +108,21 @@ public class TestSpeakingController {
                 .message(result ? "TestSpeaking deleted successfully" : "Failed to delete test speaking")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidTestSpeaking(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Test speaking successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Test speaking not valid")
+                    .build();
+        }
     }
 }

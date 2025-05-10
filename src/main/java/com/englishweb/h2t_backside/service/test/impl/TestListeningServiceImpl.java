@@ -91,6 +91,17 @@ public class TestListeningServiceImpl extends BaseServiceImpl<TestListeningDTO, 
         }
         return result;
     }
+    @Override
+    public List<TestListeningDTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
+    }
 
     @Override
     public List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status) {
@@ -103,4 +114,21 @@ public class TestListeningServiceImpl extends BaseServiceImpl<TestListeningDTO, 
                 this::findById
         );
     }
+    @Override
+    public boolean verifyValidTestListening(Long testListeningId) {
+        TestListeningDTO dto = super.findById(testListeningId);
+
+        if (dto.getAudio() == null || dto.getAudio().isEmpty()
+                || dto.getTranscript() == null || dto.getTranscript().isEmpty()
+                || dto.getQuestions() == null || dto.getQuestions().isEmpty() ) {
+            return false;
+        }
+
+        List<QuestionDTO> questions = questionService.findByIds(dto.getQuestions());
+
+        return questions.stream().anyMatch(q ->
+                questionService.verifyValidQuestion(q.getId()) && q.getStatus()
+        );
+    }
+
 }

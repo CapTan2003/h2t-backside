@@ -86,7 +86,7 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
         return Double.valueOf(submits.stream()
                 .max(Comparator.comparing(SubmitTest::getCreatedAt))
                 .map(SubmitTest::getScore)
-                .orElse( 0));
+                .orElse((int) 0));
     }
     @Override
     public int countSubmitByUserId(Long userId) {

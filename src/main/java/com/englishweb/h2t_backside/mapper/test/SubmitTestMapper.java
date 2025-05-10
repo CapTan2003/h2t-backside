@@ -31,6 +31,9 @@ public interface SubmitTestMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "test_type", source = "test.type")
+    @Mapping(target = "test_title", source = "test.title")
+    @Mapping(target = "test_duration", source = "test.duration")
     SubmitTestDTO convertToDTO(SubmitTest entity);
 
     // PATCH DTO → Entity

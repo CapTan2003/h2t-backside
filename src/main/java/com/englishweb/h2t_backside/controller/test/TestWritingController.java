@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
 import com.englishweb.h2t_backside.dto.test.TestWritingDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.TestWritingService;
@@ -33,12 +34,15 @@ public class TestWritingController {
     }
     @PostMapping("/by-ids")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<TestWritingDTO>> getByIds(@RequestBody List<Long> ids) {
-        List<TestWritingDTO> result = service.findByIds(ids);
+    public ResponseDTO<List<TestWritingDTO>> getByIds(
+            @RequestBody List<Long> ids,
+            @RequestParam(required = false) Boolean status) {
+
+        List<TestWritingDTO> result = service.findByIdsAndStatus(ids, status);
         return ResponseDTO.<List<TestWritingDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
-                .message("TestWriting retrieved successfully")
+                .message("Test Writing retrieved successfully")
                 .build();
     }
 
@@ -87,5 +91,21 @@ public class TestWritingController {
                 .message(result ? "TestWriting deleted successfully" : "Failed to delete test writing")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidTestWriting(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Test writing successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Test writing not valid")
+                    .build();
+        }
     }
 }

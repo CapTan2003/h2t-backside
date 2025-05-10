@@ -31,6 +31,8 @@ public interface SubmitToeicMapper {
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "toeic_title", source = "entity.toeic.title")
+    @Mapping(target = "toeic_duration", source = "entity.toeic.duration")
     SubmitToeicDTO convertToDTO(SubmitToeic entity);
 
     // Patch DTO → Entity

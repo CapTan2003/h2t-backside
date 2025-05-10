@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -89,6 +90,16 @@ public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, Te
         }
         return result;
     }
+    public List<TestSpeakingDTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
+    }
     @Override
     public List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status) {
         return QuestionFinder.findQuestionsByTestId(
@@ -100,4 +111,18 @@ public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, Te
                 this::findById
         );
     }
+    @Override
+    public boolean verifyValidTestSpeaking(Long testSpeakingId) {
+        TestSpeakingDTO dto = super.findById(testSpeakingId);
+
+        if (dto.getQuestions() == null || dto.getQuestions().isEmpty()
+                || dto.getTitle() == null || dto.getTitle().isEmpty()) return false;
+
+        List<QuestionDTO> questions = questionService.findByIds(dto.getQuestions());
+
+        return questions.stream().anyMatch(q ->
+                q.getContent() != null && !q.getContent().isEmpty() && q.getStatus()
+        );
+    }
+
 }

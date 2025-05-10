@@ -2,6 +2,7 @@
 
     import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
     import com.englishweb.h2t_backside.dto.test.QuestionDTO;
+    import com.englishweb.h2t_backside.dto.test.TestListeningDTO;
     import com.englishweb.h2t_backside.dto.test.TestReadingDTO;
     import com.englishweb.h2t_backside.dto.response.ResponseDTO;
     import com.englishweb.h2t_backside.service.test.TestReadingService;
@@ -34,12 +35,15 @@
         }
         @PostMapping("/by-ids")
         @ResponseStatus(HttpStatus.OK)
-        public ResponseDTO<List<TestReadingDTO>> getByIds(@RequestBody List<Long> ids) {
-            List<TestReadingDTO> result = service.findByIds(ids);
+        public ResponseDTO<List<TestReadingDTO>> getByIds(
+                @RequestBody List<Long> ids,
+                @RequestParam(required = false) Boolean status) {
+
+            List<TestReadingDTO> result = service.findByIdsAndStatus(ids, status);
             return ResponseDTO.<List<TestReadingDTO>>builder()
                     .status(ResponseStatusEnum.SUCCESS)
                     .data(result)
-                    .message("TestReading retrieved successfully")
+                    .message("TestListening retrieved successfully")
                     .build();
         }
         @GetMapping("/questions")
@@ -103,5 +107,21 @@
                     .message(result ? "TestReading deleted successfully" : "Failed to delete test reading")
                     .build();
             return ResponseEntity.ok(response);
+        }
+        @GetMapping("/{id}/verify")
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseDTO<String> verify(@PathVariable Long id) {
+            boolean result = service.verifyValidTestReading(id);
+            if (result) {
+                return ResponseDTO.<String>builder()
+                        .status(ResponseStatusEnum.SUCCESS)
+                        .message("Test reading successfully")
+                        .build();
+            } else {
+                return ResponseDTO.<String>builder()
+                        .status(ResponseStatusEnum.FAIL)
+                        .message("Test reading not valid")
+                        .build();
+            }
         }
     }
