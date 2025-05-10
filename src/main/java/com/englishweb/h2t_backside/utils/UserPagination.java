@@ -40,12 +40,12 @@ public class UserPagination {
             specification = specification.and(UserSpecification.findByEmail(filter.getEmail()));
         }
 
-        if (filter.getRoleEnumList() != null && !filter.getRoleEnumList().isEmpty()) {
-            specification = specification.and(UserSpecification.findByRoles(filter.getRoleEnumList()));
+        if (filter.getRoleList() != null && !filter.getRoleList().isEmpty()) {
+            specification = specification.and(UserSpecification.findByRoles(filter.getRoleList()));
         }
 
-        if (filter.getLevelEnum() != null) {
-            specification = specification.and(UserSpecification.findByLevel(filter.getLevelEnum()));
+        if (filter.getLevel() != null) {
+            specification = specification.and(UserSpecification.findByLevel(filter.getLevel()));
         }
 
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);

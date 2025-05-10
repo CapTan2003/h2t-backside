@@ -36,7 +36,7 @@ public class AuthenticateController {
                 .build();
     }
 
-    @PostMapping("/login/google")
+    @PostMapping("/login-with-google")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<AuthenticateDTO> loginWithGoogle(@RequestBody GoogleLoginDTO request) {
         AuthenticateDTO authData = service.loginWithGoogle(request);
@@ -60,7 +60,7 @@ public class AuthenticateController {
                 .build();
     }
 
-    @GetMapping("/validate")
+    @GetMapping("/validate-token")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<Boolean> validateToken(@RequestHeader("Authorization") String token) {
         String jwt = token.replace("Bearer ", "").trim();

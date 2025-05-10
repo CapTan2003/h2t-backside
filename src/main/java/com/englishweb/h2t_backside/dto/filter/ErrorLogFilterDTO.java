@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ErrorLogFilterDTO extends BaseFilterDTO{
     private String message;
+    private String errorCode;
     private SeverityEnum severity;
 }
 

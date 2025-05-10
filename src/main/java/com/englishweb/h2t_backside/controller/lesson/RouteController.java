@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/routes")
@@ -93,6 +95,17 @@ public class RouteController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
                 .message("Routes retrieved successfully")
+                .build();
+    }
+
+    @GetMapping("/longest")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<RouteDTO>> findLongestRoutes() {
+        List<RouteDTO> result = service.findLongestRoutes();
+        return ResponseDTO.<List<RouteDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("Longest routes retrieved successfully")
                 .build();
     }
 

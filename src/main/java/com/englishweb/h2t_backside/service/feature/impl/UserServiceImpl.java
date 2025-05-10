@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
 import com.englishweb.h2t_backside.exception.*;
 import com.englishweb.h2t_backside.mapper.UserMapper;
 import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -90,8 +91,23 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         String password = userDTO.getPassword();
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodedPassword);
-//        sendEmail.sendPasswordByEmail(userDTO.getEmail(), password);
+        if (userDTO.getRole() == RoleEnum.TEACHER_ADVANCE) {
+            sendEmail.sendPasswordByEmail(userDTO.getEmail(), password);
+        }
         return super.create(userDTO);
+    }
+
+    @Override
+    public UserDTO patch(UserDTO dto, Long id) {
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            String password = dto.getPassword();
+            String encodedPassword = passwordEncoder.encode(dto.getPassword());
+            dto.setPassword(encodedPassword);
+            if (dto.getRole() == RoleEnum.TEACHER_ADVANCE) {
+                sendEmail.sendPasswordByEmail(dto.getEmail(), password);
+            }
+        }
+        return super.patch(dto, id);
     }
 
     @Override

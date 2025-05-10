@@ -14,12 +14,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @AllArgsConstructor
 public class ErrorLogServiceImpl implements ErrorLogService {
     ErrorLogRepository repository;
     private final ErrorLogMapper mapper;
+
+    @Override
+    public ErrorLogDTO findById(Long id) {
+        log.info("Finding error log by ID: {}", id);
+        ErrorLog entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id, "ErrorLog not found", SeverityEnum.MEDIUM));
+        log.info("Found error log with ID: {}", id);
+        return convertToDTO(entity);
+    }
 
     @Override
     public ErrorLogDTO create(ErrorLogDTO dto) {
@@ -55,6 +66,20 @@ public class ErrorLogServiceImpl implements ErrorLogService {
             log.error("Error updating error log with ID {}: {}", id, e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.info("Deleting error log with ID: {}", id);
+        repository.deleteById(id);
+        log.info("Deleted error log with ID: {}", id);
+    }
+
+    @Override
+    public void deleteAllByStatusFalseAndSeverityIn(List<SeverityEnum> severityList) {
+        log.info("Deleting error logs with status=false and severity in: {}", severityList);
+        repository.deleteAllByStatusFalseAndSeverityIn(severityList);
+        log.info("Deleted error logs with status=false and severity in: {}", severityList);
     }
 
     @Override

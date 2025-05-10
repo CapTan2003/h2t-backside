@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.model.features;
 
 import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
+import com.englishweb.h2t_backside.model.interfacemodel.AIResponseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -12,7 +13,7 @@ import org.hibernate.annotations.Comment;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AIResponse extends AbstractBaseEntity {
+public class AIResponse extends AbstractBaseEntity implements AIResponseEntity {
 
     @Column(nullable = false)
     @Comment("Prompt send to AI")

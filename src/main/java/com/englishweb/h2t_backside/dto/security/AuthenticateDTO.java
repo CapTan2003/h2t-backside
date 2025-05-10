@@ -14,5 +14,5 @@ public class AuthenticateDTO {
     private String accessToken;
     private String refreshToken;
     private RoleEnum role;
-    private String userId;
+    private Long userId;
 }

@@ -18,6 +18,6 @@ import java.util.List;
 public class UserFilterDTO extends BaseFilterDTO{
     private String name;
     private String email;
-    private LevelEnum levelEnum;
-    private List<RoleEnum> roleEnumList;
+    private LevelEnum level;
+    private List<RoleEnum> roleList;
 }

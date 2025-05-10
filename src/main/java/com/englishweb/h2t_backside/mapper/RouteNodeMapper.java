@@ -6,7 +6,6 @@ import com.englishweb.h2t_backside.dto.lesson.*;
 import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.model.RouteNode;
-import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;
 import com.englishweb.h2t_backside.service.lesson.*;
 import com.englishweb.h2t_backside.service.test.TestService;
 import org.mapstruct.*;
@@ -145,11 +144,13 @@ public abstract class RouteNodeMapper {
         node.setTitle(dto.getTitle());
         node.setDescription(dto.getDescription());
         node.setImage(null);
+        node.setStatus(dto.getStatus());
     }
 
     private void setCommonFields(RouteNodeDTO node, LessonDTO dto) {
         node.setTitle(dto.getTitle());
         node.setDescription(dto.getDescription());
         node.setImage(dto.getImage());
+        node.setStatus(dto.getStatus());
     }
 }

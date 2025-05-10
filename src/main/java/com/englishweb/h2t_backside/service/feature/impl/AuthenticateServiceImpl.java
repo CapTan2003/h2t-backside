@@ -62,7 +62,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
 
         if(!user.getStatus()){
-            throw new ResourceNotFoundException("Account has been locked!", SeverityEnum.LOW);
+            throw new AuthenticateException("Account has been locked!", SeverityEnum.LOW, new HashMap<String, Object>() {{
+                put("email", dto.getEmail());
+            }});
         }
 
         String accessToken = jwtUtil.generateAccessToken(user);
@@ -79,7 +81,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .role(user.getRole())
-                .userId(Long.toString(user.getId()))
+                .userId(user.getId())
                 .build();
     }
 
@@ -124,7 +126,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .role(user.getRole())
-                    .userId(Long.toString(user.getId()))
+                    .userId(user.getId())
                     .build();
 
         } catch (Exception e) {
@@ -183,7 +185,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
                 .role(user.getRole())
-                .userId(Long.toString(user.getId()))
+                .userId(user.getId())
                 .build();
     }
 
@@ -203,7 +205,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 .accessToken(jwtUtil.generateAccessToken(user))
                 .refreshToken(jwtUtil.generateRefreshToken(user))
                 .role(user.getRole())
-                .userId(Long.toString(user.getId()))
+                .userId(user.getId())
                 .build();
     }
 }

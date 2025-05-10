@@ -26,6 +26,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepository> implements RouteService {
@@ -113,8 +115,28 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
     }
 
     @Override
+    public List<RouteDTO> findByOwnerId(Long ownerId) {
+        Specification<Route> specification = null;
+
+        if (ownerId != null) {
+            specification = RouteSpecification.findByOwnerId(ownerId);
+        }
+
+        return repository.findAll(specification).stream().map(this::convertToDTO).toList();
+    }
+
+    @Override
     public boolean verifyValidRoute(Long id) {
         RouteDTO route = super.findById(id);
         return route.getRouteNodes().stream().anyMatch((routeNodeDTO -> routeNodeService.verifyValidRouteNode(routeNodeDTO.getId())));
+    }
+
+    @Override
+    public List<RouteDTO> findLongestRoutes() {
+        List<Route> longestRoutes = repository.findTop5ByOrderByRouteNodeCountDesc();
+
+        return longestRoutes.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 }

@@ -26,7 +26,7 @@ public interface WritingMapper {
     @Mapping(target = "paragraph", source = "dto.paragraph")
     @Mapping(target = "tips", source = "dto.tips")
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     Writing convertToEntity(WritingDTO dto);
 
     // Convert Entity -> DTO
@@ -58,7 +58,7 @@ public interface WritingMapper {
     @Mapping(target = "paragraph", source = "dto.paragraph")
     @Mapping(target = "tips", source = "dto.tips")
     @Mapping(target = "preparation", source = "dto.preparationId", qualifiedByName = "mapPreparationIdToPreparation")
-    @Mapping(target = "routeNode", source = "dto.routeNode")
+    @Mapping(target = "routeNode", ignore = true)
     void patchEntityFromDTO(WritingDTO dto, @MappingTarget Writing entity);
 
     @Named("mapPreparationIdToPreparation")

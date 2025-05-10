@@ -16,17 +16,17 @@ public class UserSpecification {
 
     public static <T extends UserEntity> Specification<T> findByEmail(String email) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(criteriaBuilder.lower(root.get("email")), email.toLowerCase() );
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" +email.toLowerCase() + "%");
     }
 
     public static <T extends UserEntity> Specification<T> findByRoles(List<RoleEnum> roleEnumList) {
         return (root, query, criteriaBuilder) ->
-                root.get("roleEnum").in(roleEnumList);
+                root.get("role").in(roleEnumList);
     }
 
     public static <T extends UserEntity> Specification<T> findByLevel(LevelEnum levelEnum) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("levelEnum"), levelEnum);
+                criteriaBuilder.equal(root.get("level"), levelEnum);
     }
 
 }
