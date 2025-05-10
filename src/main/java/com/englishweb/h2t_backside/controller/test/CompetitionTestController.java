@@ -95,4 +95,14 @@ public class CompetitionTestController {
                 .build();
     }
 
+    @GetMapping("/recent-completed")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<CompetitionTestDTO> getLastCompletedCompetition() {
+        CompetitionTestDTO result = service.getLastCompletedCompetition();
+        return ResponseDTO.<CompetitionTestDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(result)
+                .message("CompetitionTest retrieved successfully")
+                .build();
+    }
 }

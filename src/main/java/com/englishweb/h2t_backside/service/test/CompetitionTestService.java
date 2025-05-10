@@ -8,4 +8,6 @@ import org.springframework.data.domain.Page;
 public interface CompetitionTestService extends BaseService<CompetitionTestDTO> {
 
     Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, Long userId);
+
+    CompetitionTestDTO getLastCompletedCompetition();
 }

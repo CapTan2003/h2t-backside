@@ -26,6 +26,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,6 +138,11 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
         });
     }
 
-
-
+    @Override
+    public CompetitionTestDTO getLastCompletedCompetition() {
+        CompetitionTestFilterDTO filter = new CompetitionTestFilterDTO();
+        filter.setEndEndTime(LocalDateTime.now());
+        Page<CompetitionTestDTO> result = searchWithFilters(0, 1, "-endTime", filter, null);
+        return result.getContent().get(0);
+    }
 }

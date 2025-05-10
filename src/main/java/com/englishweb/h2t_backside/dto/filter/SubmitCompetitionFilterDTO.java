@@ -13,4 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SubmitCompetitionFilterDTO extends BaseFilterDTO {
     private String title;
+
+    private Long testId;
 }

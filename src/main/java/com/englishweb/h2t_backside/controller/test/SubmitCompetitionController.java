@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/submit-competitions")
@@ -111,4 +113,13 @@ public class SubmitCompetitionController {
                 .build();
     }
 
+    @GetMapping("/leaderboard")
+    public ResponseDTO<List<SubmitCompetitionDTO>> getLeaderboard() {
+        List<SubmitCompetitionDTO> leaderboard = service.getLeaderboard();
+        return ResponseDTO.<List<SubmitCompetitionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(leaderboard)
+                .message("Leaderboard retrieved successfully")
+                .build();
+    }
 }
