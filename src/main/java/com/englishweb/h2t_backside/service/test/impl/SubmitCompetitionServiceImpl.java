@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.SubmitCompetitionFilterDTO;
+import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -14,6 +15,7 @@ import com.englishweb.h2t_backside.model.test.SubmitTest;
 import com.englishweb.h2t_backside.repository.test.SubmitCompetitionRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.CompetitionTestService;
 import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
@@ -24,14 +26,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetitionDTO, SubmitCompetition, SubmitCompetitionRepository> implements SubmitCompetitionService {
     private final SubmitCompetitionMapper mapper;
+    private final CompetitionTestService competitionTestService;
 
-    public SubmitCompetitionServiceImpl(SubmitCompetitionRepository repository, DiscordNotifier discordNotifier, SubmitCompetitionMapper mapper) {
+    public SubmitCompetitionServiceImpl(SubmitCompetitionRepository repository, DiscordNotifier discordNotifier, SubmitCompetitionMapper mapper, CompetitionTestService competitionTestService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.competitionTestService = competitionTestService;
     }
 
     @Override
@@ -113,8 +119,19 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
                     cb.like(cb.lower(root.join("test").get("title")), "%" + filter.getTitle().toLowerCase() + "%"));
         }
 
+        if (filter.getTestId() != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("test").get("id"), filter.getTestId()));
+        }
+
         return repository.findAll(spec, pageable)
                 .map(mapper::convertToDTO);
     }
 
+    @Override
+    public List<SubmitCompetitionDTO> getLeaderboard() {
+        CompetitionTestDTO lastCompetition = competitionTestService.getLastCompletedCompetition();
+        Page<SubmitCompetitionDTO> submitPage = searchWithFilters(0, 5, "score", SubmitCompetitionFilterDTO.builder().testId(lastCompetition.getId()).build(), null);
+        return submitPage.getContent();
+    }
 }
