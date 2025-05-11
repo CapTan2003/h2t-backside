@@ -87,7 +87,7 @@ public class SubmitToeicServiceImpl extends BaseServiceImpl<SubmitToeicDTO, Subm
         return Double.valueOf(submits.stream()
                 .max(Comparator.comparing(SubmitToeic::getCreatedAt))
                 .map(SubmitToeic::getScore)
-                .orElse(0));
+                .orElse((int) 0));
     }
 
     @Override

@@ -34,8 +34,10 @@ public class QuestionController {
     }
     @PostMapping("/by-ids")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<QuestionDTO>> getByIds(@RequestBody List<Long> ids) {
-        List<QuestionDTO> result = service.findByIds(ids);
+    public ResponseDTO<List<QuestionDTO>> getByIds(
+            @RequestBody List<Long> ids,
+            @RequestParam(required = false) Boolean status) {
+        List<QuestionDTO> result = service.findByIdsAndStatus(ids, status);
         return ResponseDTO.<List<QuestionDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
@@ -88,5 +90,21 @@ public class QuestionController {
                 .message(result ? "Question deleted successfully" : "Failed to delete question")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidQuestion(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Question test verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Question test not valid")
+                    .build();
+        }
     }
 }

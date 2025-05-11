@@ -94,6 +94,22 @@ public class CompetitionTestController {
                 .message("Competition results retrieved successfully with filters")
                 .build();
     }
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidCompetitionTest(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Competition test verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Competition test not valid")
+                    .build();
+        }
+    }
 
     @GetMapping("/recent-completed")
     @ResponseStatus(HttpStatus.OK)

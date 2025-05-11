@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.dto.test;
 
 import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
+import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -25,5 +26,12 @@ public class SubmitTestDTO extends AbstractBaseDTO {
     private Long test_id;
 
     private String comment;
+
+    private TestTypeEnum test_type;
+
+    private String test_title;
+
+    private String test_duration;
+
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface TestReadingService extends BaseService<TestReadingDTO> {
     List<TestReadingDTO> findByIds(List<Long> ids);
+    List<TestReadingDTO> findByIdsAndStatus(List<Long> ids, Boolean status);
     List<QuestionDTO> findQuestionByTestId(Long testId, Boolean status);
-
+    boolean verifyValidTestReading(Long testReadingId);
 }

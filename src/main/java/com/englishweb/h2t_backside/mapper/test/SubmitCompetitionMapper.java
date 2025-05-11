@@ -29,6 +29,8 @@ public interface SubmitCompetitionMapper {
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "competition_title", source = "entity.test.title")
+    @Mapping(target = "competition_duration", source = "entity.test.duration")
     SubmitCompetitionDTO convertToDTO(SubmitCompetition entity);
 
     // Patch DTO → Entity

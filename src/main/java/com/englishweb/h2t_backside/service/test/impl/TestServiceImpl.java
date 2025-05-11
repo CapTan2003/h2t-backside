@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -140,6 +141,29 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
             return dto;
         });
     }
+
+    @Override
+    public boolean verifyValidTest(Long testId) {
+        TestDTO test = super.findById(testId);
+        if (test.getParts() == null || test.getParts().isEmpty()) return false;
+
+        List<TestPartDTO> parts = test.getParts().stream()
+                .map(testPartService::findById)
+                .toList();
+
+        if (parts.isEmpty()) return false;
+
+        if (test.getType() == TestTypeEnum.MIXING) {
+            return parts.stream()
+                    .allMatch(part -> part.getStatus() && testPartService.verifyValidTestPart(part.getId()));
+        } else {
+
+            return parts.stream()
+                    .anyMatch(part -> part.getStatus() && testPartService.verifyValidTestPart(part.getId()));
+        }
+    }
+
+
 
 
 }

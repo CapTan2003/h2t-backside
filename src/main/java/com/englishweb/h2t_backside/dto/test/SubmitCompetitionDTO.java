@@ -22,4 +22,8 @@ public class SubmitCompetitionDTO extends AbstractBaseDTO {
 
     @NotNull(message = "CompetitionTest id be null")
     private Long competition_id;
+
+    private String competition_title;
+
+    private String competition_duration;
 }

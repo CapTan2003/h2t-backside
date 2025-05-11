@@ -2,6 +2,7 @@ package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.CompetitionTestFilterDTO;
 import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
+import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -137,6 +138,21 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
             return dto;
         });
     }
+    @Override
+    public boolean verifyValidCompetitionTest(Long testId) {
+        CompetitionTestDTO test = super.findById(testId);
+        if (test.getParts() == null || test.getParts().isEmpty()) return false;
+
+        List<TestPartDTO> parts = test.getParts().stream()
+                .map(testPartService::findById)
+                .toList();
+
+        if (parts.isEmpty()) return false;
+
+        return parts.stream()
+                .allMatch(part -> part.getStatus() && testPartService.verifyValidTestPart(part.getId()));
+    }
+
 
     @Override
     public CompetitionTestDTO getLastCompletedCompetition() {

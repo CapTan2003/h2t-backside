@@ -108,6 +108,19 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
         }
         return result;
     }
+
+    @Override
+    public List<QuestionDTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
+    }
+
     @Override
     public boolean delete(Long id) {
         if (!isExist(id)) {
@@ -129,9 +142,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
     public boolean verifyValidQuestion(Long questionId) {
         QuestionDTO question = this.findById(questionId);
 
-        return !question.getAnswers().isEmpty() && // Check if there are answers
+        return !question.getAnswers().isEmpty() &&
                 question.getAnswers().stream()
-                        .anyMatch(answer -> answer.getCorrect() && answer.getStatus()); // Check if there is at least one correct answer
+                        .anyMatch(answer -> answer.getCorrect() && answer.getStatus());
     }
 
 

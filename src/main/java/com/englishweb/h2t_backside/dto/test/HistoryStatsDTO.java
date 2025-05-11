@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class HistoryStatsDTO {
-    private Double averageScore;
+    private double averageScore;
     private Integer totalTestsTaken;
     private Integer highestScore;
 }
