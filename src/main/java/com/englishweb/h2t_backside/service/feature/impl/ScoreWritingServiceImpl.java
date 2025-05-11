@@ -1,6 +1,8 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
+import com.englishweb.h2t_backside.dto.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.WritingScoreDTO;
+import com.englishweb.h2t_backside.service.feature.AIResponseService;
 import com.englishweb.h2t_backside.service.feature.LLMService;
 import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,6 +24,7 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
 
     private final LLMService llmService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final AIResponseService aiResponseService;
 
     @Override
     public WritingScoreDTO scoreWriting(String text, String topic) {
@@ -49,6 +52,25 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
             // Parse the normalized JSON response into WritingScoreDTO
             WritingScoreDTO scoreDTO = objectMapper.readValue(normalizedJsonString, WritingScoreDTO.class);
             log.info("Successfully parsed response into WritingScoreDTO");
+
+            // Save AI Response to db
+            AIResponseDTO aiResponse = new AIResponseDTO();
+            aiResponse.setRequest(
+                    "Score writing in topic: " + "\n" +
+                            "{\n"
+                            + "Topic: " + topic + ",\n"
+                            + "Text: " + text + "\n" +
+                            "}"
+            );
+            aiResponse.setResponse(
+                    "{\n" +
+                            "Score: " + scoreDTO.getScore() + ",\n" +
+                            "Strengths: " + scoreDTO.getStrengths() + ",\n" +
+                            "Areas_to_improve: " + scoreDTO.getAreas_to_improve() + ",\n" +
+                            "Feedback: " + scoreDTO.getFeedback()+ "\n" +
+                    "}"
+            );
+            aiResponseService.create(aiResponse);
 
             return scoreDTO;
         } catch (Exception e) {

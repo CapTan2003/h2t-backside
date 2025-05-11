@@ -1,8 +1,10 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
+import com.englishweb.h2t_backside.dto.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.ConversationScoreDTO;
 import com.englishweb.h2t_backside.dto.SpeakingScoreDTO;
 import com.englishweb.h2t_backside.dto.WritingScoreDTO;
+import com.englishweb.h2t_backside.service.feature.AIResponseService;
 import com.englishweb.h2t_backside.service.feature.ScoreSpeakingService;
 import com.englishweb.h2t_backside.service.feature.ScoreWritingService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,11 +36,13 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     private String BASE_API_URL;
 
     private final ScoreWritingService scoreWritingService;
+    private final AIResponseService aiResponseService;
 
-    public ScoreSpeakingServiceImpl(ObjectMapper objectMapper, ScoreWritingService scoreWritingService) {
+    public ScoreSpeakingServiceImpl(ObjectMapper objectMapper, ScoreWritingService scoreWritingService, AIResponseService aiResponseService) {
         this.restTemplate = new RestTemplate();
         this.objectMapper = objectMapper;
         this.scoreWritingService = scoreWritingService;
+        this.aiResponseService = aiResponseService;
     }
 
     @Override
@@ -125,6 +129,26 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
             // Parse the response
             SpeakingScoreDTO scoreResult = parseApiResponse(response);
+
+            // Save AI Response to db
+            AIResponseDTO aiResponse = new AIResponseDTO();
+            aiResponse.setRequest(
+                    "Score speaking in topic: " + audioFile.getOriginalFilename() + "\n" +
+                            "{\n" +
+                                "Topic: " + topic + ",\n" +
+                                "Transcript: " + scoreResult.getTranscript() + "\n" +
+                            "}"
+            );
+            aiResponse.setResponse(
+                    "{\n" +
+                            "Score: " + scoreResult.getScore() + ",\n" +
+                            "Strengths: " + scoreResult.getStrengths() + ",\n" +
+                            "Areas to improve: " + scoreResult.getAreas_to_improve() + ",\n" +
+                            "Feedback: " + scoreResult.getFeedback()+ "\n" +
+                    "}"
+            );
+            aiResponse.setUserId(null);
+            aiResponseService.create(aiResponse);
 
             // Additional evaluation with writing service if needed
             WritingScoreDTO writingScore = scoreWritingService.scoreWriting(scoreResult.getTranscript(), topic);
@@ -254,6 +278,24 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
                 }
             });
             scoreResult.setFeedback(String.join("\n\n", uniqueFeedback));
+
+            // Save AI Response to db
+            AIResponseDTO aiResponse = new AIResponseDTO();
+            aiResponse.setRequest(
+                    "Score speaking in conversation: " + "\n" +
+                     "{\n" +
+                            "Transcripts: " + scoreResult.getTranscripts() + "\n" +
+                     "}"
+            );
+            aiResponse.setResponse(
+                    "{\n" +
+                            "Score: " + scoreResult.getScore() + ",\n" +
+                            "Strengths: " + scoreResult.getStrengths() + ",\n" +
+                            "Areas_to_improve: " + scoreResult.getAreas_to_improve() + ",\n" +
+                            "Feedback: " + scoreResult.getFeedback()+ "\n" +
+                    "}"
+            );
+            aiResponseService.create(aiResponse);
 
             return scoreResult;
         } catch (Exception e) {
