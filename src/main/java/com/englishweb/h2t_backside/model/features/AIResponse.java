@@ -5,28 +5,31 @@ import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.interfacemodel.AIResponseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AIResponse extends AbstractBaseEntity implements AIResponseEntity {
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     @Comment("Prompt send to AI")
     private String request;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     @Comment("Response from AI")
     private String response;
 
     @Comment("Evaluate of real teacher")
     private String evaluate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 }
