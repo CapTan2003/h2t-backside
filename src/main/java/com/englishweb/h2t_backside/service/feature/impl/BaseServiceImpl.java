@@ -23,7 +23,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public DTO findById(Long id) {
-        log.info("Finding by ID: {}", id);
+        log.info("Finding {} by ID: {}", this.getClass().getSimpleName(), id);
         Optional<Entity> entityOptional = repository.findById(id);
 
         if (entityOptional.isEmpty()) {
@@ -33,18 +33,18 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
         Entity entity = entityOptional.get();
         DTO dto = convertToDTO(entity);
-        log.info("Found entity with ID: {}", id);
+        log.info("Found {} with ID: {}", this.getClass().getSimpleName(), id);
         return dto;
     }
 
     @Override
     public DTO create(DTO dto) {
-        log.info("Creating new entity with DTO");
+        log.info("Creating new {} with DTO", this.getClass().getSimpleName());
         try {
             Entity entity = convertToEntity(dto);
             entity.setId(null);
             DTO savedDTO = convertToDTO(repository.save(entity));
-            log.info("Created entity with ID: {}", savedDTO.getId());
+            log.info("Created {} with ID: {}", this.getClass().getSimpleName(), savedDTO.getId());
             return savedDTO;
         } catch (Exception e) {
             this.createError(dto, e);
@@ -55,12 +55,12 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public DTO update(DTO dto, Long id) {
-        log.info("Updating entity with DTO");
+        log.info("Updating {} with ID: {}", this.getClass().getSimpleName(), id);
         try{
             Entity entity = convertToEntity(dto);
             entity.setId(id);
             DTO savedDTO = convertToDTO(repository.save(entity));
-            log.info("Updated entity with ID: {}", savedDTO.getId());
+            log.info("Updated {} with ID: {}", this.getClass().getSimpleName(), savedDTO.getId());
             return savedDTO;
         } catch (Exception e) {
             this.updateError(dto, id, e);
@@ -70,7 +70,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public DTO patch(DTO dto, Long id) {
-        log.info("Updating with patch entity with DTO");
+        log.info("Updating with patch {} with ID: {}", this.getClass().getSimpleName(), id);
         try{
             Entity existingEntity = repository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException(id, "Resource not found", SeverityEnum.MEDIUM));
@@ -78,7 +78,7 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
             patchEntityFromDTO(dto, existingEntity);
             Entity savedEntity = repository.save(existingEntity);
             DTO savedDTO = convertToDTO(savedEntity);
-            log.info("Updated with patch entity with ID: {}", savedDTO.getId());
+            log.info("Updated with patch {} with ID: {}", this.getClass().getSimpleName(), savedDTO.getId());
             return savedDTO;
         } catch (Exception e) {
             this.updateError(dto, id, e);
@@ -88,14 +88,14 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public boolean delete(Long id) {
-        log.info("Deleting entity with ID: {}", id);
+        log.info("Deleting {} with ID: {}", this.getClass().getSimpleName(), id);
         Optional<Entity> entityOptional = repository.findById(id);
         if (entityOptional.isEmpty()) {
             this.findByIdError(id);
             return false;
         }
         repository.deleteById(id);
-        log.info("Deleted entity with ID: {}", id);
+        log.info("Deleted {} with ID: {}", this.getClass().getSimpleName(), id);
         return true;
     }
 
@@ -107,9 +107,9 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, Entity extends BaseEn
 
     @Override
     public void deleteAll(List<Long> ids) {
-        log.info("Deleting all entities with IDs: {}", ids);
+        log.info("Deleting all {} with IDs: {}", this.getClass().getSimpleName(), ids);
         repository.deleteAllById(ids);
-        log.info("Deleted all entities with IDs: {}", ids);
+        log.info("Deleted all {} with IDs: {}", this.getClass().getSimpleName(), ids);
     }
 
     protected abstract void findByIdError(Long id);
