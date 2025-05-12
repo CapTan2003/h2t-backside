@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.controller.feature;
 
+import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
-import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.homepage.FeatureLessonService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ public class FeatureLessonController {
 
     @GetMapping("/most-recent")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonDTO>> getMostRecentLessons(@RequestParam(required = false) Integer limit) {
-        return ResponseDTO.<List<LessonDTO>>builder()
+    public ResponseDTO<List<RouteNodeDTO>> getMostRecentLessons(@RequestParam(required = false) Integer limit) {
+        return ResponseDTO.<List<RouteNodeDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(service.getMostRecentLessons(limit))
                 .message("Feature lessons retrieved successfully")
@@ -29,8 +29,8 @@ public class FeatureLessonController {
 
     @GetMapping("/most-viewed")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<LessonDTO>> getMostViewedLessons(@RequestParam(required = false) Integer limit) {
-        return ResponseDTO.<List<LessonDTO>>builder()
+    public ResponseDTO<List<RouteNodeDTO>> getMostViewedLessons(@RequestParam(required = false) Integer limit) {
+        return ResponseDTO.<List<RouteNodeDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(service.getMostViewedLessons(limit))
                 .message("Feature lessons retrieved successfully")
