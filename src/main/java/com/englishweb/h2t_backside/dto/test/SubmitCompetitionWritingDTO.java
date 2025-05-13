@@ -15,10 +15,10 @@ import lombok.experimental.SuperBuilder;
 public class SubmitCompetitionWritingDTO extends AbstractBaseDTO {
 
     @NotNull(message = "SubmitCompetition id competition cannot be null")
-    private  Long submitCompetitionId;
+    private  Long submitCompetition_id;
 
     @NotNull(message = "testWriting id test cannot be null")
-    private Long testWritingId;
+    private Long competitionWriting_id;
 
     @NotBlank(message = "Content cannot be empty")
     private String content;

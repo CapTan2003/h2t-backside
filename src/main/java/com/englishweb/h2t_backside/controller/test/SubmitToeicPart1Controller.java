@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/submit-toeic-part1")
+@RequestMapping("/api/submit-toeic-part1s")
 @AllArgsConstructor
 public class SubmitToeicPart1Controller {
 
@@ -79,12 +79,12 @@ public class SubmitToeicPart1Controller {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/by-submit-toeic/{submitToeicId}/testpart1/{toeicPart1Id}")
+    @GetMapping("/by-submit-toeic/{submitToeicId}/toeicPart1Id/{toeicPart1Id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<List<SubmitToeicPart1DTO>> findBySubmitToeicIdAndToeicPart1Id(
             @PathVariable Long submitToeicId,
-            @PathVariable Long testPart1Id) {
-        List<SubmitToeicPart1DTO> result = service.findBySubmitToeicIdAndToeicPart1Id(submitToeicId, testPart1Id);
+            @PathVariable Long toeicPart1Id) {
+        List<SubmitToeicPart1DTO> result = service.findBySubmitToeicIdAndToeicPart1Id(submitToeicId, toeicPart1Id);
         return ResponseDTO.<List<SubmitToeicPart1DTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
@@ -96,8 +96,8 @@ public class SubmitToeicPart1Controller {
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<List<SubmitToeicPart1DTO>> findBySubmitToeicIdAndToeicPart1IdIn(
             @PathVariable Long submitToeicId,
-            @RequestBody List<Long> testPart1Ids) {
-        List<SubmitToeicPart1DTO> result = service.findBySubmitToeicIdAndToeicPart1IdIn(submitToeicId, testPart1Ids);
+            @RequestBody List<Long> toeicPart1Ids) {
+        List<SubmitToeicPart1DTO> result = service.findBySubmitToeicIdAndToeicPart1IdIn(submitToeicId, toeicPart1Ids);
         return ResponseDTO.<List<SubmitToeicPart1DTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)

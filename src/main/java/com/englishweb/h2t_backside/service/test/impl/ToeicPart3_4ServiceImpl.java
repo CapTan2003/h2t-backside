@@ -82,4 +82,15 @@ public class ToeicPart3_4ServiceImpl extends BaseServiceImpl<ToeicPart3_4DTO, To
         }
         return result;
     }
+    @Override
+    public List<ToeicPart3_4DTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
+    }
 }

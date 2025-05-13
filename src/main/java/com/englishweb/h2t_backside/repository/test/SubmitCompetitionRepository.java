@@ -16,9 +16,9 @@ public interface SubmitCompetitionRepository extends JpaRepository<SubmitCompeti
     @Query("SELECT COALESCE(SUM(s.score), 0) FROM SubmitCompetition s WHERE s.user.id = :userId AND s.status = true")
     double sumScoreByUserIdAndStatusTrue(@Param("userId") Long userId);
 
-    Optional<SubmitCompetition> findByTestIdAndUserIdAndStatusFalse(Long testId, Long userId);
+    Optional<SubmitCompetition> findByTestIdAndUserIdAndStatus(Long testId, Long userId, Boolean status);
 
-    List<SubmitCompetition> findByUserId(Long userId);
+    List<SubmitCompetition> findByTest_IdAndStatus(Long testId, Boolean status);
 
     List<SubmitCompetition> findAllByUserId(Long userId);
     List<SubmitCompetition> findAllByUserIdAndStatus(Long userId, Boolean status);

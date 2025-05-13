@@ -1,6 +1,8 @@
 package com.englishweb.h2t_backside.mapper.test;
 
+import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.test.ToeicQuestionDTO;
+import com.englishweb.h2t_backside.model.test.Question;
 import com.englishweb.h2t_backside.model.test.ToeicQuestion;
 import com.englishweb.h2t_backside.model.test.ToeicAnswer;
 import org.mapstruct.*;
@@ -39,12 +41,7 @@ public interface ToeicQuestionMapper {
     @AfterMapping
     default void afterConvertToEntity(ToeicQuestionDTO dto, @MappingTarget ToeicQuestion entity) {
         if (entity.getAnswers() != null) {
-            entity.getAnswers().forEach(ans -> {
-                ans.setQuestion(entity);  // gán lại quan hệ cha
-                if (ans.getId() != null && dto.getId() == null) {
-                    ans.setId(null);  // reset ID nếu đang tạo mới
-                }
-            });
+            entity.getAnswers().forEach(answer -> answer.setQuestion(entity));
         }
     }
 

@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.ToeicPart3_4DTO;
 import com.englishweb.h2t_backside.dto.test.ToeicQuestionDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -114,5 +115,16 @@ public class ToeicQuestionServiceImpl extends BaseServiceImpl<ToeicQuestionDTO, 
             result.add(findById(id));
         }
         return result;
+    }
+    @Override
+    public List<ToeicQuestionDTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
     }
 }

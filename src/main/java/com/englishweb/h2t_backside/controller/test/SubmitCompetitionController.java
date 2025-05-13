@@ -36,6 +36,19 @@ public class SubmitCompetitionController {
                 .build();
     }
 
+    @GetMapping("/by-test-id-and-status")
+    public ResponseDTO<List<SubmitCompetitionDTO>> findByTestIdAndStatus(
+            @RequestParam Long testId,
+            @RequestParam Boolean status
+    ) {
+        List<SubmitCompetitionDTO> results = service.findByTestIdAndStatus(testId, status);
+        return ResponseDTO.<List<SubmitCompetitionDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(results)
+                .message("Submissions fetched successfully")
+                .build();
+    }
+
 
     @PostMapping
     public ResponseEntity<ResponseDTO<SubmitCompetitionDTO>> create(@Valid @RequestBody SubmitCompetitionDTO dto) {
@@ -48,6 +61,7 @@ public class SubmitCompetitionController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO<SubmitCompetitionDTO>> update(@PathVariable Long id, @Valid @RequestBody SubmitCompetitionDTO dto) {
@@ -86,9 +100,10 @@ public class SubmitCompetitionController {
     @GetMapping("/by-test-and-user")
     public ResponseDTO<SubmitCompetitionDTO> findByTestIdAndUserId(
             @RequestParam Long testId,
-            @RequestParam Long userId
+            @RequestParam Long userId,
+             @RequestParam Boolean status
     ) {
-        SubmitCompetitionDTO dto = service.findByTestIdAndUserIdAndStatusFalse(testId, userId);
+        SubmitCompetitionDTO dto = service.findByTestIdAndUserIdAndStatus(testId, userId,status);
         return ResponseDTO.<SubmitCompetitionDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(dto)

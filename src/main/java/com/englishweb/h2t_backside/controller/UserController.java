@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
@@ -109,5 +111,19 @@ public class UserController {
                 .message("Users retrieved successfully with filters")
                 .build();
     }
+    @PostMapping("/by-ids-and-status")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<UserDTO>> findByIdsAndStatus(
+            @RequestParam List<Long> ids,
+            @RequestParam Boolean status) {
+        List<UserDTO> users = service.findByIdInAndStatus(ids, status);
+
+        return ResponseDTO.<List<UserDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(users)
+                .message("Users retrieved successfully")
+                .build();
+    }
+
 }
 

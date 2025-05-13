@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.controller.test;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
+import com.englishweb.h2t_backside.dto.test.ToeicPart3_4DTO;
 import com.englishweb.h2t_backside.dto.test.ToeicPart6DTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.ToeicPart6Service;
@@ -33,14 +34,17 @@ public class ToeicPart6Controller {
     }
     @PostMapping("/by-ids")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<List<ToeicPart6DTO>> getByIds(@RequestBody List<Long> ids) {
-        List<ToeicPart6DTO> result = service.findByIds(ids);
+    public ResponseDTO<List<ToeicPart6DTO>> getByIds(
+            @RequestBody List<Long> ids,
+            @RequestParam(required = false) Boolean status) {
+        List<ToeicPart6DTO> result = service.findByIdsAndStatus(ids, status);
         return ResponseDTO.<List<ToeicPart6DTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
-                .message("Toeic Part 6 questions retrieved successfully")
+                .message("Toeic part 6 retrieved successfully")
                 .build();
     }
+
 
 
     @PostMapping
