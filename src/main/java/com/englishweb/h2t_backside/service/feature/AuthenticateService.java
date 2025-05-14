@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.service.feature;
 import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
 import com.englishweb.h2t_backside.dto.security.GoogleLoginDTO;
 import com.englishweb.h2t_backside.dto.security.LoginDTO;
+import com.englishweb.h2t_backside.model.User;
 
 public interface AuthenticateService {
     AuthenticateDTO login(LoginDTO dto);
@@ -12,4 +13,7 @@ public interface AuthenticateService {
     void logout(String refreshToken);
 
     AuthenticateDTO refreshAccessToken(String refreshToken);
+
+    User getCurrentUser(String token);
+
 }

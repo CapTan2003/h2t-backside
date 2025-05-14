@@ -1,11 +1,13 @@
 package com.englishweb.h2t_backside.controller;
 
+import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.dto.security.AuthenticateDTO;
 import com.englishweb.h2t_backside.dto.security.GoogleLoginDTO;
 import com.englishweb.h2t_backside.dto.security.LoginDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.dto.security.RefreshTokenDTO;
+import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import com.englishweb.h2t_backside.security.JwtUtil;
 import jakarta.validation.Valid;
@@ -82,6 +84,18 @@ public class AuthenticateController {
                 .status(ResponseStatusEnum.SUCCESS)
                 .message("Access token refreshed successfully.")
                 .data(authData)
+                .build();
+    }
+
+    @GetMapping("/current-user")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<User> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        User user = service.getCurrentUser(authHeader);
+
+        return ResponseDTO.<User>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Current user retrieved successfully.")
+                .data(user)
                 .build();
     }
 }
