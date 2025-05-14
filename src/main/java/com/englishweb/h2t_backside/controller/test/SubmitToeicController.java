@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.controller.test;
 import com.englishweb.h2t_backside.dto.SubmitTestStatsDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.SubmitToeicFilterDTO;
+import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitToeicDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.SubmitToeicService;
@@ -78,6 +79,18 @@ public class SubmitToeicController {
                 .message(result ? "SubmitToeic deleted successfully" : "Failed to delete SubmitToeic")
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/by-test-and-user")
+    public ResponseDTO<SubmitToeicDTO> findByToeicIdAndUserId(
+            @RequestParam Long toeicId,
+            @RequestParam Long userId
+    ) {
+        SubmitToeicDTO dto = service.findByToeicIdAndUserIdAndStatusFalse(toeicId, userId);
+        return ResponseDTO.<SubmitToeicDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(dto)
+                .message("Found successfully")
+                .build();
     }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

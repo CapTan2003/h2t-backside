@@ -94,8 +94,8 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
         return repository.sumScoreByUserIdAndStatusTrue(userId);
     }
     @Override
-    public SubmitCompetitionDTO findByTestIdAndUserIdAndStatusFalse(Long testId, Long userId) {
-        SubmitCompetition submitTest = repository.findByTestIdAndUserIdAndStatusFalse(testId, userId)
+    public SubmitCompetitionDTO findByTestIdAndUserIdAndStatus(Long testId, Long userId, Boolean status) {
+        SubmitCompetition submitTest = repository.findByTestIdAndUserIdAndStatus(testId, userId,status)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         testId,
                         String.format("Submit Comeptition with test ID '%d', userId '%d' and status=false not found.", testId, userId),
@@ -133,5 +133,13 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
         CompetitionTestDTO lastCompetition = competitionTestService.getLastCompletedCompetition();
         Page<SubmitCompetitionDTO> submitPage = searchWithFilters(0, 5, "score", SubmitCompetitionFilterDTO.builder().testId(lastCompetition.getId()).build(), null);
         return submitPage.getContent();
+    }
+    @Override
+    public List<SubmitCompetitionDTO> findByTestIdAndStatus(Long testId, Boolean status) {
+        List<SubmitCompetition> entities = repository.findByTest_IdAndStatus(testId, status);
+
+        return entities.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 }

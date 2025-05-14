@@ -17,8 +17,8 @@ public interface SubmitToeicMapper {
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment")
-    @Mapping(target = "toeic", source = "dto.toeicId", qualifiedByName = "mapToeicId")
-    @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
+    @Mapping(target = "toeic", source = "dto.toeic_id", qualifiedByName = "mapToeicId")
+    @Mapping(target = "user", source = "dto.user_id", qualifiedByName = "mapUserId")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitToeic convertToEntity(SubmitToeicDTO dto);
 
@@ -26,8 +26,8 @@ public interface SubmitToeicMapper {
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "score", source = "entity.score")
     @Mapping(target = "comment", source = "entity.comment")
-    @Mapping(target = "toeicId", source = "entity.toeic.id")
-    @Mapping(target = "userId", source = "entity.user.id")
+    @Mapping(target = "toeic_id", source = "entity.toeic.id")
+    @Mapping(target = "user_id", source = "entity.user.id")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
@@ -38,8 +38,8 @@ public interface SubmitToeicMapper {
     // Patch DTO → Entity
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "comment", source = "dto.comment")
-    @Mapping(target = "toeic", source = "dto.toeicId", qualifiedByName = "mapToeicId")
-    @Mapping(target = "user", source = "dto.userId", qualifiedByName = "mapUserId")
+    @Mapping(target = "toeic", source = "dto.toeic_id", qualifiedByName = "mapToeicId")
+    @Mapping(target = "user", source = "dto.user_id", qualifiedByName = "mapUserId")
     @Mapping(target = "status", source = "dto.status")
     void patchEntityFromDTO(SubmitToeicDTO dto, @MappingTarget SubmitToeic entity);
 

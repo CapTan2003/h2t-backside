@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SubmitToeicRepository extends JpaRepository<SubmitToeic, Long>, JpaSpecificationExecutor<SubmitToeic> {
     int countByUserIdAndStatusTrue(Long userId);
@@ -16,6 +17,7 @@ public interface SubmitToeicRepository extends JpaRepository<SubmitToeic, Long>,
     double sumScoreByUserIdAndStatusTrue(@Param("userId") Long userId);
 
     List<SubmitToeic> findByUserIdAndStatusTrue(Long userId);
+    Optional<SubmitToeic> findByToeicIdAndUserIdAndStatusFalse(Long toeicId, Long userId);
 
     List<SubmitToeic> findAllByUserId(Long userId);
     List<SubmitToeic> findAllByUserIdAndStatus(Long userId, Boolean status);

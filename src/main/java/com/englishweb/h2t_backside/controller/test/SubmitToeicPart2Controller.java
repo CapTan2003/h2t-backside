@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/submit-toeic-part2")
+@RequestMapping("/api/submit-toeic-part2s")
 @AllArgsConstructor
 public class SubmitToeicPart2Controller {
 

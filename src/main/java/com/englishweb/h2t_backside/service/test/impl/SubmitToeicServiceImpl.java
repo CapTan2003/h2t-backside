@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.SubmitToeicFilterDTO;
+import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitToeicDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
@@ -69,6 +70,16 @@ public class SubmitToeicServiceImpl extends BaseServiceImpl<SubmitToeicDTO, Subm
     @Override
     protected void patchEntityFromDTO(SubmitToeicDTO dto, SubmitToeic entity) {
         mapper.patchEntityFromDTO(dto, entity);
+    }
+    @Override
+    public SubmitToeicDTO findByToeicIdAndUserIdAndStatusFalse(Long toeicId, Long userId) {
+        SubmitToeic submitToeic = repository.findByToeicIdAndUserIdAndStatusFalse(toeicId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        toeicId,
+                        String.format("SubmitToeic with test ID '%d', userId '%d' and status=false not found.", toeicId, userId),
+                        SeverityEnum.LOW
+                ));
+        return convertToDTO(submitToeic);
     }
 
     @Override

@@ -23,13 +23,14 @@ public class SubmitToeicDTO extends AbstractBaseDTO {
     private String comment;
 
     @NotNull(message = "Toeic id cannot be null")
-    private Long toeicId;
+    private Long toeic_id;
 
     @NotNull(message = "User id cannot be null")
-    private Long userId;
+    private Long user_id;
 
     private String toeic_title;
 
     private String toeic_duration;
+
 
 }

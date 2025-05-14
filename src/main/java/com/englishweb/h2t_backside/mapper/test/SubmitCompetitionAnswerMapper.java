@@ -16,26 +16,26 @@ public interface SubmitCompetitionAnswerMapper {
 
     // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitCompetition", source = "dto.submitCompetitionId", qualifiedByName = "mapSubmitCompetitionId")
-    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
-    @Mapping(target = "answer", source = "dto.answerId", qualifiedByName = "mapAnswerId")
+    @Mapping(target = "submitCompetition", source = "dto.submitCompetition_id", qualifiedByName = "mapSubmitCompetitionId")
+    @Mapping(target = "question", source = "dto.question_id", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "answer", source = "dto.answer_id", qualifiedByName = "mapAnswerId")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
     SubmitCompetitionAnswer convertToEntity(SubmitCompetitionAnswerDTO dto);
 
     // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitCompetitionId", source = "entity.submitCompetition.id")
-    @Mapping(target = "questionId", source = "entity.question.id")
-    @Mapping(target = "answerId", source = "entity.answer.id")
+    @Mapping(target = "submitCompetition_id", source = "entity.submitCompetition.id")
+    @Mapping(target = "question_id", source = "entity.question.id")
+    @Mapping(target = "answer_id", source = "entity.answer.id")
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
     SubmitCompetitionAnswerDTO convertToDTO(SubmitCompetitionAnswer entity);
 
 
-    @Mapping(target = "submitCompetition", source = "dto.submitCompetitionId", qualifiedByName = "mapSubmitCompetitionId")
-    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
-    @Mapping(target = "answer", source = "dto.answerId", qualifiedByName = "mapAnswerId")
+    @Mapping(target = "submitCompetition", source = "dto.submitCompetition_id", qualifiedByName = "mapSubmitCompetitionId")
+    @Mapping(target = "question", source = "dto.question_id", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "answer", source = "dto.answer_id", qualifiedByName = "mapAnswerId")
     @Mapping(target = "status", source = "dto.status")
     void patchEntityFromDTO(SubmitCompetitionAnswerDTO dto, @MappingTarget SubmitCompetitionAnswer entity);
 

@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.test.QuestionDTO;
 import com.englishweb.h2t_backside.dto.test.TestWritingDTO;
 import com.englishweb.h2t_backside.dto.test.ToeicPart1DTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -81,5 +82,16 @@ public class ToeicPart1ServiceImpl extends BaseServiceImpl<ToeicPart1DTO, ToeicP
             result.add(findById(id));
         }
         return result;
+    }
+    @Override
+    public List<ToeicPart1DTO> findByIdsAndStatus(List<Long> ids, Boolean status) {
+        if (status == null) {
+            return repository.findAllById(ids)
+                    .stream()
+                    .map(this::convertToDTO).toList();
+        }
+        return repository.findByIdInAndStatus(ids, status)
+                .stream()
+                .map(this::convertToDTO).toList();
     }
 }

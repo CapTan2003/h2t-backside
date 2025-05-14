@@ -15,8 +15,8 @@ public interface SubmitCompetitionSpeakingMapper {
 
     // DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitCompetition", source = "dto.submitCompetitionId", qualifiedByName = "mapSubmitCompetitionId")
-    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "submitCompetition", source = "dto.submitCompetition_id", qualifiedByName = "mapSubmitCompetitionId")
+    @Mapping(target = "question", source = "dto.question_id", qualifiedByName = "mapQuestionId")
     @Mapping(target = "file", source = "dto.file", defaultValue = "")
     @Mapping(target = "transcript", source = "dto.transcript", defaultValue = "")
     @Mapping(target = "score", source = "dto.score")
@@ -25,8 +25,8 @@ public interface SubmitCompetitionSpeakingMapper {
 
     // Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitCompetitionId", source = "entity.submitCompetition.id")
-    @Mapping(target = "questionId", source = "entity.question.id")
+    @Mapping(target = "submitCompetition_id", source = "entity.submitCompetition.id")
+    @Mapping(target = "question_id", source = "entity.question.id")
     @Mapping(target = "file", source = "entity.file")
     @Mapping(target = "transcript", source = "entity.transcript")
     @Mapping(target = "score", source = "entity.score")
@@ -36,9 +36,9 @@ public interface SubmitCompetitionSpeakingMapper {
     SubmitCompetitionSpeakingDTO convertToDTO(SubmitCompetitionSpeaking entity);
 
     // Patch DTO → Entity
-    @Mapping(target = "submitCompetition", source = "dto.submitCompetitionId", qualifiedByName = "mapSubmitCompetitionId")
+    @Mapping(target = "submitCompetition", source = "dto.submitCompetition_id", qualifiedByName = "mapSubmitCompetitionId")
     @Mapping(target = "file", source = "dto.file", defaultValue = "")
-    @Mapping(target = "question", source = "dto.questionId", qualifiedByName = "mapQuestionId")
+    @Mapping(target = "question", source = "dto.question_id", qualifiedByName = "mapQuestionId")
     @Mapping(target = "transcript", source = "dto.transcript")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "status", source = "dto.status")
