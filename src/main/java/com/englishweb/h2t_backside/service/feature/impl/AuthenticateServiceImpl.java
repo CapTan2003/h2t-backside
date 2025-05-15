@@ -189,30 +189,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 .build();
     }
 
-    @Override
-    public User getCurrentUser(String token) {
-        // Loại bỏ "Bearer " nếu có
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        // Validate token
-        if (!jwtUtil.validateToken(token, true)) {
-            String finalToken = token;
-            throw new AuthenticateException("Invalid token", SeverityEnum.HIGH,
-                    new HashMap<String, Object>() {{
-                        put("token", finalToken);
-                    }});
-        }
-
-        // Lấy userId từ token
-        String userId = String.valueOf(jwtUtil.getUserIdFromToken(token));
-
-        // Tìm user trong database
-        return repository.findById(Long.parseLong(userId))
-                .orElseThrow(() -> new ResourceNotFoundException("User not found", SeverityEnum.LOW));
-    }
-
     public void updateUserRefreshToken(String userId, String refreshToken) {
         Optional<User> optionalUser = repository.findById(Long.parseLong(userId));
 

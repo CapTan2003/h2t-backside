@@ -4,7 +4,6 @@ import com.englishweb.h2t_backside.dto.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.service.feature.AIResponseService;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import jakarta.validation.Valid;
@@ -22,21 +21,19 @@ public class AIResponseController {
     private final AIResponseService service;
     private final AuthenticateService authenticateService;
 
+
     @GetMapping("/teacher-view")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<Page<AIResponseDTO>> searchForTeacherView(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
-            @ModelAttribute AIResponseFilterDTO filter,
-            @RequestHeader("Authorization") String authHeader) {
-
-        // Lấy user hiện tại từ token
-        User currentUser = authenticateService.getCurrentUser(authHeader);
+            @RequestParam(required = true) Long teacherId,
+            @ModelAttribute AIResponseFilterDTO filter) {
 
         // Lấy data với điều kiện OR (status = false OR userId = teacherId)
         Page<AIResponseDTO> aiResponses = service.searchForTeacherView(
-                page, size, sortFields, filter, currentUser.getId());
+                page, size, sortFields, filter, teacherId);
 
         return ResponseDTO.<Page<AIResponseDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
