@@ -44,6 +44,15 @@ public class SubmitTestWritingServiceImpl extends BaseServiceImpl<SubmitTestWrit
                 .toList();
     }
 
+
+    @Override
+    public List<SubmitTestWritingDTO> findBySubmitTestId(Long submitTestId) {
+        return repository.findBySubmitTestId(submitTestId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
     @Override
     protected void findByIdError(Long id) {
         String errorMessage = String.format("SubmitTestWriting with ID '%d' not found.", id);

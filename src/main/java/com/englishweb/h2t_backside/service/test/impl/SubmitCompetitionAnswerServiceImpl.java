@@ -50,6 +50,16 @@ public class SubmitCompetitionAnswerServiceImpl extends BaseServiceImpl<SubmitCo
                 .toList();
     }
 
+
+    @Override
+    public List<SubmitCompetitionAnswerDTO> findBySubmitCompetitionId(Long submitCompetitionId) {
+        return repository.findBySubmitCompetitionId(submitCompetitionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+
     @Override
     protected void createError(SubmitCompetitionAnswerDTO dto, Exception ex) {
         log.error("Error creating submit competition answer: {}", ex.getMessage());

@@ -1,5 +1,6 @@
 package com.englishweb.h2t_backside.repository.specifications;
 
+import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -40,5 +41,8 @@ public class CompetitionTestSpecification {
             }
             return criteriaBuilder.lessThanOrEqualTo(root.get("endTime"), endDay);
         };
+    }
+    public static Specification<CompetitionTest> findByOwnerId(Long ownerId) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("owner").get("id"), ownerId);
     }
 }

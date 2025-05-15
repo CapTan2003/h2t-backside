@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.SubmitTestFilterDTO;
-import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
+import com.englishweb.h2t_backside.dto.test.*;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -9,13 +9,18 @@ import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.SubmitTestMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.test.SubmitTest;
+import com.englishweb.h2t_backside.model.test.SubmitTestWriting;
 import com.englishweb.h2t_backside.repository.test.SubmitTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
+import com.englishweb.h2t_backside.service.test.SubmitTestAnswerService;
 import com.englishweb.h2t_backside.service.test.SubmitTestService;
+import com.englishweb.h2t_backside.service.test.SubmitTestSpeakingService;
+import com.englishweb.h2t_backside.service.test.SubmitTestWritingService;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,10 +34,16 @@ import java.util.List;
 @Slf4j
 public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, SubmitTest, SubmitTestRepository> implements SubmitTestService {
     private final SubmitTestMapper mapper;
+    private final SubmitTestAnswerService submitTestAnswerService;
+    private final SubmitTestSpeakingService submitTestSpeakingService;
+    private final SubmitTestWritingService submitTestWritingService;
 
-    public SubmitTestServiceImpl(SubmitTestRepository repository, DiscordNotifier discordNotifier, SubmitTestMapper mapper) {
+    public SubmitTestServiceImpl(SubmitTestRepository repository, DiscordNotifier discordNotifier, SubmitTestMapper mapper, @Lazy SubmitTestAnswerService submitTestAnswerService, @Lazy SubmitTestSpeakingService submitTestSpeakingService, @Lazy SubmitTestWritingService submitTestWritingService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.submitTestAnswerService = submitTestAnswerService;
+        this.submitTestSpeakingService = submitTestSpeakingService;
+        this.submitTestWritingService = submitTestWritingService;
     }
 
     @Override
@@ -65,6 +76,30 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
 
+
+    @Override
+    public boolean delete(Long id) {
+        SubmitTestDTO dto = super.findById(id);
+
+        List<SubmitTestSpeakingDTO> speakingList = submitTestSpeakingService.findBySubmitTestId(dto.getId());
+        for (SubmitTestSpeakingDTO speaking : speakingList) {
+            submitTestSpeakingService.delete(speaking.getId());
+        }
+
+        List<SubmitTestAnswerDTO> answerList = submitTestAnswerService.findBySubmitTestId(dto.getId());
+        for (SubmitTestAnswerDTO answer : answerList) {
+            submitTestAnswerService.delete(answer.getId());
+        }
+
+        List<SubmitTestWritingDTO> writingList = submitTestWritingService.findBySubmitTestId(dto.getId());
+        for (SubmitTestWritingDTO writing : writingList) {
+            submitTestWritingService.delete(writing.getId());
+        }
+
+        return super.delete(id);
+    }
+
+
     @Override
     protected void patchEntityFromDTO(SubmitTestDTO dto, SubmitTest entity) {
         mapper.patchEntityFromDTO(dto, entity);
@@ -80,14 +115,16 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
         return mapper.convertToDTO(entity);
     }
     @Override
-    public double getScoreOfLastTestByUser(Long userId) {
-        List<SubmitTest> submits = repository.findByUserIdAndStatusTrue(userId);
+    public double getScoreOfLastTestByUserIdAndTestId(Long userId, Long testId) {
+        List<SubmitTest> submits = repository.findByUserIdAndTestIdAndStatusTrue(userId, testId);
 
-        return Double.valueOf(submits.stream()
+        return submits.stream()
                 .max(Comparator.comparing(SubmitTest::getCreatedAt))
                 .map(SubmitTest::getScore)
-                .orElse((int) 0));
+                .map(Double::valueOf)
+                .orElse(0.0);
     }
+
     @Override
     public int countSubmitByUserId(Long userId) {
         return repository.countByUserIdAndStatusTrue(userId);
@@ -106,6 +143,15 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
                         SeverityEnum.LOW
                 ));
         return convertToDTO(submitTest);
+    }
+
+
+    @Override
+    public List<SubmitTestDTO> findByTestId(Long testId) {
+        return repository.findByTestId(testId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override

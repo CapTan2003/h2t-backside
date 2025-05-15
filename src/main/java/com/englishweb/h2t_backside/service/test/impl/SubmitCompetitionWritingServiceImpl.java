@@ -46,6 +46,14 @@ public class SubmitCompetitionWritingServiceImpl extends BaseServiceImpl<SubmitC
     }
 
     @Override
+    public List<SubmitCompetitionWritingDTO> findBySubmitCompetitionId(Long submitCompetitionId) {
+        return repository.findBySubmitCompetitionId(submitCompetitionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
     protected void findByIdError(Long id) {
         String errorMessage = String.format("SubmitCompetitionWriting with ID '%d' not found.", id);
         log.warn(errorMessage);

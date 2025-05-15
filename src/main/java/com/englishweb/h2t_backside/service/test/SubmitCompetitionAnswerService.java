@@ -8,4 +8,5 @@ import java.util.List;
 public interface SubmitCompetitionAnswerService extends BaseService<SubmitCompetitionAnswerDTO> {
     List<SubmitCompetitionAnswerDTO> findBySubmitCompetitionIdAndQuestionId(Long submitCompetitionId, Long questionId);
     List<SubmitCompetitionAnswerDTO> findBySubmitCompetitionIdAndQuestionIds(Long submitCompetitionId, List<Long> questionIds);
+    List<SubmitCompetitionAnswerDTO> findBySubmitCompetitionId(Long submitCompetitionId);
 }

@@ -16,6 +16,7 @@ import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.*;
 import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +39,9 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
     public TestPartServiceImpl(TestPartRepository repository,
                                DiscordNotifier discordNotifier,
                                TestPartMapper mapper,
-                               TestReadingService testReadingService,
-                               TestListeningService testListeningService,
-                               TestSpeakingService testSpeakingService, QuestionService questionService, TestWritingService testWritingService) {
+                               @Lazy TestReadingService testReadingService,
+                               @Lazy TestListeningService testListeningService,
+                               @Lazy TestSpeakingService testSpeakingService,@Lazy  QuestionService questionService,@Lazy TestWritingService testWritingService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.testReadingService = testReadingService;
@@ -80,6 +81,47 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+    @Override
+    public boolean delete(Long testPartId) {
+        TestPartDTO part = super.findById(testPartId);
+
+        if (part.getQuestions() != null && part.getType() != null) {
+            List<Long> ids = part.getQuestions();
+            TestPartEnum type = part.getType();
+
+            switch (type) {
+                case VOCABULARY:
+                case GRAMMAR:
+                    for (Long id : ids) {
+                        questionService.delete(id);
+                    }
+                    break;
+                case READING:
+                    for (Long id : ids) {
+                        testReadingService.delete(id);
+                    }
+                    break;
+                case LISTENING:
+                    for (Long id : ids) {
+                        testListeningService.delete(id);
+                    }
+                    break;
+                case SPEAKING:
+                    for (Long id : ids) {
+                        testSpeakingService.delete(id);
+                    }
+                    break;
+                case WRITING:
+                    for (Long id : ids) {
+                        testWritingService.delete(id);
+                    }
+                    break;
+            }
+        }
+
+        return super.delete(testPartId);
+    }
+
 
     @Override
     protected void patchEntityFromDTO(TestPartDTO dto, TestPart entity) {

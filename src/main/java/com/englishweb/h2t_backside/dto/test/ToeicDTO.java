@@ -43,4 +43,6 @@ public class ToeicDTO extends AbstractBaseDTO {
     private List<Long> questionsPart7;
 
     private Double ScoreLastOfTest;
+    @NotNull(message = "Owner id cannot be empty")
+    private Long ownerId;
 }

@@ -74,6 +74,14 @@ public class SubmitToeicPart2ServiceImpl extends BaseServiceImpl<SubmitToeicPart
     }
 
     @Override
+    public List<SubmitToeicPart2DTO> findBySubmitToeicId(Long submitToeicId) {
+        return repository.findBySubmitToeicId(submitToeicId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
     protected void patchEntityFromDTO(SubmitToeicPart2DTO dto, SubmitToeicPart2 entity) {
         mapper.patchEntityFromDTO(dto, entity);
     }

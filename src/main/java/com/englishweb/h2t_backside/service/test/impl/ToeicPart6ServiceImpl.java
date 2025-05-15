@@ -13,7 +13,9 @@ import com.englishweb.h2t_backside.repository.test.ToeicPart6Repository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.ToeicPart6Service;
+import com.englishweb.h2t_backside.service.test.ToeicQuestionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,12 @@ import java.util.List;
 @Slf4j
 public class ToeicPart6ServiceImpl extends BaseServiceImpl<ToeicPart6DTO, ToeicPart6, ToeicPart6Repository> implements ToeicPart6Service {
     private final ToeicPart6Mapper mapper;
+    private final ToeicQuestionService toeicQuestionService;
 
-    public ToeicPart6ServiceImpl(ToeicPart6Repository repository, DiscordNotifier discordNotifier, ToeicPart6Mapper mapper) {
+    public ToeicPart6ServiceImpl(ToeicPart6Repository repository, DiscordNotifier discordNotifier, ToeicPart6Mapper mapper,@Lazy ToeicQuestionService toeicQuestionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.toeicQuestionService = toeicQuestionService;
     }
 
     @Override
@@ -58,6 +62,21 @@ public class ToeicPart6ServiceImpl extends BaseServiceImpl<ToeicPart6DTO, ToeicP
         }
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
+    }
+    @Override
+    public boolean delete(Long id) {
+        ToeicPart6DTO dto = super.findById(id);
+        if (dto == null) {
+            return false;
+        }
+
+        if (dto.getQuestions() != null && !dto.getQuestions().isEmpty()) {
+            for (Long questionId : dto.getQuestions()) {
+                toeicQuestionService.delete(questionId);
+            }
+        }
+
+        return super.delete(id);
     }
 
     @Override

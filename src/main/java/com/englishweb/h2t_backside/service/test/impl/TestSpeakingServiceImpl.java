@@ -18,6 +18,7 @@ import com.englishweb.h2t_backside.service.test.QuestionService;
 import com.englishweb.h2t_backside.service.test.TestSpeakingService;
 import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, Te
     private final QuestionService questionService;
     private static final String RESOURCE_NAME = "TestSpeaking";
 
-    public TestSpeakingServiceImpl(TestSpeakingRepository repository, DiscordNotifier discordNotifier, TestSpeakingMapper mapper, QuestionService questionService) {
+    public TestSpeakingServiceImpl(TestSpeakingRepository repository, DiscordNotifier discordNotifier, TestSpeakingMapper mapper,@Lazy QuestionService questionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.questionService = questionService;
@@ -67,6 +68,21 @@ public class TestSpeakingServiceImpl extends BaseServiceImpl<TestSpeakingDTO, Te
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+
+    @Override
+    public boolean delete(Long testSpeakingId) {
+        TestSpeakingDTO dto = super.findById(testSpeakingId);
+
+        if (dto.getQuestions() != null && !dto.getQuestions().isEmpty()) {
+            for (Long questionId : dto.getQuestions()) {
+                questionService.delete(questionId);
+            }
+        }
+
+        return super.delete(testSpeakingId);
+    }
+
+
 
     @Override
     protected void patchEntityFromDTO(TestSpeakingDTO dto, TestSpeaking entity) {

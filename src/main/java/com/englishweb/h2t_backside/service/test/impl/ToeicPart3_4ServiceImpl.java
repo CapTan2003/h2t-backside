@@ -13,7 +13,9 @@ import com.englishweb.h2t_backside.repository.test.ToeicPart3_4Repository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.ToeicPart3_4Service;
+import com.englishweb.h2t_backside.service.test.ToeicQuestionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,12 @@ import java.util.List;
 @Slf4j
 public class ToeicPart3_4ServiceImpl extends BaseServiceImpl<ToeicPart3_4DTO, ToeicPart3_4, ToeicPart3_4Repository> implements ToeicPart3_4Service {
     private final ToeicPart3_4Mapper mapper;
+    private final ToeicQuestionService toeicQuestionService;
 
-    public ToeicPart3_4ServiceImpl(ToeicPart3_4Repository repository, DiscordNotifier discordNotifier, ToeicPart3_4Mapper mapper) {
+    public ToeicPart3_4ServiceImpl(ToeicPart3_4Repository repository, DiscordNotifier discordNotifier, ToeicPart3_4Mapper mapper,@Lazy ToeicQuestionService toeicQuestionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.toeicQuestionService = toeicQuestionService;
     }
 
     @Override
@@ -59,6 +63,21 @@ public class ToeicPart3_4ServiceImpl extends BaseServiceImpl<ToeicPart3_4DTO, To
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+    @Override
+    public boolean delete(Long id) {
+        ToeicPart3_4DTO dto = super.findById(id);
+        if (dto == null) {
+            return false;
+        }
+
+        if (dto.getQuestions() != null && !dto.getQuestions().isEmpty()) {
+            for (Long questionId : dto.getQuestions()) {
+                toeicQuestionService.delete(questionId);
+            }
+        }
+        return super.delete(id);
+    }
+
 
     @Override
     protected void patchEntityFromDTO(ToeicPart3_4DTO dto, ToeicPart3_4 entity) {

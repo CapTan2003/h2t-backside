@@ -1,8 +1,11 @@
 package com.englishweb.h2t_backside.model.test;
 
+import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -67,4 +70,9 @@ public class Toeic extends AbstractBaseEntity {
     @Builder.Default
     @Comment("List of question IDs for TOEIC Part 7")
     private String questionsPart7 = "";
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    @Comment("Owner of this Toeic")
+    private User owner;
 }
