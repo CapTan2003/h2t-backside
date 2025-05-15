@@ -1,8 +1,11 @@
 package com.englishweb.h2t_backside.model.test;
 
+import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
@@ -38,4 +41,9 @@ public class CompetitionTest extends AbstractBaseEntity {
     @ColumnDefault("''")
     @Builder.Default
     private String parts = "";
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    @Comment("Owner of this competition")
+    private User owner;
 }

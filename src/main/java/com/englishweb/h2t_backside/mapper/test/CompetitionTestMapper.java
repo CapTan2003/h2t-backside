@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
+import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
@@ -27,6 +28,8 @@ public interface CompetitionTestMapper {
     @Mapping(target = "endTime", source = "dto.endTime", qualifiedByName = "offsetToLocal")
     @Mapping(target = "parts", source = "dto.parts", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
+    @Mapping(target = "owner", source = "dto.ownerId", qualifiedByName = "mapUserIdToUser")
+
     CompetitionTest convertToEntity(CompetitionTestDTO dto);
 
     // Entity → DTO
@@ -39,6 +42,8 @@ public interface CompetitionTestMapper {
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "ownerId", source = "entity.owner.id")
+
     CompetitionTestDTO convertToDTO(CompetitionTest entity);
 
     // Patch DTO → Entity
@@ -48,7 +53,18 @@ public interface CompetitionTestMapper {
     @Mapping(target = "endTime", source = "dto.endTime", qualifiedByName = "offsetToLocal")
     @Mapping(target = "parts", source = "dto.parts", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status")
+    @Mapping(target = "owner", source = "dto.ownerId", qualifiedByName = "mapUserIdToUser")
+
     void patchEntityFromDTO(CompetitionTestDTO dto, @MappingTarget CompetitionTest entity);
+
+    // Custom mapping methods
+    @Named("mapUserIdToUser")
+    default User mapUserIdToUser(Long userId) {
+        if (userId == null) return null;
+        User user = new User();
+        user.setId(userId);
+        return user;
+    }
 
     // Hàm convert thủ công
     @Named("stringToLongList")

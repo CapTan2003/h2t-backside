@@ -85,9 +85,10 @@ public class ToeicController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String sortFields,
             @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long ownerId,
             @ModelAttribute ToeicFilterDTO filter) {
 
-        Page<ToeicDTO> results = service.searchWithFilters(page, size, sortFields, filter, userId);
+        Page<ToeicDTO> results = service.searchWithFilters(page, size, sortFields, filter, userId,ownerId);
 
         return ResponseDTO.<Page<ToeicDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)

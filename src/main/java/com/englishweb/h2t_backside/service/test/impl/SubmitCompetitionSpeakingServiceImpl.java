@@ -51,6 +51,14 @@ public class SubmitCompetitionSpeakingServiceImpl extends BaseServiceImpl<Submit
     }
 
     @Override
+    public List<SubmitCompetitionSpeakingDTO> findBySubmitCompetitionId(Long submitCompetitionId ) {
+        return repository.findBySubmitCompetitionId(submitCompetitionId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
     protected void createError(SubmitCompetitionSpeakingDTO dto, Exception ex) {
         log.error("Error creating submit competition speaking: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating submit competition speaking: " + ex.getMessage();

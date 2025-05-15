@@ -20,4 +20,5 @@ public interface SubmitCompetitionService extends BaseService<SubmitCompetitionD
 
     List<SubmitCompetitionDTO> getLeaderboard();
     List<SubmitCompetitionDTO> findByTestIdAndStatus(Long testId, Boolean status);
+    List<SubmitCompetitionDTO> findByTestId(Long testId);
 }

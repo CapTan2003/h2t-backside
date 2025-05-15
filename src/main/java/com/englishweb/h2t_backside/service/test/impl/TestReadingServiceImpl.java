@@ -19,6 +19,7 @@ import com.englishweb.h2t_backside.service.test.TestReadingService;
 import com.englishweb.h2t_backside.utils.ParseData;
 import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class TestReadingServiceImpl extends BaseServiceImpl<TestReadingDTO, Test
 
 
 
-    public TestReadingServiceImpl(TestReadingRepository repository, DiscordNotifier discordNotifier, TestReadingMapper mapper, QuestionService questionService) {
+    public TestReadingServiceImpl(TestReadingRepository repository, DiscordNotifier discordNotifier, TestReadingMapper mapper,@Lazy QuestionService questionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.questionService = questionService;
@@ -75,7 +76,18 @@ public class TestReadingServiceImpl extends BaseServiceImpl<TestReadingDTO, Test
     protected void patchEntityFromDTO(TestReadingDTO dto, TestReading entity) {
         mapper.patchEntityFromDTO(dto, entity);
     }
+    @Override
+    public boolean delete(Long testReadingId) {
+        TestReadingDTO dto = super.findById(testReadingId);
 
+        if (dto.getQuestions() != null && !dto.getQuestions().isEmpty()) {
+            for (Long questionId : dto.getQuestions()) {
+                questionService.delete(questionId);
+            }
+        }
+
+        return super.delete(testReadingId);
+    }
     @Override
     protected TestReading convertToEntity(TestReadingDTO dto) {
         return mapper.convertToEntity(dto);

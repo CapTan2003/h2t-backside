@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +23,7 @@ public interface SubmitTestRepository extends JpaRepository<SubmitTest, Long>, J
     List<SubmitTest> findAllByUserId(Long userId);
     List<SubmitTest> findAllByUserIdAndStatus(Long userId, Boolean status);
 
+    List<SubmitTest> findByUserIdAndTestIdAndStatusTrue(Long userId, Long testId);
+
+    List<SubmitTest> findByTestId(Long testId);
 }

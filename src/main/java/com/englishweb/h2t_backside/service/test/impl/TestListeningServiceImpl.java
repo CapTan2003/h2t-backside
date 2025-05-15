@@ -19,6 +19,7 @@ import com.englishweb.h2t_backside.service.test.TestListeningService;
 import com.englishweb.h2t_backside.utils.LessonQuestionFinder;
 import com.englishweb.h2t_backside.utils.QuestionFinder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class TestListeningServiceImpl extends BaseServiceImpl<TestListeningDTO, 
     private static final String RESOURCE_NAME = "TestListening";
 
 
-    public TestListeningServiceImpl(TestListeningRepository repository, DiscordNotifier discordNotifier, TestListeningMapper mapper, QuestionService questionService) {
+    public TestListeningServiceImpl(TestListeningRepository repository, DiscordNotifier discordNotifier, TestListeningMapper mapper,@Lazy QuestionService questionService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.questionService = questionService;
@@ -68,6 +69,21 @@ public class TestListeningServiceImpl extends BaseServiceImpl<TestListeningDTO, 
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+    @Override
+    public boolean delete(Long testListeningId) {
+        TestListeningDTO dto = super.findById(testListeningId);
+
+
+        if (dto.getQuestions() != null && !dto.getQuestions().isEmpty()) {
+            for (Long questionId : dto.getQuestions()) {
+                questionService.delete(questionId);
+            }
+        }
+
+
+        return super.delete(testListeningId);
+    }
+
 
     @Override
     protected void patchEntityFromDTO(TestListeningDTO dto, TestListening entity) {

@@ -75,8 +75,8 @@ public class HeroInfoServiceImpl implements HeroInfoService {
         Page<SpeakingDTO> speakingPage = speakingService.searchWithFilters(0, 1, "", lessonFilterDTO);
         Page<WritingDTO> writingPage = writingService.searchWithFilters(0, 1, "", lessonFilterDTO);
         Page<TestDTO> testPage = testService.searchWithFilters(0, 1, "", testFilter, 1L);
-        Page<CompetitionTestDTO> competitionTestPage = competitionTestService.searchWithFilters(0, 1, "", competitionTestDTO, 1L);
-        Page<ToeicDTO> toeicPage = toeicService.searchWithFilters(0, 1, "", toeicFilter, 1L);
+        Page<CompetitionTestDTO> competitionTestPage = competitionTestService.searchWithFilters(0, 1, "", competitionTestDTO, 1L,null);
+        Page<ToeicDTO> toeicPage = toeicService.searchWithFilters(0, 1, "", toeicFilter, 1L,null);
 
         long totalLesson = topicPage.getTotalElements()
                 + grammarPage.getTotalElements()

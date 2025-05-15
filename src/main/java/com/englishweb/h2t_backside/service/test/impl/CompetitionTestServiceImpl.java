@@ -1,9 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.CompetitionTestFilterDTO;
-import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
-import com.englishweb.h2t_backside.dto.test.TestDTO;
-import com.englishweb.h2t_backside.dto.test.TestPartDTO;
+import com.englishweb.h2t_backside.dto.test.*;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -13,14 +11,17 @@ import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.enummodel.TestPartEnum;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import com.englishweb.h2t_backside.repository.specifications.CompetitionTestSpecification;
+import com.englishweb.h2t_backside.repository.specifications.RouteSpecification;
 import com.englishweb.h2t_backside.repository.test.CompetitionTestRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
 import com.englishweb.h2t_backside.service.test.CompetitionTestService;
+import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
 import com.englishweb.h2t_backside.service.test.TestPartService;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,10 +36,12 @@ import java.util.List;
 @Slf4j
 public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestDTO, CompetitionTest, CompetitionTestRepository> implements CompetitionTestService {
     private final CompetitionTestMapper mapper;
+    private final SubmitCompetitionService submitCompetitionService;
     private final TestPartService testPartService;
-    public CompetitionTestServiceImpl(CompetitionTestRepository repository, DiscordNotifier discordNotifier, CompetitionTestMapper mapper, TestPartService testPartService) {
+    public CompetitionTestServiceImpl(CompetitionTestRepository repository, DiscordNotifier discordNotifier, CompetitionTestMapper mapper, @Lazy SubmitCompetitionService submitCompetitionService,@Lazy TestPartService testPartService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
+        this.submitCompetitionService = submitCompetitionService;
         this.testPartService = testPartService;
     }
 
@@ -94,6 +97,22 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+    @Override
+    public boolean delete(Long id) {
+
+        CompetitionTestDTO dto = super.findById(id);
+        List<SubmitCompetitionDTO> submitCompetitionDTOS = submitCompetitionService.findByTestId(dto.getId());
+        for (SubmitCompetitionDTO submitTestDTO : submitCompetitionDTOS) {
+            testPartService.delete(submitTestDTO.getId());
+        }
+
+        List<Long> partIds = dto.getParts();
+        for (Long partId : partIds) {
+            testPartService.delete(partId);
+        }
+
+        return super.delete(id);
+    }
 
 
     @Override
@@ -111,10 +130,14 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
         return mapper.convertToDTO(entity);
     }
     @Override
-    public Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, Long userId) {
+    public Page<CompetitionTestDTO> searchWithFilters(int page, int size, String sortFields, CompetitionTestFilterDTO filter, Long userId,  Long ownerId) {
         Pageable pageable = ParseData.parsePageArgs(page, size, sortFields, CompetitionTest.class);
 
         Specification<CompetitionTest> specification = BaseFilterSpecification.applyBaseFilters(filter);
+
+        if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
+            specification = specification.and(CompetitionTestSpecification.findByName(filter.getTitle()));
+        }
 
         if (filter.getTitle() != null && !filter.getTitle().isEmpty()) {
             specification = specification.and(CompetitionTestSpecification.findByName(filter.getTitle()));
@@ -130,6 +153,9 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
             specification = specification.and(CompetitionTestSpecification.findByEndTimeRange(
                     filter.getStartEndTime(), filter.getEndEndTime()
             ));
+        }
+        if (ownerId != null) {
+            specification = specification.and(CompetitionTestSpecification.findByOwnerId(ownerId));
         }
 
         return repository.findAll(specification, pageable).map(entity -> {
@@ -158,7 +184,7 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
     public CompetitionTestDTO getLastCompletedCompetition() {
         CompetitionTestFilterDTO filter = new CompetitionTestFilterDTO();
         filter.setEndEndTime(LocalDateTime.now());
-        Page<CompetitionTestDTO> result = searchWithFilters(0, 1, "-endTime", filter, null);
+        Page<CompetitionTestDTO> result = searchWithFilters(0, 1, "-endTime", filter, null,null);
         return result.getContent().get(0);
     }
 }
