@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.ToeicDTO;
+import com.englishweb.h2t_backside.model.User;
 import com.englishweb.h2t_backside.model.test.Toeic;
 import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
@@ -26,6 +27,8 @@ public interface ToeicMapper {
     @Mapping(target = "questionsPart6", source = "dto.questionsPart6", qualifiedByName = "longListToString")
     @Mapping(target = "questionsPart7", source = "dto.questionsPart7", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
+    @Mapping(target = "owner", source = "dto.ownerId", qualifiedByName = "mapUserIdToUser")
+
     Toeic convertToEntity(ToeicDTO dto);
 
     // Entity → DTO
@@ -42,6 +45,8 @@ public interface ToeicMapper {
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "ownerId", source = "entity.owner.id")
+
     ToeicDTO convertToDTO(Toeic entity);
 
     // Patch
@@ -55,8 +60,19 @@ public interface ToeicMapper {
     @Mapping(target = "questionsPart6", source = "dto.questionsPart6", qualifiedByName = "longListToString")
     @Mapping(target = "questionsPart7", source = "dto.questionsPart7", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status")
+    @Mapping(target = "owner", source = "dto.ownerId", qualifiedByName = "mapUserIdToUser")
+
     void patchEntityFromDTO(ToeicDTO dto, @MappingTarget Toeic entity);
 
+
+    // Custom mapping methods
+    @Named("mapUserIdToUser")
+    default User mapUserIdToUser(Long userId) {
+        if (userId == null) return null;
+        User user = new User();
+        user.setId(userId);
+        return user;
+    }
     // Custom converters
     @Named("stringToLongList")
     default List<Long> stringToLongList(String str) {

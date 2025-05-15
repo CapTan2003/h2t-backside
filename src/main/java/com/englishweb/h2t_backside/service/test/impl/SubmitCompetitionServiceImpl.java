@@ -1,9 +1,7 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
 import com.englishweb.h2t_backside.dto.filter.SubmitCompetitionFilterDTO;
-import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
-import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
-import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
+import com.englishweb.h2t_backside.dto.test.*;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
@@ -15,11 +13,11 @@ import com.englishweb.h2t_backside.model.test.SubmitTest;
 import com.englishweb.h2t_backside.repository.test.SubmitCompetitionRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
 import com.englishweb.h2t_backside.service.feature.impl.BaseServiceImpl;
-import com.englishweb.h2t_backside.service.test.CompetitionTestService;
-import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
+import com.englishweb.h2t_backside.service.test.*;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,11 +31,17 @@ import java.util.List;
 public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetitionDTO, SubmitCompetition, SubmitCompetitionRepository> implements SubmitCompetitionService {
     private final SubmitCompetitionMapper mapper;
     private final CompetitionTestService competitionTestService;
+    private final SubmitCompetitionAnswerService submitCompetitionAnswerService;
+    private final SubmitCompetitionSpeakingService submitCompetitionSpeakingService;
+    private final SubmitCompetitionWritingService submitCompetitionWritingService;
 
-    public SubmitCompetitionServiceImpl(SubmitCompetitionRepository repository, DiscordNotifier discordNotifier, SubmitCompetitionMapper mapper, CompetitionTestService competitionTestService) {
+    public SubmitCompetitionServiceImpl(SubmitCompetitionRepository repository, DiscordNotifier discordNotifier, SubmitCompetitionMapper mapper, @Lazy CompetitionTestService competitionTestService, @Lazy SubmitCompetitionAnswerService submitCompetitionAnswerService, @Lazy SubmitCompetitionSpeakingService submitCompetitionSpeakingService, @Lazy SubmitCompetitionWritingService submitCompetitionWritingService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.competitionTestService = competitionTestService;
+        this.submitCompetitionAnswerService = submitCompetitionAnswerService;
+        this.submitCompetitionSpeakingService = submitCompetitionSpeakingService;
+        this.submitCompetitionWritingService = submitCompetitionWritingService;
     }
 
     @Override
@@ -45,6 +49,14 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
         String errorMessage = String.format("SubmitCompetition with ID '%d' not found.", id);
         log.warn(errorMessage);
         throw new ResourceNotFoundException(id, errorMessage, SeverityEnum.LOW);
+    }
+
+    @Override
+    public List<SubmitCompetitionDTO> findByTestId(Long testId) {
+        return repository.findByTestId(testId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     @Override
@@ -69,6 +81,32 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
     }
+    @Override
+    public boolean delete(Long id) {
+        SubmitCompetitionDTO dto = super.findById(id);
+        if (dto == null) {
+            return false;
+        }
+
+        List<SubmitCompetitionSpeakingDTO> speakingList = submitCompetitionSpeakingService.findBySubmitCompetitionId(dto.getId());
+        if (speakingList != null && !speakingList.isEmpty()) {
+            speakingList.forEach(speaking -> submitCompetitionSpeakingService.delete(speaking.getId()));
+        }
+
+        List<SubmitCompetitionWritingDTO> writingList = submitCompetitionWritingService.findBySubmitCompetitionId(dto.getId());
+        if (writingList != null && !writingList.isEmpty()) {
+            writingList.forEach(writing -> submitCompetitionWritingService.delete(writing.getId()));
+        }
+
+        List<SubmitCompetitionAnswerDTO> answerList = submitCompetitionAnswerService.findBySubmitCompetitionId(dto.getId());
+        if (answerList != null && !answerList.isEmpty()) {
+            answerList.forEach(answer -> submitCompetitionAnswerService.delete(answer.getId()));
+        }
+
+        return super.delete(id);
+    }
+
+
 
     @Override
     protected void patchEntityFromDTO(SubmitCompetitionDTO dto, SubmitCompetition entity) {
@@ -94,8 +132,8 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
         return repository.sumScoreByUserIdAndStatusTrue(userId);
     }
     @Override
-    public SubmitCompetitionDTO findByTestIdAndUserIdAndStatusFalse(Long testId, Long userId) {
-        SubmitCompetition submitTest = repository.findByTestIdAndUserIdAndStatusFalse(testId, userId)
+    public SubmitCompetitionDTO findByTestIdAndUserIdAndStatus(Long testId, Long userId, Boolean status) {
+        SubmitCompetition submitTest = repository.findByTestIdAndUserIdAndStatus(testId, userId,status)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         testId,
                         String.format("Submit Comeptition with test ID '%d', userId '%d' and status=false not found.", testId, userId),
@@ -133,5 +171,13 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
         CompetitionTestDTO lastCompetition = competitionTestService.getLastCompletedCompetition();
         Page<SubmitCompetitionDTO> submitPage = searchWithFilters(0, 5, "score", SubmitCompetitionFilterDTO.builder().testId(lastCompetition.getId()).build(), null);
         return submitPage.getContent();
+    }
+    @Override
+    public List<SubmitCompetitionDTO> findByTestIdAndStatus(Long testId, Boolean status) {
+        List<SubmitCompetition> entities = repository.findByTest_IdAndStatus(testId, status);
+
+        return entities.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 }

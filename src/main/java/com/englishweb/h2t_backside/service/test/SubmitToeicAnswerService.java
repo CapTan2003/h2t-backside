@@ -8,4 +8,6 @@ import java.util.List;
 public interface SubmitToeicAnswerService extends BaseService<SubmitToeicAnswerDTO> {
     List<SubmitToeicAnswerDTO> findBySubmitToeicIdAndQuestionId(Long submitToeicId, Long questionId);
     List<SubmitToeicAnswerDTO> findBySubmitToeicIdAndQuestionIdIn(Long submitToeicId, List<Long> questionIds);
+
+    List<SubmitToeicAnswerDTO> findBySubmitToeicId(Long submitToeicId);
 }

@@ -34,7 +34,7 @@ public abstract class AbstractLessonEntity extends AbstractBaseEntity implements
     private Long views = 0L;
 
     @OneToOne
-    @JoinColumn(name = "route_node_id")
+    @JoinColumn(name = "route_node_id", referencedColumnName = "id", nullable = true)
     @Comment("Associated Route node for the Lesson")
     private RouteNode routeNode;
 }

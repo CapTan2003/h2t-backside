@@ -1,6 +1,9 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
+import com.englishweb.h2t_backside.dto.RouteDTO;
+import com.englishweb.h2t_backside.dto.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.filter.TestFilterDTO;
+import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.dto.test.TestDTO;
 import com.englishweb.h2t_backside.dto.test.TestPartDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
@@ -20,6 +23,7 @@ import com.englishweb.h2t_backside.service.test.*;
 import com.englishweb.h2t_backside.utils.BaseFilterSpecification;
 import com.englishweb.h2t_backside.utils.ParseData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,8 +43,8 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
 
     public TestServiceImpl(TestRepository repository, DiscordNotifier discordNotifier,
                            TestMapper mapper,
-                           SubmitTestService submitTestService,
-                           TestPartService testPartService) {
+                           @Lazy SubmitTestService submitTestService,
+                           @Lazy TestPartService testPartService) {
         super(repository, discordNotifier);
         this.mapper = mapper;
         this.submitTestService = submitTestService;
@@ -106,6 +110,22 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
     }
 
     @Override
+    public boolean delete(Long id) {
+
+        TestDTO dto = super.findById(id);
+        List<SubmitTestDTO> submitTestDTOList = submitTestService.findByTestId(dto.getId());
+        for (SubmitTestDTO submitTestDTO : submitTestDTOList) {
+            testPartService.delete(submitTestDTO.getId());
+        }
+
+        List<Long> partIds = dto.getParts();
+        for (Long partId : partIds) {
+            testPartService.delete(partId);
+        }
+
+        return super.delete(id);
+    }
+    @Override
     protected void patchEntityFromDTO(TestDTO dto, Test entity) {
         mapper.patchEntityFromDTO(dto, entity);
     }
@@ -137,7 +157,7 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
         return repository.findAll(specification, pageable).map(entity -> {
             TestDTO dto = mapper.convertToDTO(entity);
             dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts()));
-            dto.setScoreLastOfTest(submitTestService.getScoreOfLastTestByUser(userId));
+            dto.setScoreLastOfTest(submitTestService.getScoreOfLastTestByUserIdAndTestId(userId,dto.getId()));
             return dto;
         });
     }

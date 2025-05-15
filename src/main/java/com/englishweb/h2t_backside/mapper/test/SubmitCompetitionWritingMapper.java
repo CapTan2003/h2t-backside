@@ -15,8 +15,8 @@ public interface SubmitCompetitionWritingMapper {
 
     // Chuyển từ DTO → Entity
     @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "submitCompetition", source = "dto.submitCompetitionId", qualifiedByName = "mapSubmitCompetitionId")
-    @Mapping(target = "testWriting", source = "dto.testWritingId", qualifiedByName = "mapTestWritingId")
+    @Mapping(target = "submitCompetition", source = "dto.submitCompetition_id", qualifiedByName = "mapSubmitCompetitionId")
+    @Mapping(target = "testWriting", source = "dto.competitionWriting_id", qualifiedByName = "mapTestWritingId")
     @Mapping(target = "content", source = "dto.content", defaultValue = "") // Nếu content null thì gán ""
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true") // Nếu status null thì gán true
@@ -24,8 +24,8 @@ public interface SubmitCompetitionWritingMapper {
 
     // Chuyển từ Entity → DTO
     @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "submitCompetitionId", source = "entity.submitCompetition.id")
-    @Mapping(target = "testWritingId", source = "entity.testWriting.id")
+    @Mapping(target = "submitCompetition_id", source = "entity.submitCompetition.id")
+    @Mapping(target = "competitionWriting_id", source = "entity.testWriting.id")
     @Mapping(target = "content", source = "entity.content")
     @Mapping(target = "score", source = "entity.score")
     @Mapping(target = "status", source = "entity.status")
@@ -34,8 +34,8 @@ public interface SubmitCompetitionWritingMapper {
     SubmitCompetitionWritingDTO convertToDTO(SubmitCompetitionWriting entity);
 
     // Cập nhật entity từ DTO (patch)
-    @Mapping(target = "submitCompetition", source = "dto.submitCompetitionId", qualifiedByName = "mapSubmitCompetitionId")
-    @Mapping(target = "testWriting", source = "dto.testWritingId", qualifiedByName = "mapTestWritingId")
+    @Mapping(target = "submitCompetition", source = "dto.submitCompetition_id", qualifiedByName = "mapSubmitCompetitionId")
+    @Mapping(target = "testWriting", source = "dto.competitionWriting_id", qualifiedByName = "mapTestWritingId")
     @Mapping(target = "content", source = "dto.content")
     @Mapping(target = "score", source = "dto.score")
     @Mapping(target = "status", source = "dto.status")

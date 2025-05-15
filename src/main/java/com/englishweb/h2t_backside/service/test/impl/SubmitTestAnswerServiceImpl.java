@@ -43,6 +43,14 @@ public class SubmitTestAnswerServiceImpl extends BaseServiceImpl<SubmitTestAnswe
     }
 
     @Override
+    public List<SubmitTestAnswerDTO> findBySubmitTestId(Long submitTestId) {
+        return repository.findBySubmitTestId(submitTestId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
     public List<SubmitTestAnswerDTO> findBySubmitTestIdAndQuestionIds(Long submitTestId, List<Long> questionIds) {
         return repository.findBySubmitTestIdAndQuestionIdIn(submitTestId, questionIds)
                 .stream()

@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -116,6 +117,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
                 page, size, sortFields, filter, repository, User.class
         ).map(this::convertToDTO);
     }
+
+    @Override
+    public List<UserDTO> findByIdInAndStatus(List<Long> ids, Boolean status) {
+        List<User> users = repository.findByIdInAndStatus(ids, status);
+        return users.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+
 
     @Override
     protected void patchEntityFromDTO(UserDTO dto, User entity) { mapper.patchEntityFromDTO(dto, entity); }

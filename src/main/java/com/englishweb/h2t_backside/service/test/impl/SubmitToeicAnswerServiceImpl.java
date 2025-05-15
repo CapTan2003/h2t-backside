@@ -47,6 +47,14 @@ public class SubmitToeicAnswerServiceImpl extends BaseServiceImpl<SubmitToeicAns
                 .toList();
     }
     @Override
+    public List<SubmitToeicAnswerDTO>  findBySubmitToeicId(Long submitToeicId) {
+        return repository.findBySubmitToeicId(submitToeicId)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
     protected void findByIdError(Long id) {
         String errorMessage = String.format("SubmitToeicAnswer with ID '%d' not found.", id);
         log.warn(errorMessage);

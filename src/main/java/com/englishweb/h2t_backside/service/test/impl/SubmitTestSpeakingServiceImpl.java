@@ -40,6 +40,13 @@ public class SubmitTestSpeakingServiceImpl extends BaseServiceImpl<SubmitTestSpe
                 .map(this::convertToDTO)
                 .toList();
     }
+    @Override
+    public List<SubmitTestSpeakingDTO> findBySubmitTestId(Long submitTestId) {
+        return repository.findBySubmitTestId(submitTestId).stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
 
     @Override
     protected void findByIdError(Long id) {
