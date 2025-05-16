@@ -18,7 +18,7 @@ public class ToeicPart3_4DTO extends AbstractBaseDTO {
     @NotBlank(message = "Audio URL cannot be blank")
     private String audio;
 
-    @NotBlank(message = "Image URL cannot be blank")
+
     private String image;
 
     @NotBlank(message = "Transcript cannot be blank")

@@ -15,7 +15,6 @@
     @AllArgsConstructor
     public class ToeicQuestionDTO extends AbstractBaseDTO {
 
-        @NotBlank(message = "Question content cannot be blank")
         private String content;
 
         @NotBlank(message = "Explanation cannot be blank")
