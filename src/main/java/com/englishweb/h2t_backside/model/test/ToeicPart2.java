@@ -2,10 +2,7 @@ package com.englishweb.h2t_backside.model.test;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.AnswerEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -22,8 +19,8 @@ public class ToeicPart2 extends AbstractBaseEntity {
     @Comment("Audio file for the TOEIC Part 2 question")
     private String audio;
 
-    @Column(nullable = false)
-    @Comment("Transcript shown with the question set")
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String transcript;
 
     @Column(nullable = false)
