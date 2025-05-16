@@ -84,5 +84,6 @@ public class AuthenticateController {
                 .data(authData)
                 .build();
     }
+
 }
 

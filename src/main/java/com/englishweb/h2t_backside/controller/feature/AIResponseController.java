@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.feature.AIResponseService;
+import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,46 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AIResponseController {
     private final AIResponseService service;
+    private final AuthenticateService authenticateService;
+
+
+    @GetMapping("/teacher-view")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<AIResponseDTO>> searchForTeacherView(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @RequestParam(required = true) Long teacherId,
+            @ModelAttribute AIResponseFilterDTO filter) {
+
+        // Lấy data với điều kiện OR (status = false OR userId = teacherId)
+        Page<AIResponseDTO> aiResponses = service.searchForTeacherView(
+                page, size, sortFields, filter, teacherId);
+
+        return ResponseDTO.<Page<AIResponseDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(aiResponses)
+                .message("Teacher view AIResponses retrieved successfully")
+                .build();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<Page<AIResponseDTO>> searchWithFilters(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String sortFields,
+            @ModelAttribute AIResponseFilterDTO filter) {
+
+        Page<AIResponseDTO> aiResponse = service.searchWithFilters(
+                page, size, sortFields, filter);
+
+        return ResponseDTO.<Page<AIResponseDTO>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(aiResponse)
+                .message("AIResponses retrieved successfully with filters")
+                .build();
+    }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -48,7 +89,7 @@ public class AIResponseController {
         return ResponseDTO.<AIResponseDTO>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(patchedAIResponse)
-                .message("Grammar updated with patch successfully")
+                .message("AIResponse updated with patch successfully")
                 .build();
     }
 
@@ -58,25 +99,7 @@ public class AIResponseController {
         boolean result =  service.delete(id);
         return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
-                .message(result ? "AIResponse deleted successfully" : "Failed to delete grammar")
-                .build();
-    }
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<Page<AIResponseDTO>> searchWithFilters(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String sortFields,
-            @ModelAttribute AIResponseFilterDTO filter) {
-
-        Page<AIResponseDTO> aiResponse = service.searchWithFilters(
-                page, size, sortFields, filter);
-
-        return ResponseDTO.<Page<AIResponseDTO>>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .data(aiResponse)
-                .message("AIResponses retrieved successfully with filters")
+                .message(result ? "AIResponse deleted successfully" : "Failed to delete AIResponse")
                 .build();
     }
 }

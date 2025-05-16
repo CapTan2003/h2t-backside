@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface AIResponseService extends BaseService<AIResponseDTO>{
     Page<AIResponseDTO> searchWithFilters(int page, int size, String sortFields, AIResponseFilterDTO filter);
+    Page<AIResponseDTO> searchForTeacherView(int page, int size, String sortFields, AIResponseFilterDTO filter, Long teacherId);
 }

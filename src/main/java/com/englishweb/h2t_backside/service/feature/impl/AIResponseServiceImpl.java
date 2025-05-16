@@ -12,11 +12,14 @@ import com.englishweb.h2t_backside.model.features.AIResponse;
 import com.englishweb.h2t_backside.repository.AIResponseRepository;
 import com.englishweb.h2t_backside.service.feature.AIResponseService;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import com.englishweb.h2t_backside.utils.AIResponseOrPagination;
 import com.englishweb.h2t_backside.utils.AIResponsePagination;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -79,6 +82,14 @@ public class AIResponseServiceImpl extends BaseServiceImpl<AIResponseDTO, AIResp
     public Page<AIResponseDTO> searchWithFilters(int page, int size, String sortFields, AIResponseFilterDTO filter) {
         return AIResponsePagination.searchWithFiltersGeneric(
                 page, size, sortFields, filter, repository, AIResponse.class
+        ).map(this::convertToDTO);
+    }
+
+    @Override
+    public Page<AIResponseDTO> searchForTeacherView(int page, int size, String sortFields,
+                                                    AIResponseFilterDTO filter, Long teacherId) {
+        return AIResponseOrPagination.searchWithOrCondition(
+                page, size, sortFields, filter, repository, AIResponse.class, teacherId
         ).map(this::convertToDTO);
     }
 
