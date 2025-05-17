@@ -20,8 +20,7 @@ public class SubmitToeic extends AbstractBaseEntity {
     private Integer score;
 
     @Lob
-    @Column(nullable = false)
-    @Comment("Comment provided by the reviewer or system")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

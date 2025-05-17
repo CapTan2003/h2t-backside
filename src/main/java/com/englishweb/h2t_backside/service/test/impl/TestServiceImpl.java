@@ -156,7 +156,7 @@ public class TestServiceImpl extends BaseServiceImpl<TestDTO, Test, TestReposito
 
         return repository.findAll(specification, pageable).map(entity -> {
             TestDTO dto = mapper.convertToDTO(entity);
-            dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts()));
+            dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts(),true));
             dto.setScoreLastOfTest(submitTestService.getScoreOfLastTestByUserIdAndTestId(userId,dto.getId()));
             return dto;
         });
