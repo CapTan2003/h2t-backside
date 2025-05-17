@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,8 +138,9 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
     protected TestPartDTO convertToDTO(TestPart entity) {
         return mapper.convertToDTO(entity);
     }
+
     @Override
-    public int countTotalQuestionsOfTest(List<Long> testParts) {
+    public int countTotalQuestionsOfTest(List<Long> testParts, Boolean status) {
         if (testParts == null || testParts.isEmpty()) return 0;
 
         return testParts.stream()
@@ -148,8 +150,38 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
                         List<Long> questionIds = part.getQuestions();
 
                         return switch (part.getType()) {
-                            case VOCABULARY, GRAMMAR, WRITING -> (questionIds != null) ? questionIds.size() : 0;
-                            case LISTENING, READING, SPEAKING -> countSubTestQuestions(questionIds, part.getType().name().toLowerCase());
+                            case VOCABULARY, GRAMMAR -> {
+                                List<Long> validQuestions = questionService
+                                        .findByIdsAndStatus(questionIds, status)
+                                        .stream()
+                                        .map(q -> q.getId())
+                                        .toList();
+                                yield validQuestions.size();
+                            }
+
+                            case WRITING -> {
+                                List<TestWritingDTO> writings = testWritingService.findByIdsAndStatus(questionIds, status);
+                                yield writings.size();
+                            }
+
+                            case LISTENING -> countSubTestQuestionsByStatus(
+                                    questionIds,
+                                    status,
+                                    "listening"
+                            );
+
+                            case READING -> countSubTestQuestionsByStatus(
+                                    questionIds,
+                                    status,
+                                    "reading"
+                            );
+
+                            case SPEAKING -> countSubTestQuestionsByStatus(
+                                    questionIds,
+                                    status,
+                                    "speaking"
+                            );
+
                             default -> 0;
                         };
 
@@ -161,26 +193,45 @@ public class TestPartServiceImpl extends BaseServiceImpl<TestPartDTO, TestPart, 
                 .sum();
     }
 
-    private int countSubTestQuestions(List<Long> testIds, String type) {
+
+    private int countSubTestQuestionsByStatus(List<Long> testIds, Boolean status, String type) {
         if (testIds == null || testIds.isEmpty()) return 0;
 
-        return testIds.stream()
-                .mapToInt(testId -> {
-                    try {
-                        List<Long> questionIds = switch (type) {
-                            case "reading" -> testReadingService.findById(testId).getQuestions();
-                            case "listening" -> testListeningService.findById(testId).getQuestions();
-                            case "speaking" -> testSpeakingService.findById(testId).getQuestions();
-                            default -> List.of();
-                        };
-                        return (questionIds != null) ? questionIds.size() : 0;
-                    } catch (Exception e) {
-                        log.warn("Failed to load sub-test {}: {}", testId, e.getMessage());
-                        return 0;
+        List<Long> allQuestionIds = new ArrayList<>();
+
+        switch (type) {
+            case "reading" -> {
+                List<TestReadingDTO> readings = testReadingService.findByIdsAndStatus(testIds, status);
+                for (TestReadingDTO r : readings) {
+                    if (r.getQuestions() != null) {
+                        allQuestionIds.addAll(r.getQuestions());
                     }
-                })
-                .sum();
+                }
+            }
+            case "listening" -> {
+                List<TestListeningDTO> listenings = testListeningService.findByIdsAndStatus(testIds, status);
+                for (TestListeningDTO l : listenings) {
+                    if (l.getQuestions() != null) {
+                        allQuestionIds.addAll(l.getQuestions());
+                    }
+                }
+            }
+            case "speaking" -> {
+                List<TestSpeakingDTO> speakings = testSpeakingService.findByIdsAndStatus(testIds, status);
+                for (TestSpeakingDTO s : speakings) {
+                    if (s.getQuestions() != null) {
+                        allQuestionIds.addAll(s.getQuestions());
+                    }
+                }
+            }
+        }
+
+        if (allQuestionIds.isEmpty()) return 0;
+
+        // Chỉ đếm những câu hỏi có status = true
+        return questionService.findByIdsAndStatus(allQuestionIds, status).size();
     }
+
     @Override
     public List<TestPartDTO> findByIds(List<Long> ids) {
         List<TestPartDTO> result = new LinkedList<>();

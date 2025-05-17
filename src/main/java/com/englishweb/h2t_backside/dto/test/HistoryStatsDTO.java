@@ -10,5 +10,5 @@ import lombok.*;
 public class HistoryStatsDTO {
     private double averageScore;
     private Integer totalTestsTaken;
-    private Integer highestScore;
+    private double highestScore;
 }

@@ -23,7 +23,7 @@ public class TestHistoryStatsServiceImpl implements TestHistoryStatsService {
 
     @Override
     public HistoryStatsDTO getStatisticsForUser(Long userId, Boolean status) {
-        List<Integer> allScores = new ArrayList<>();
+        List<Double> allScores = new ArrayList<>();
 
         List<SubmitTest> submitTests = (status != null)
                 ? submitTestRepository.findAllByUserIdAndStatus(userId, status)
@@ -38,25 +38,41 @@ public class TestHistoryStatsServiceImpl implements TestHistoryStatsService {
                 : submitCompetitionRepository.findAllByUserId(userId);
 
         for (SubmitTest s : submitTests) {
-            if (s.getScore() != null) allScores.add(s.getScore());
+            if (s.getScore() != null) {
+                double percent = s.getScore() / 100.0 * 100.0;
+                allScores.add(percent);
+            }
         }
 
         for (SubmitToeic s : submitToeics) {
-            if (s.getScore() != null) allScores.add(s.getScore());
+            if (s.getScore() != null) {
+                double percent = s.getScore() / 990.0 * 100.0;
+                allScores.add(percent);
+            }
         }
 
         for (SubmitCompetition s : submitCompetitions) {
-            if (s.getScore() != null) allScores.add(s.getScore());
+            if (s.getScore() != null) {
+                double percent = s.getScore() / 100.0 * 100.0;
+                allScores.add(percent);
+            }
         }
 
         int total = allScores.size();
-        int max = allScores.stream().max(Integer::compare).orElse(0);
-        double avg = total > 0 ? allScores.stream().mapToInt(Integer::intValue).average().orElse(0.0) : 0.0;
+        double highest = allScores.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
+        double average = total > 0
+                ? allScores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0)
+                : 0.0;
+
+
+        highest = Math.round(highest * 100.0) / 100.0;
+        average = Math.round(average * 100.0) / 100.0;
 
         return HistoryStatsDTO.builder()
-                .averageScore(avg)
-                .highestScore(max)
+                .averageScore(average)
+                .highestScore(highest)
                 .totalTestsTaken(total)
                 .build();
     }
+
 }

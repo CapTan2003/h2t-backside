@@ -38,6 +38,6 @@ public class SubmitTestSpeaking extends AbstractBaseEntity {
     private Integer score;
 
     @Lob
-    @Comment("Comment provided by the reviewer or system")
+    @Column(columnDefinition = "TEXT")
     private String comment;
 }

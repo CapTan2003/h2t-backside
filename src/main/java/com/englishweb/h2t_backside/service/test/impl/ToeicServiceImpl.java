@@ -177,7 +177,13 @@ public class ToeicServiceImpl extends BaseServiceImpl<ToeicDTO, Toeic, ToeicRepo
 
         return repository.findAll(specification, pageable).map(entity -> {
             ToeicDTO dto = mapper.convertToDTO(entity);
-            dto.setScoreLastOfTest(submitToeicService.getScoreOfLastTestByUserAndToeic(userId, dto.getId()));
+
+            if (userId != null) {
+                dto.setScoreLastOfTest(submitToeicService.getScoreOfLastTestByUserAndToeic(userId, dto.getId()));
+            }
+
+            enrichQuestionTotals(dto);
+
             return dto;
         });
     }
@@ -269,4 +275,50 @@ public class ToeicServiceImpl extends BaseServiceImpl<ToeicDTO, Toeic, ToeicRepo
         log.info("TOEIC test verification passed for ID: {}", toeicId);
         return true;
     }
+    private void enrichQuestionTotals(ToeicDTO dto) {
+        int part1Count = dto.getQuestionsPart1() != null ? dto.getQuestionsPart1().size() : 0;
+        int part2Count = dto.getQuestionsPart2() != null ? dto.getQuestionsPart2().size() : 0;
+        int part3Count = 0;
+        int part4Count = 0;
+        int part5Count = dto.getQuestionsPart5() != null ? dto.getQuestionsPart5().size() : 0;
+        int part6Count = 0;
+        int part7Count = 0;
+
+        if (dto.getQuestionsPart3() != null && !dto.getQuestionsPart3().isEmpty()) {
+            part3Count = toeicPart3_4Service.findByIdsAndStatus(dto.getQuestionsPart3(), true)
+                    .stream()
+                    .mapToInt(p -> p.getQuestions() != null ? p.getQuestions().size() : 0)
+                    .sum();
+        }
+
+        if (dto.getQuestionsPart4() != null && !dto.getQuestionsPart4().isEmpty()) {
+            part4Count = toeicPart3_4Service.findByIdsAndStatus(dto.getQuestionsPart4(), true)
+                    .stream()
+                    .mapToInt(p -> p.getQuestions() != null ? p.getQuestions().size() : 0)
+                    .sum();
+        }
+
+        if (dto.getQuestionsPart6() != null && !dto.getQuestionsPart6().isEmpty()) {
+            part6Count = toeicPart6Service.findByIdsAndStatus(dto.getQuestionsPart6(), true)
+                    .stream()
+                    .mapToInt(p -> p.getQuestions() != null ? p.getQuestions().size() : 0)
+                    .sum();
+        }
+
+        if (dto.getQuestionsPart7() != null && !dto.getQuestionsPart7().isEmpty()) {
+            part7Count = toeicPart7Service.findByIdsAndStatus(dto.getQuestionsPart7(), true)
+                    .stream()
+                    .mapToInt(p -> p.getQuestions() != null ? p.getQuestions().size() : 0)
+                    .sum();
+        }
+
+        int listeningTotal = part1Count + part2Count + part3Count + part4Count;
+        int readingTotal = part5Count + part6Count + part7Count;
+        int totalQuestions = listeningTotal + readingTotal;
+
+        dto.setListeningQuestionTotal(listeningTotal);
+        dto.setReadingQuestionTotal(readingTotal);
+        dto.setTotalQuestions(totalQuestions);
+    }
+
 }

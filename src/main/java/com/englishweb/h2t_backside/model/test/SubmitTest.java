@@ -30,6 +30,7 @@ public class SubmitTest extends AbstractBaseEntity {
     private Test test;
 
     @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     @Comment("Comment provided by the user or system")
     private String comment;
 }
