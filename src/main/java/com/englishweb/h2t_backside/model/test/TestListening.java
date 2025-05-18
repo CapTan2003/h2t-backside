@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.model.test;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -20,8 +21,8 @@ public class TestListening extends AbstractBaseEntity {
     @Comment("Audio file path used for the listening test")
     private String audio;
 
-    @Column(nullable = false)
-    @Comment("Transcript of the listening audio")
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String transcript;
 
     @ColumnDefault("''")
