@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.dto.response.ErrorDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.Map;
 @ControllerAdvice
 @Slf4j
 @AllArgsConstructor
+@Hidden
 public class GlobalExceptionHandler {
 
     private final DiscordNotifier discordNotifier;
