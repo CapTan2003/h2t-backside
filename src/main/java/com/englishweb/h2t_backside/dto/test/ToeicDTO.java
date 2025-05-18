@@ -42,6 +42,10 @@ public class ToeicDTO extends AbstractBaseDTO {
 
     private List<Long> questionsPart7;
 
+    private Integer listeningQuestionTotal;
+    private Integer readingQuestionTotal;
+    private Integer totalQuestions;
+
     private Double ScoreLastOfTest;
     @NotNull(message = "Owner id cannot be empty")
     private Long ownerId;

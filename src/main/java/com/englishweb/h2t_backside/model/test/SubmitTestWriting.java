@@ -25,13 +25,13 @@ public class SubmitTestWriting extends AbstractBaseEntity {
     private TestWriting testWriting;
 
     @Lob
-    @Comment("Written content submitted by the user")
+    @Column( columnDefinition = "TEXT")
     private String content;
 
     @Comment("Score given for the writing")
     private Integer score;
 
     @Lob
-    @Comment("Comment provided by the reviewer or system")
+    @Column( columnDefinition = "TEXT")
     private String comment;
 }

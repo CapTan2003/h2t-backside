@@ -160,7 +160,7 @@ public class CompetitionTestServiceImpl extends BaseServiceImpl<CompetitionTestD
 
         return repository.findAll(specification, pageable).map(entity -> {
             CompetitionTestDTO dto = mapper.convertToDTO(entity);
-            dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts()));
+            dto.setTotalQuestions(testPartService.countTotalQuestionsOfTest(dto.getParts(),true));
             return dto;
         });
     }
