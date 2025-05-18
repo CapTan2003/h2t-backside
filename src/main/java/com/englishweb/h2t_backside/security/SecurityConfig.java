@@ -37,9 +37,9 @@ public class SecurityConfig {
             "/api/auth/login/google",
             "/api/auth/logout",
             "/api/auth/refresh-token",
-            "/api/users/verify-otp",
-            "/api/users/reset-password",
-            "/api/users/send-otp",
+            "/api/email/verify-otp",
+            "/api/email/reset-password",
+            "/api/email/send-otp",
             "/api/v1/auth/**",
             "/v3/api-docs/**",
             "/api-docs/**",
@@ -62,7 +62,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/**").permitAll() // Cho phép tất cả các phương thức với mọi đường dẫn dưới "/api/**"
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole(RoleEnum.ADMIN.name())
-                          .requestMatchers("/api/**").authenticated() // Yêu cầu access token
+//                          .requestMatchers("/api/**").authenticated() // Yêu cầu access token
                           .anyRequest().denyAll() // Từ chối tất cả các request khác
                 )
                 // Giữ nguyên xác thực OAuth2 JWT cho các API cần bảo vệ
