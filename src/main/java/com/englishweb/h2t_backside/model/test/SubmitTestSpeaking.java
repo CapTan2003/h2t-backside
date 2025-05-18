@@ -26,8 +26,8 @@ public class SubmitTestSpeaking extends AbstractBaseEntity {
     private Question question;
 
 
-    @ColumnDefault("''")
-    @Comment("Transcript of the user spoken response")
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String transcript;
 
     @Comment("Audio file path of the spoken response")
