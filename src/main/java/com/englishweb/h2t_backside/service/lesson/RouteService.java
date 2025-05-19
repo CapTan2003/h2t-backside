@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.lesson;
 
-import com.englishweb.h2t_backside.dto.RouteDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteDTO;
 import com.englishweb.h2t_backside.dto.filter.RouteFilterDTO;
 import com.englishweb.h2t_backside.service.feature.BaseService;
 import org.springframework.data.domain.Page;

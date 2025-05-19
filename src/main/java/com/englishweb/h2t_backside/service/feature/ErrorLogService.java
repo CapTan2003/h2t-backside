@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.feature;
 
-import com.englishweb.h2t_backside.dto.ErrorLogDTO;
+import com.englishweb.h2t_backside.dto.feature.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.filter.ErrorLogFilterDTO;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import org.springframework.data.domain.Page;

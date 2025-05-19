@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.controller.feature;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
-import com.englishweb.h2t_backside.dto.homepage.QuoteDTO;
+import com.englishweb.h2t_backside.dto.feature.homepage.QuoteDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.feature.QuoteService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.ErrorLogDTO;
+import com.englishweb.h2t_backside.dto.feature.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.response.ErrorDTO;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.utils.CustomLocalDateTimeSerializer;

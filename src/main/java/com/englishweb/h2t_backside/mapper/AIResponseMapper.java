@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.mapper;
 
-import com.englishweb.h2t_backside.dto.AIResponseDTO;
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
+import com.englishweb.h2t_backside.model.features.User;
 import com.englishweb.h2t_backside.model.features.AIResponse;
 import org.mapstruct.*;
 

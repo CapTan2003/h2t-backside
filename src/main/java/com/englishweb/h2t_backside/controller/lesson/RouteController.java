@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.controller.lesson;
 
-import com.englishweb.h2t_backside.dto.RouteDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.RouteFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;

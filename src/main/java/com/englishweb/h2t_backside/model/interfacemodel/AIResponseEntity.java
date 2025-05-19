@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.model.interfacemodel;
 
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.features.User;
 
 public interface AIResponseEntity extends BaseEntity{
     String getRequest();

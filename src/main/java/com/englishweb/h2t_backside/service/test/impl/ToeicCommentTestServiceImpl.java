@@ -1,11 +1,11 @@
 package com.englishweb.h2t_backside.service.test.impl;
 
-import com.englishweb.h2t_backside.dto.AIResponseDTO;
-import com.englishweb.h2t_backside.dto.TestCommentResponseDTO;
-import com.englishweb.h2t_backside.dto.ToeicCommentRequestDTO;
-import com.englishweb.h2t_backside.service.feature.AIResponseService;
-import com.englishweb.h2t_backside.service.feature.LLMService;
-import com.englishweb.h2t_backside.service.feature.ToeicCommentTestService;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.TestCommentResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.ToeicCommentRequestDTO;
+import com.englishweb.h2t_backside.service.ai.AIResponseService;
+import com.englishweb.h2t_backside.service.ai.LLMService;
+import com.englishweb.h2t_backside.service.ai.ToeicCommentTestService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

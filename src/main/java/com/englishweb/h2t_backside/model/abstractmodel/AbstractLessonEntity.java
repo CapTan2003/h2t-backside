@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.model.abstractmodel;
 
-import com.englishweb.h2t_backside.model.RouteNode;
+import com.englishweb.h2t_backside.model.features.RouteNode;
 import com.englishweb.h2t_backside.model.interfacemodel.LessonEntity;
 import jakarta.persistence.*;
 import lombok.*;

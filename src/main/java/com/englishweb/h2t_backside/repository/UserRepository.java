@@ -1,7 +1,6 @@
 package com.englishweb.h2t_backside.repository;
 
-import com.englishweb.h2t_backside.model.User;
-import com.englishweb.h2t_backside.model.test.ToeicPart3_4;
+import com.englishweb.h2t_backside.model.features.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

@@ -1,8 +1,8 @@
 package com.englishweb.h2t_backside.mapper;
 
 
-import com.englishweb.h2t_backside.dto.UserDTO;
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.dto.feature.UserDTO;
+import com.englishweb.h2t_backside.model.features.User;
 import org.mapstruct.*;
 
 @Mapper(

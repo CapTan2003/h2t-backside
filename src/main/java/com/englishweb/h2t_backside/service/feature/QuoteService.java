@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.feature;
 
-import com.englishweb.h2t_backside.dto.homepage.QuoteDTO;
+import com.englishweb.h2t_backside.dto.feature.homepage.QuoteDTO;
 
 import java.util.List;
 

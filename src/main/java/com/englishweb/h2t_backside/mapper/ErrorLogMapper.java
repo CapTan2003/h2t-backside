@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.mapper;
 
-import com.englishweb.h2t_backside.dto.ErrorLogDTO;
+import com.englishweb.h2t_backside.dto.feature.ErrorLogDTO;
 import com.englishweb.h2t_backside.model.log.ErrorLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

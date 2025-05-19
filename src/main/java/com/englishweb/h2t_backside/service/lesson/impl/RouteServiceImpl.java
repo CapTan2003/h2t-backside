@@ -1,14 +1,14 @@
 package com.englishweb.h2t_backside.service.lesson.impl;
 
-import com.englishweb.h2t_backside.dto.RouteDTO;
-import com.englishweb.h2t_backside.dto.RouteNodeDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.filter.RouteFilterDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.RouteMapper;
-import com.englishweb.h2t_backside.model.Route;
+import com.englishweb.h2t_backside.model.features.Route;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.RouteRepository;
 import com.englishweb.h2t_backside.repository.specifications.RouteSpecification;

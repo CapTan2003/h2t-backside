@@ -1,8 +1,8 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.EmailDTO;
+import com.englishweb.h2t_backside.dto.feature.EmailDTO;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.features.User;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.UserRepository;
 import com.englishweb.h2t_backside.service.feature.EmailService;

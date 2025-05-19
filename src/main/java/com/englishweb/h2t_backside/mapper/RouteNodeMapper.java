@@ -1,11 +1,11 @@
 package com.englishweb.h2t_backside.mapper;
 
-import com.englishweb.h2t_backside.dto.RouteNodeDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
 import com.englishweb.h2t_backside.dto.lesson.*;
 import com.englishweb.h2t_backside.dto.test.TestDTO;
-import com.englishweb.h2t_backside.model.Route;
-import com.englishweb.h2t_backside.model.RouteNode;
+import com.englishweb.h2t_backside.model.features.Route;
+import com.englishweb.h2t_backside.model.features.RouteNode;
 import com.englishweb.h2t_backside.service.lesson.*;
 import com.englishweb.h2t_backside.service.test.TestService;
 import org.mapstruct.*;

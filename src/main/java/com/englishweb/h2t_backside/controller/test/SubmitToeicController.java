@@ -1,9 +1,7 @@
 package com.englishweb.h2t_backside.controller.test;
 
-import com.englishweb.h2t_backside.dto.SubmitTestStatsDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.SubmitToeicFilterDTO;
-import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitToeicDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.test.SubmitToeicService;
