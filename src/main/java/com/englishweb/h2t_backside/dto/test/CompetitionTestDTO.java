@@ -21,7 +21,7 @@ public class CompetitionTestDTO extends AbstractBaseDTO {
     private String title;
 
     @Min(value = 1, message = "Duration must be at least 1 minute")
-    private int duration;
+    private Integer duration;
 
     private OffsetDateTime startTime;
 

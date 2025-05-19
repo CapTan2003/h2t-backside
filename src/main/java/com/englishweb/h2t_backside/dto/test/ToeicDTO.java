@@ -19,7 +19,7 @@ public class ToeicDTO extends AbstractBaseDTO {
     private String title;
 
     @Min(value = 1, message = "Duration must be at least 1 minute")
-    private int duration;
+    private Integer duration;
 
 
     private List<Long> questionsPart1;
