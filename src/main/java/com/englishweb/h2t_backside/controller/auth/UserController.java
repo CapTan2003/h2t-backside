@@ -111,6 +111,7 @@ public class UserController {
                 .message("Users retrieved successfully with filters")
                 .build();
     }
+
     @PostMapping("/by-ids-and-status")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<List<UserDTO>> findByIdsAndStatus(
@@ -125,5 +126,25 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/{userId}/complete-route-node/{routeNodeId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> completeRouteNode(@PathVariable Long userId, @PathVariable Long routeNodeId) {
+        service.completeRouteNode(userId, routeNodeId);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .message("Route node completed successfully")
+                .build();
+    }
+
+    @GetMapping("/{userId}/process-by-route-id/{routeId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<List<Long>> getProcessByRouteId(@PathVariable Long userId, @PathVariable Long routeId) {
+        List<Long> process = service.getProcessByRouteId(userId, routeId);
+        return ResponseDTO.<List<Long>>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(process)
+                .message("Process retrieved successfully")
+                .build();
+    }
 }
 

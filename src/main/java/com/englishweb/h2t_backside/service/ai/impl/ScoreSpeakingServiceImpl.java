@@ -1,9 +1,9 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
-import com.englishweb.h2t_backside.dto.feature.AIResponseDTO;
-import com.englishweb.h2t_backside.dto.feature.ConversationScoreDTO;
-import com.englishweb.h2t_backside.dto.feature.SpeakingScoreDTO;
-import com.englishweb.h2t_backside.dto.feature.WritingScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.ConversationScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.SpeakingScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.WritingScoreDTO;
 import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.ai.ScoreSpeakingService;
 import com.englishweb.h2t_backside.service.ai.ScoreWritingService;

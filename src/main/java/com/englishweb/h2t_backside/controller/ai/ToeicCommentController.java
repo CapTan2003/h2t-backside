@@ -1,8 +1,8 @@
 package com.englishweb.h2t_backside.controller.ai;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
-import com.englishweb.h2t_backside.dto.feature.ToeicCommentRequestDTO;
-import com.englishweb.h2t_backside.dto.feature.TestCommentResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.ToeicCommentRequestDTO;
+import com.englishweb.h2t_backside.dto.ai.TestCommentResponseDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.ai.ToeicCommentTestService;
 import lombok.RequiredArgsConstructor;

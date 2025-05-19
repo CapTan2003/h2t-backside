@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.controller.lesson;
 import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
+import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;
 import com.englishweb.h2t_backside.service.lesson.RouteNodeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -74,6 +75,17 @@ public class RouteNodeController {
         return ResponseDTO.<String>builder()
                 .status(result ? ResponseStatusEnum.SUCCESS : ResponseStatusEnum.FAIL)
                 .message(result ? "Route node deleted successfully" : "Failed to delete route node")
+                .build();
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<RouteNodeDTO> findByNodeIdAndRouteNodeType(@RequestParam Long nodeId, @RequestParam RouteNodeEnum type) {
+        RouteNodeDTO routeNode = service.findByNodeIdAndRouteNodeType(nodeId, type);
+        return ResponseDTO.<RouteNodeDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(routeNode)
+                .message("Route node retrieved successfully")
                 .build();
     }
 }

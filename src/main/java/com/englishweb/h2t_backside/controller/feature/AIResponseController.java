@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.controller.feature;
 
-import com.englishweb.h2t_backside.dto.feature.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;

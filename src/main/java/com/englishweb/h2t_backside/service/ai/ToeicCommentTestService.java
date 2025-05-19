@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.service.ai;
 
-import com.englishweb.h2t_backside.dto.feature.TestCommentResponseDTO;
-import com.englishweb.h2t_backside.dto.feature.ToeicCommentRequestDTO;
+import com.englishweb.h2t_backside.dto.ai.TestCommentResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.ToeicCommentRequestDTO;
 
 public interface ToeicCommentTestService {
 

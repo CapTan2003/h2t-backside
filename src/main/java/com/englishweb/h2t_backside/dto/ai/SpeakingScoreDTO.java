@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.dto.feature;
+package com.englishweb.h2t_backside.dto.ai;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

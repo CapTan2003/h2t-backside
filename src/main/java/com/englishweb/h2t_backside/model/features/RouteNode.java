@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.model;
+package com.englishweb.h2t_backside.model.features;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;

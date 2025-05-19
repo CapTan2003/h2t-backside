@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
-import com.englishweb.h2t_backside.dto.feature.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;

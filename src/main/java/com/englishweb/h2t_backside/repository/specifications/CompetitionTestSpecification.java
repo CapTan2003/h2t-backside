@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.repository.specifications;
 
-import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import org.springframework.data.jpa.domain.Specification;
 

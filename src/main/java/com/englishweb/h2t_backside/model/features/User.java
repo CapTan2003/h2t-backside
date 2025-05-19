@@ -1,4 +1,4 @@
-package com.englishweb.h2t_backside.model;
+package com.englishweb.h2t_backside.model.features;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;
@@ -8,9 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -57,4 +57,13 @@ public class User extends AbstractBaseEntity implements UserEntity {
 
     @Column(length = 500)
     private String refreshToken;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "PROCESS",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "route_node_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "route_node_id"})
+    )
+    private List<RouteNode> routeNodes;
 }

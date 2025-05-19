@@ -2,13 +2,9 @@ package com.englishweb.h2t_backside.mapper.lesson;
 
 import com.englishweb.h2t_backside.dto.lesson.SpeakingDTO;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
-import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.model.lesson.Preparation;
 import com.englishweb.h2t_backside.model.lesson.Speaking;
-import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
-
-import java.util.List;
 
 @Mapper(
         componentModel = "spring",

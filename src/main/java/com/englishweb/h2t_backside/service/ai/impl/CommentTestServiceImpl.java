@@ -1,8 +1,8 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
-import com.englishweb.h2t_backside.dto.feature.AIResponseDTO;
-import com.englishweb.h2t_backside.dto.feature.TestCommentRequestDTO;
-import com.englishweb.h2t_backside.dto.feature.TestCommentResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.TestCommentRequestDTO;
+import com.englishweb.h2t_backside.dto.ai.TestCommentResponseDTO;
 import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.ai.LLMService;
 import com.englishweb.h2t_backside.service.ai.CommentTestService;

@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.controller.ai;
 
-import com.englishweb.h2t_backside.dto.feature.TextToSpeechDTO;
+import com.englishweb.h2t_backside.dto.ai.TextToSpeechDTO;
 import com.englishweb.h2t_backside.dto.feature.VoiceDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;

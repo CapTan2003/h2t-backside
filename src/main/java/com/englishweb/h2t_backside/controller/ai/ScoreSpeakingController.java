@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.controller.ai;
 
-import com.englishweb.h2t_backside.dto.feature.ConversationScoreDTO;
-import com.englishweb.h2t_backside.dto.feature.SpeakingScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.ConversationScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.SpeakingScoreDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.ai.ScoreSpeakingService;
