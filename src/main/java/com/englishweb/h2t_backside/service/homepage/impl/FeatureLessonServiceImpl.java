@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.homepage.impl;
 
-import com.englishweb.h2t_backside.dto.RouteNodeDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.filter.LessonFilterDTO;
 import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
 import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;

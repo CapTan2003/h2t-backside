@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.homepage.QuoteDTO;
+import com.englishweb.h2t_backside.dto.feature.homepage.QuoteDTO;
 import com.englishweb.h2t_backside.service.feature.QuoteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

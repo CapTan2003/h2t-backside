@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.dto.abstractdto;
 
-import com.englishweb.h2t_backside.dto.RouteNodeDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
 import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

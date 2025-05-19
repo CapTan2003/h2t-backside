@@ -1,6 +1,5 @@
 package com.englishweb.h2t_backside.dto.test;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
 import com.englishweb.h2t_backside.dto.abstractdto.AbstractBaseDTO;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
 import jakarta.validation.constraints.Min;

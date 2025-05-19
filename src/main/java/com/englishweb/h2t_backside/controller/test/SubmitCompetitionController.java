@@ -1,11 +1,9 @@
 package com.englishweb.h2t_backside.controller.test;
 
-import com.englishweb.h2t_backside.dto.SubmitTestStatsDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.SubmitCompetitionFilterDTO;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.dto.test.SubmitTestDTO;
 import com.englishweb.h2t_backside.service.test.SubmitCompetitionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

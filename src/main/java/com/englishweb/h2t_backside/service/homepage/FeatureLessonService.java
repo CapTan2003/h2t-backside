@@ -1,7 +1,6 @@
 package com.englishweb.h2t_backside.service.homepage;
 
-import com.englishweb.h2t_backside.dto.RouteNodeDTO;
-import com.englishweb.h2t_backside.dto.interfacedto.LessonDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
 
 import java.util.List;
 

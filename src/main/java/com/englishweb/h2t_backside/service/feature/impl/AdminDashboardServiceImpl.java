@@ -1,11 +1,11 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.ErrorLogDTO;
-import com.englishweb.h2t_backside.dto.UserDTO;
-import com.englishweb.h2t_backside.dto.admindashboard.AdminDashboardDTO;
-import com.englishweb.h2t_backside.dto.admindashboard.ErrorLogStatsDTO;
-import com.englishweb.h2t_backside.dto.admindashboard.TeacherAdvanceStatsDTO;
-import com.englishweb.h2t_backside.dto.admindashboard.UserStatsDTO;
+import com.englishweb.h2t_backside.dto.feature.ErrorLogDTO;
+import com.englishweb.h2t_backside.dto.feature.UserDTO;
+import com.englishweb.h2t_backside.dto.feature.admindashboard.AdminDashboardDTO;
+import com.englishweb.h2t_backside.dto.feature.admindashboard.ErrorLogStatsDTO;
+import com.englishweb.h2t_backside.dto.feature.admindashboard.TeacherAdvanceStatsDTO;
+import com.englishweb.h2t_backside.dto.feature.admindashboard.UserStatsDTO;
 import com.englishweb.h2t_backside.dto.filter.ErrorLogFilterDTO;
 import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;

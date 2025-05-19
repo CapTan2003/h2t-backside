@@ -1,10 +1,10 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.RouteDTO;
-import com.englishweb.h2t_backside.dto.RouteNodeDTO;
-import com.englishweb.h2t_backside.dto.teacherdashboard.LessonDataDTO;
-import com.englishweb.h2t_backside.dto.teacherdashboard.TeacherDashboardDTO;
-import com.englishweb.h2t_backside.dto.teacherdashboard.TestDataDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteNodeDTO;
+import com.englishweb.h2t_backside.dto.feature.teacherdashboard.LessonDataDTO;
+import com.englishweb.h2t_backside.dto.feature.teacherdashboard.TeacherDashboardDTO;
+import com.englishweb.h2t_backside.dto.feature.teacherdashboard.TestDataDTO;
 import com.englishweb.h2t_backside.service.feature.TeacherDashboardService;
 import com.englishweb.h2t_backside.service.lesson.*;
 import lombok.extern.slf4j.Slf4j;

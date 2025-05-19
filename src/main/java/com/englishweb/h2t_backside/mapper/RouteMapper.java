@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.mapper;
 
-import com.englishweb.h2t_backside.dto.RouteDTO;
+import com.englishweb.h2t_backside.dto.feature.RouteDTO;
 import com.englishweb.h2t_backside.model.Route;
 import com.englishweb.h2t_backside.model.User;
 import org.mapstruct.*;
