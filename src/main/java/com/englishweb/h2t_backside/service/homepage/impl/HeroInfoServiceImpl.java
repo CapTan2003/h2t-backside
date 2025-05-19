@@ -1,8 +1,8 @@
 package com.englishweb.h2t_backside.service.homepage.impl;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
+import com.englishweb.h2t_backside.dto.feature.UserDTO;
 import com.englishweb.h2t_backside.dto.filter.*;
-import com.englishweb.h2t_backside.dto.homepage.HeroInfoDTO;
+import com.englishweb.h2t_backside.dto.feature.homepage.HeroInfoDTO;
 import com.englishweb.h2t_backside.dto.lesson.*;
 import com.englishweb.h2t_backside.dto.test.CompetitionTestDTO;
 import com.englishweb.h2t_backside.dto.test.TestDTO;

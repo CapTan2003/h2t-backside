@@ -1,8 +1,7 @@
 package com.englishweb.h2t_backside.service.feature;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
+import com.englishweb.h2t_backside.dto.feature.UserDTO;
 import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
-import com.englishweb.h2t_backside.model.User;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

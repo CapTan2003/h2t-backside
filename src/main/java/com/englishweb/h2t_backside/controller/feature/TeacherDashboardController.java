@@ -2,7 +2,7 @@ package com.englishweb.h2t_backside.controller.feature;
 
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.dto.teacherdashboard.TeacherDashboardDTO;
+import com.englishweb.h2t_backside.dto.feature.teacherdashboard.TeacherDashboardDTO;
 import com.englishweb.h2t_backside.service.feature.TeacherDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

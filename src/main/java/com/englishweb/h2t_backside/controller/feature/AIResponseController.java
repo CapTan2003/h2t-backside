@@ -1,10 +1,10 @@
 package com.englishweb.h2t_backside.controller.feature;
 
-import com.englishweb.h2t_backside.dto.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.feature.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
-import com.englishweb.h2t_backside.service.feature.AIResponseService;
+import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.feature.AuthenticateService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

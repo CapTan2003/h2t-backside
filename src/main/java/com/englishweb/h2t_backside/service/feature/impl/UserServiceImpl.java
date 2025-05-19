@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
-import com.englishweb.h2t_backside.dto.UserDTO;
+import com.englishweb.h2t_backside.dto.feature.UserDTO;
 import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
 import com.englishweb.h2t_backside.exception.*;
 import com.englishweb.h2t_backside.mapper.UserMapper;

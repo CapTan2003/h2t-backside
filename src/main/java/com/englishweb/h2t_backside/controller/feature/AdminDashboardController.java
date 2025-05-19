@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.controller.feature;
 
-import com.englishweb.h2t_backside.dto.admindashboard.AdminDashboardDTO;
+import com.englishweb.h2t_backside.dto.feature.admindashboard.AdminDashboardDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.feature.AdminDashboardService;
