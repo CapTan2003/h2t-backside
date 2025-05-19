@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.service.ai;
 
-import com.englishweb.h2t_backside.dto.feature.ConversationScoreDTO;
-import com.englishweb.h2t_backside.dto.feature.SpeakingScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.ConversationScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.SpeakingScoreDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

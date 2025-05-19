@@ -3,7 +3,7 @@ package com.englishweb.h2t_backside.mapper.test;
 import com.englishweb.h2t_backside.dto.test.SubmitCompetitionDTO;
 import com.englishweb.h2t_backside.model.test.CompetitionTest;
 import com.englishweb.h2t_backside.model.test.SubmitCompetition;
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.features.User;
 import org.mapstruct.*;
 
 @Mapper(

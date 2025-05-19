@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
-import com.englishweb.h2t_backside.dto.feature.AIResponseDTO;
-import com.englishweb.h2t_backside.dto.feature.WritingScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.ai.WritingScoreDTO;
 import com.englishweb.h2t_backside.dto.ai.languagetool.LanguageToolResponse;
 import com.englishweb.h2t_backside.dto.ai.languagetool.Match;
 import com.englishweb.h2t_backside.dto.ai.lexicaldiversity.LexicalDiversityMetrics;

@@ -1,6 +1,6 @@
 package com.englishweb.h2t_backside.repository;
 
-import com.englishweb.h2t_backside.model.Route;
+import com.englishweb.h2t_backside.model.features.Route;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

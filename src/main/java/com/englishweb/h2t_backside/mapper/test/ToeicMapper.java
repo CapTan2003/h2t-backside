@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.ToeicDTO;
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.features.User;
 import com.englishweb.h2t_backside.model.test.Toeic;
 import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;

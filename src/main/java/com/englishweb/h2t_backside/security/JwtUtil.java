@@ -1,7 +1,7 @@
 package com.englishweb.h2t_backside.security;
 
 import com.englishweb.h2t_backside.exception.AuthenticateException;
-import com.englishweb.h2t_backside.model.User;
+import com.englishweb.h2t_backside.model.features.User;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;

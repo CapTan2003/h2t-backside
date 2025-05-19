@@ -1,8 +1,8 @@
 package com.englishweb.h2t_backside.controller.ai;
 
 
-import com.englishweb.h2t_backside.dto.feature.ScoreWritingRequestDTO;
-import com.englishweb.h2t_backside.dto.feature.WritingScoreDTO;
+import com.englishweb.h2t_backside.dto.ai.ScoreWritingRequestDTO;
+import com.englishweb.h2t_backside.dto.ai.WritingScoreDTO;
 import com.englishweb.h2t_backside.dto.enumdto.ResponseStatusEnum;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.service.ai.ScoreWritingService;

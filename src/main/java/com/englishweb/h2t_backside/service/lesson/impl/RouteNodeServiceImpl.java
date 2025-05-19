@@ -9,7 +9,7 @@ import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.RouteNodeMapper;
-import com.englishweb.h2t_backside.model.RouteNode;
+import com.englishweb.h2t_backside.model.features.RouteNode;
 import com.englishweb.h2t_backside.model.enummodel.RouteNodeEnum;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.repository.RouteNodeRepository;
@@ -173,6 +173,15 @@ public class RouteNodeServiceImpl extends BaseServiceImpl<RouteNodeDTO, RouteNod
             case READING_TEST, WRITING_TEST, SPEAKING_TEST, LISTENING_TEST, MIXING_TEST -> true;
             default -> false;
         };
+    }
+
+    @Override
+    public RouteNodeDTO findByNodeIdAndRouteNodeType(Long nodeId, RouteNodeEnum type) {
+        RouteNode node = repository.findByNodeIdAndType(nodeId, type);
+        if (node != null) {
+            return mapper.convertToDTO(node);
+        }
+        throw new ResourceNotFoundException(nodeId, String.format("Route node with ID '%d' not found.", nodeId), SeverityEnum.MEDIUM);
     }
 
     private void processTopic(RouteNodeDTO node, Long nodeId) {
