@@ -12,6 +12,7 @@ import java.util.Map;
 @Builder
 public class ErrorLogStatsDTO {
     private long total;
+    private long highActiveCount;
     private Map<SeverityEnum, Long> bySeverity;
     private List<ErrorLogDTO> recentLogs;
 }

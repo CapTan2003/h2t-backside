@@ -68,9 +68,12 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         bySeverity.put(SeverityEnum.HIGH, errorLogService.findByPage(0, 1, "-createdAt", filterHigh).getTotalElements());
         bySeverity.put(SeverityEnum.MEDIUM, errorLogService.findByPage(0, 1, "-createdAt", filterMedium).getTotalElements());
         bySeverity.put(SeverityEnum.LOW, errorLogService.findByPage(0, 1, "-createdAt", filterLow).getTotalElements());
+        filterHigh.setStatus(true);
+        long highActiveCount = errorLogService.findByPage(0, 1, "-createdAt", filterHigh).getTotalElements();
 
         return ErrorLogStatsDTO.builder()
                 .total(totalCount)
+                .highActiveCount(highActiveCount)
                 .bySeverity(bySeverity)
                 .recentLogs(errorLogPage.getContent())
                 .build();
