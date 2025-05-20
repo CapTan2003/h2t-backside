@@ -23,7 +23,10 @@ public class WordNetServiceImpl implements WordNetService {
 
     private IDictionary dictionary;
 
-    @Value("${wordnet.dictionary.path:/usr/share/wordnet}")
+//    @Value("${wordnet.dictionary.path:/usr/share/wordnet}")
+//    private String wordnetPath;
+
+    @Value("${wordnet.dictionary.path:C:\\Program Files (x86)\\WordNet\\2.1\\dict}")
     private String wordnetPath;
 
     @PostConstruct
