@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.security;
 
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
+import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -66,11 +67,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 //                        .requestMatchers("/**").permitAll() // Cho phép tất cả các phương thức với mọi đường dẫn dưới "/api/**"
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole(RoleEnum.ADMIN.name())
-//                          .requestMatchers("/api/**").authenticated() // Yêu cầu access token
+                          .requestMatchers("/api/**").authenticated() // Yêu cầu access token
                           .anyRequest().denyAll() // Từ chối tất cả các request khác
                 )
                 // Giữ nguyên xác thực OAuth2 JWT cho các API cần bảo vệ

@@ -1,12 +1,14 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
 import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
+import com.englishweb.h2t_backside.dto.feature.UserDTO;
 import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.exception.CreateResourceException;
 import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.AIResponseMapper;
+import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.model.features.AIResponse;
 import com.englishweb.h2t_backside.repository.AIResponseRepository;
@@ -60,6 +62,12 @@ public class AIResponseServiceImpl extends BaseServiceImpl<AIResponseDTO, AIResp
         }
 
         throw new UpdateResourceException(dto, errorMessage, errorCode, status, SeverityEnum.LOW);
+    }
+
+    @Override
+    public AIResponseDTO create(AIResponseDTO aiResponseDTO) {
+        aiResponseDTO.setStatus(false);
+        return super.create(aiResponseDTO);
     }
 
     @Override
