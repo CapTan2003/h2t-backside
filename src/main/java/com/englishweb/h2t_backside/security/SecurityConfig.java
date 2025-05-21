@@ -49,13 +49,7 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/h2-console/**",
             "/api/minio/**",
-            "/api/hero-info",
-            "/api/feature-lesson/most-viewed",
-            "/api/quotes",
-            "/api/competition-tests/**",
-            "/api/routes/longest",
-            "/api/tests/**",
-            "/api/toeic/**"
+            "/api/home/**",
     };
 
     @Value("${jwt.signerkey}")
