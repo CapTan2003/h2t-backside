@@ -347,15 +347,25 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
     /**
      * Tính toán thống kê cho phần Speaking
      */
+
     private void calculateSpeakingPartStats(
             List<Long> questionIds,
             List<SubmitCompetitionDTO> allSubmissions,
             List<CompetitionStatsDTO.PartStatsDTO> partStats,
             int totalQuestions) {
 
+        // Tính điểm tối đa cho mỗi câu hỏi
         double maxScorePerQuestion = PART_MAX_SCORE / totalQuestions;
         double totalScore = 0;
         int totalAttempts = 0;
+
+        // Tạo map để thống kê phân phối điểm số theo tỷ lệ phần trăm so với điểm tối đa
+        Map<String, Integer> scoreDistributionCount = new HashMap<>();
+        scoreDistributionCount.put("0-20%", 0);  // 0-20% điểm tối đa
+        scoreDistributionCount.put("20-40%", 0); // 20-40% điểm tối đa
+        scoreDistributionCount.put("40-60%", 0); // 40-60% điểm tối đa
+        scoreDistributionCount.put("60-80%", 0); // 60-80% điểm tối đa
+        scoreDistributionCount.put("80-100%", 0); // 80-100% điểm tối đa
 
         // Duyệt qua từng bài nộp
         for (SubmitCompetitionDTO submission : allSubmissions) {
@@ -364,8 +374,22 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
 
             for (SubmitCompetitionSpeakingDTO speaking : speakings) {
                 if (speaking.getScore() != null && speaking.getFile() != null && !speaking.getFile().isEmpty()) {
-                    totalScore += speaking.getScore();
+                    double score = speaking.getScore();
+                    totalScore += score;
                     totalAttempts++;
+
+                    // Tính phần trăm so với điểm tối đa của câu hỏi
+                    double scorePercentage = (score / maxScorePerQuestion) * 100;
+
+                    // Phân loại điểm vào các khoảng
+                    String key;
+                    if (scorePercentage < 20) key = "0-20%";
+                    else if (scorePercentage < 40) key = "20-40%";
+                    else if (scorePercentage < 60) key = "40-60%";
+                    else if (scorePercentage < 80) key = "60-80%";
+                    else key = "80-100%";
+
+                    scoreDistributionCount.put(key, scoreDistributionCount.get(key) + 1);
                 }
             }
         }
@@ -385,20 +409,26 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
             averageAccuracy = 0;
         }
 
-        // Tạo phân phối độ chính xác giả lập (vì speaking không có độ chính xác như trắc nghiệm)
-        Map<String, Double> accuracyDistribution = new HashMap<>();
-        accuracyDistribution.put("0-20%", 0.0);
-        accuracyDistribution.put("20-40%", 0.0);
-        accuracyDistribution.put("40-60%", 0.0);
-        accuracyDistribution.put("60-80%", 0.0);
-        accuracyDistribution.put("80-100%", 0.0);
+        // Chuyển đếm thành phần trăm cho phân phối
+        Map<String, Double> scoreDistribution = new HashMap<>();
+        if (totalAttempts > 0) {
+            for (String key : scoreDistributionCount.keySet()) {
+                int count = scoreDistributionCount.get(key);
+                double percentage = ((double) count / totalAttempts) * 100;
+                scoreDistribution.put(key, Math.round(percentage * 10) / 10.0);
+            }
+        } else {
+            for (String key : scoreDistributionCount.keySet()) {
+                scoreDistribution.put(key, 0.0);
+            }
+        }
 
         partStats.add(CompetitionStatsDTO.PartStatsDTO.builder()
                 .type(TestPartEnum.SPEAKING.name())
                 .totalQuestions(totalQuestions)
                 .averageScore(Math.round(averageScore * 10) / 10.0)
                 .averageAccuracy(Math.round(averageAccuracy * 10) / 10.0)
-                .accuracyDistribution(accuracyDistribution)
+                .accuracyDistribution(scoreDistribution)  // Sử dụng phân phối điểm theo thang % so với điểm tối đa
                 .build());
     }
 
@@ -411,9 +441,18 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
             List<CompetitionStatsDTO.PartStatsDTO> partStats,
             int totalQuestions) {
 
+        // Tính điểm tối đa cho mỗi chủ đề
         double maxScorePerTopic = PART_MAX_SCORE / totalQuestions;
         double totalScore = 0;
         int totalAttempts = 0;
+
+        // Tạo map để thống kê phân phối điểm số theo tỷ lệ phần trăm so với điểm tối đa
+        Map<String, Integer> scoreDistributionCount = new HashMap<>();
+        scoreDistributionCount.put("0-20%", 0);  // 0-20% điểm tối đa
+        scoreDistributionCount.put("20-40%", 0); // 20-40% điểm tối đa
+        scoreDistributionCount.put("40-60%", 0); // 40-60% điểm tối đa
+        scoreDistributionCount.put("60-80%", 0); // 60-80% điểm tối đa
+        scoreDistributionCount.put("80-100%", 0); // 80-100% điểm tối đa
 
         // Duyệt qua từng bài nộp
         for (SubmitCompetitionDTO submission : allSubmissions) {
@@ -422,8 +461,22 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
 
             for (SubmitCompetitionWritingDTO writing : writings) {
                 if (writing.getScore() != null && writing.getContent() != null && !writing.getContent().isEmpty()) {
-                    totalScore += writing.getScore();
+                    double score = writing.getScore();
+                    totalScore += score;
                     totalAttempts++;
+
+                    // Tính phần trăm so với điểm tối đa của câu hỏi
+                    double scorePercentage = (score / maxScorePerTopic) * 100;
+
+                    // Phân loại điểm vào các khoảng
+                    String key;
+                    if (scorePercentage < 20) key = "0-20%";
+                    else if (scorePercentage < 40) key = "20-40%";
+                    else if (scorePercentage < 60) key = "40-60%";
+                    else if (scorePercentage < 80) key = "60-80%";
+                    else key = "80-100%";
+
+                    scoreDistributionCount.put(key, scoreDistributionCount.get(key) + 1);
                 }
             }
         }
@@ -443,20 +496,26 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
             averageAccuracy = 0;
         }
 
-        // Tạo phân phối độ chính xác giả lập (vì writing không có độ chính xác như trắc nghiệm)
-        Map<String, Double> accuracyDistribution = new HashMap<>();
-        accuracyDistribution.put("0-20%", 0.0);
-        accuracyDistribution.put("20-40%", 0.0);
-        accuracyDistribution.put("40-60%", 0.0);
-        accuracyDistribution.put("60-80%", 0.0);
-        accuracyDistribution.put("80-100%", 0.0);
+        // Chuyển đếm thành phần trăm cho phân phối
+        Map<String, Double> scoreDistribution = new HashMap<>();
+        if (totalAttempts > 0) {
+            for (String key : scoreDistributionCount.keySet()) {
+                int count = scoreDistributionCount.get(key);
+                double percentage = ((double) count / totalAttempts) * 100;
+                scoreDistribution.put(key, Math.round(percentage * 10) / 10.0);
+            }
+        } else {
+            for (String key : scoreDistributionCount.keySet()) {
+                scoreDistribution.put(key, 0.0);
+            }
+        }
 
         partStats.add(CompetitionStatsDTO.PartStatsDTO.builder()
                 .type(TestPartEnum.WRITING.name())
                 .totalQuestions(totalQuestions)
                 .averageScore(Math.round(averageScore * 10) / 10.0)
                 .averageAccuracy(Math.round(averageAccuracy * 10) / 10.0)
-                .accuracyDistribution(accuracyDistribution)
+                .accuracyDistribution(scoreDistribution)  // Sử dụng phân phối điểm theo thang % so với điểm tối đa
                 .build());
     }
 
