@@ -1,16 +1,16 @@
 package com.englishweb.h2t_backside.service.feature.impl;
 
+import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.feature.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.feature.UserDTO;
-import com.englishweb.h2t_backside.dto.feature.admindashboard.AdminDashboardDTO;
-import com.englishweb.h2t_backside.dto.feature.admindashboard.ErrorLogStatsDTO;
-import com.englishweb.h2t_backside.dto.feature.admindashboard.TeacherAdvanceStatsDTO;
-import com.englishweb.h2t_backside.dto.feature.admindashboard.UserStatsDTO;
+import com.englishweb.h2t_backside.dto.feature.admindashboard.*;
+import com.englishweb.h2t_backside.dto.filter.AIResponseFilterDTO;
 import com.englishweb.h2t_backside.dto.filter.ErrorLogFilterDTO;
 import com.englishweb.h2t_backside.dto.filter.UserFilterDTO;
 import com.englishweb.h2t_backside.model.enummodel.LevelEnum;
 import com.englishweb.h2t_backside.model.enummodel.RoleEnum;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
+import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.feature.AdminDashboardService;
 import com.englishweb.h2t_backside.service.feature.ErrorLogService;
 import com.englishweb.h2t_backside.service.feature.UserService;
@@ -31,6 +31,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
     private static final int RECENT_ITEMS_LIMIT = 5;
     private final ErrorLogService errorLogService;
     private final UserService userService;
+    private final AIResponseService aiResponseService;
 
     @Override
     public AdminDashboardDTO getDashboardData() {
@@ -38,14 +39,46 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
         ErrorLogStatsDTO errorLogStats = getErrorLogStats();
         UserStatsDTO userStats = getUserStats();
+        AIResponseStatsDTO aiResponseStats = getAIResponseStats();
 
         AdminDashboardDTO adminDashboardDTO = AdminDashboardDTO.builder()
                 .errorLogStats(errorLogStats)
                 .userStats(userStats)
+                .aiResponseStats(aiResponseStats)
                 .build();
 
         log.info("Admin dashboard data retrieved successfully");
         return adminDashboardDTO;
+    }
+
+    private AIResponseStatsDTO getAIResponseStats() {
+        log.info("Gathering AI response statistics");
+
+        AIResponseFilterDTO filter = new AIResponseFilterDTO();
+
+        // Get total count
+        Page<AIResponseDTO> allResponses = aiResponseService.searchWithFilters(0, 1, "-createdAt", filter);
+        long totalCount = allResponses.getTotalElements();
+
+        // Get evaluated responses (status = true)
+        AIResponseFilterDTO evaluatedFilter = new AIResponseFilterDTO();
+        evaluatedFilter.setStatus(true);
+        Page<AIResponseDTO> evaluatedPage = aiResponseService.searchWithFilters(0, RECENT_ITEMS_LIMIT, "-createdAt", evaluatedFilter);
+        long evaluatedCount = evaluatedPage.getTotalElements();
+
+        // Get not evaluated responses (status = false)
+        AIResponseFilterDTO notEvaluatedFilter = new AIResponseFilterDTO();
+        notEvaluatedFilter.setStatus(false);
+        Page<AIResponseDTO> notEvaluatedPage = aiResponseService.searchWithFilters(0, RECENT_ITEMS_LIMIT, "-createdAt", notEvaluatedFilter);
+        long notEvaluatedCount = notEvaluatedPage.getTotalElements();
+
+        return AIResponseStatsDTO.builder()
+                .total(totalCount)
+                .evaluatedCount(evaluatedCount)
+                .notEvaluatedCount(notEvaluatedCount)
+                .recentEvaluated(evaluatedPage.getContent())
+                .recentNotEvaluated(notEvaluatedPage.getContent())
+                .build();
     }
 
     private ErrorLogStatsDTO getErrorLogStats() {
