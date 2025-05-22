@@ -29,7 +29,7 @@ public class CompetitionTestDTO extends AbstractBaseDTO {
 
     private List<Long> parts;
 
-    private Integer totalQuestions;
+    private int totalQuestions;
 
     @NotNull(message = "Owner id cannot be empty")
     private Long ownerId;
