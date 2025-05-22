@@ -8,4 +8,5 @@ import lombok.Data;
 public class AdminDashboardDTO {
     private ErrorLogStatsDTO errorLogStats;
     private UserStatsDTO userStats;
+    private AIResponseStatsDTO aiResponseStats;
 }
