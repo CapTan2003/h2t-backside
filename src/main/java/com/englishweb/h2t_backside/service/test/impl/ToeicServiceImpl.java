@@ -8,10 +8,7 @@ import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.exception.UpdateResourceException;
 import com.englishweb.h2t_backside.mapper.test.ToeicMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
-import com.englishweb.h2t_backside.model.test.SubmitToeic;
 import com.englishweb.h2t_backside.model.test.Toeic;
-import com.englishweb.h2t_backside.model.test.ToeicQuestion;
-import com.englishweb.h2t_backside.repository.specifications.CompetitionTestSpecification;
 import com.englishweb.h2t_backside.repository.specifications.ToeicSpecification;
 import com.englishweb.h2t_backside.repository.test.ToeicRepository;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
@@ -190,90 +187,13 @@ public class ToeicServiceImpl extends BaseServiceImpl<ToeicDTO, Toeic, ToeicRepo
 
     @Override
     public boolean verifyValidToeic(Long toeicId) {
-        ToeicDTO toeic = super.findById(toeicId);
-
-        if (toeic == null) {
+        ToeicDTO toeicDTO = super.findById(toeicId);
+        enrichQuestionTotals(toeicDTO);
+        if (toeicDTO.getTotalQuestions()  != 200) {
             return false;
         }
-
-        if (toeic.getQuestionsPart1() == null || toeic.getQuestionsPart1().size() != PART1_STANDARD_QUESTIONS) {
-            log.warn("Part 1 invalid: {} questions (expected: {})",
-                    toeic.getQuestionsPart1() != null ? toeic.getQuestionsPart1().size() : 0,
-                    PART1_STANDARD_QUESTIONS);
-            return false;
-        }
-
-
-        // Verify Part 2 - Question response (25 questions)
-        if (toeic.getQuestionsPart2() == null || toeic.getQuestionsPart2().size() != PART2_STANDARD_QUESTIONS) {
-            log.warn("Part 2 invalid: {} questions (expected: {})",
-                    toeic.getQuestionsPart2() != null ? toeic.getQuestionsPart2().size() : 0,
-                    PART2_STANDARD_QUESTIONS);
-            return false;
-        }
-
-        // Verify Part 3 - Short conversations (39 questions)
-        List<ToeicPart3_4DTO> part3List = toeicPart3_4Service.findByIdsAndStatus(toeic.getQuestionsPart3(),true);
-        int part3TotalQuestions = 0;
-        for (ToeicPart3_4DTO part3 : part3List) {
-            if (part3.getQuestions() != null) {
-                part3TotalQuestions += part3.getQuestions().size();
-            }
-        }
-        if (part3TotalQuestions != PART3_TOTAL_QUESTIONS) {
-            log.warn("Part 3 invalid: {} questions (expected: {})", part3TotalQuestions, PART3_TOTAL_QUESTIONS);
-            return false;
-        }
-
-        // Verify Part 4 - Short talks (30 questions)
-        List<ToeicPart3_4DTO> part4List = toeicPart3_4Service.findByIdsAndStatus(toeic.getQuestionsPart4(),true);
-        int part4TotalQuestions = 0;
-        for (ToeicPart3_4DTO part4 : part4List) {
-            if (part4.getQuestions() != null) {
-                part4TotalQuestions += part4.getQuestions().size();
-            }
-        }
-        if (part4TotalQuestions != PART4_TOTAL_QUESTIONS) {
-            log.warn("Part 4 invalid: {} questions (expected: {})", part4TotalQuestions, PART4_TOTAL_QUESTIONS);
-            return false;
-        }
-
-        // Verify Part 5 - Incomplete sentences (40 questions)
-        if (toeic.getQuestionsPart5() == null || toeic.getQuestionsPart5().size() != PART5_STANDARD_QUESTIONS) {
-            log.warn("Part 5 invalid: {} questions (expected: {})",
-                    toeic.getQuestionsPart5() != null ? toeic.getQuestionsPart5().size() : 0,
-                    PART5_STANDARD_QUESTIONS);
-            return false;
-        }
-
-        // Verify Part 6 - Text completion (16 questions)
-        List<ToeicPart6DTO> part6List = toeicPart6Service.findByIdsAndStatus(toeic.getQuestionsPart6(),true);
-        int part6TotalQuestions = 0;
-        for (ToeicPart6DTO part6 : part6List) {
-            if (part6.getQuestions() != null) {
-                part6TotalQuestions += part6.getQuestions().size();
-            }
-        }
-        if (part6TotalQuestions != PART6_TOTAL_QUESTIONS) {
-            log.warn("Part 6 invalid: {} questions (expected: {})", part6TotalQuestions, PART6_TOTAL_QUESTIONS);
-            return false;
-        }
-
-        // Verify Part 7 - Reading comprehension (54 questions)
-        List<ToeicPart7DTO> part7List = toeicPart7Service.findByIdsAndStatus(toeic.getQuestionsPart7(),true);
-        int part7TotalQuestions = 0;
-        for (ToeicPart7DTO part7 : part7List) {
-            if (part7.getQuestions() != null) {
-                part7TotalQuestions += part7.getQuestions().size();
-            }
-        }
-        if (part7TotalQuestions != PART7_TOTAL_QUESTIONS) {
-            log.warn("Part 7 invalid: {} questions (expected: {})", part7TotalQuestions, PART7_TOTAL_QUESTIONS);
-            return false;
-        }
-
-        log.info("TOEIC test verification passed for ID: {}", toeicId);
         return true;
+        
     }
     private void enrichQuestionTotals(ToeicDTO dto) {
         int part1Count = dto.getQuestionsPart1() != null ? dto.getQuestionsPart1().size() : 0;
