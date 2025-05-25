@@ -155,7 +155,6 @@ public class ReadabilityServiceImpl implements ReadabilityService {
         // Các biến để tính toán
         int totalSentences = metrics.getTotalSentences();
         int totalWords = metrics.getTotalWords();
-        int totalSyllables = metrics.getTotalSyllables();
         int complexWords = metrics.getComplexWords();
         double averageWordsPerSentence = metrics.getAverageWordsPerSentence();
         double averageSyllablesPerWord = metrics.getAverageSyllablesPerWord();
