@@ -19,12 +19,10 @@ public class VocabularyEnrichmentServiceImpl implements VocabularyEnrichmentServ
     private final LexicalDiversityService lexicalDiversityService;
     private final WordNetService wordNetService;
 
-    // List of common words that might be upgraded
     private static final Set<String> COMMON_WORDS = new HashSet<>(Arrays.asList(
             "good", "bad", "nice", "big", "small", "happy", "sad", "angry", "pretty",
             "ugly", "fast", "slow", "hot", "cold", "easy", "hard", "important", "thing",
             "very", "really", "a lot", "many", "few", "like", "said", "went", "got"
-            // Add more common words that students often overuse
     ));
 
     @Autowired
