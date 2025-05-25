@@ -96,5 +96,21 @@ public class ToeicController {
                 .message("Toeic results retrieved successfully with filters")
                 .build();
     }
+    @GetMapping("/{id}/verify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO<String> verify(@PathVariable Long id) {
+        boolean result = service.verifyValidToeic(id);
+        if (result) {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS)
+                    .message("Toeic verified successfully")
+                    .build();
+        } else {
+            return ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.FAIL)
+                    .message("Toeic not valid")
+                    .build();
+        }
+    }
 
 }

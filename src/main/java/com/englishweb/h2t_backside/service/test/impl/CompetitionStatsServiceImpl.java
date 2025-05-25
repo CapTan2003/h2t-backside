@@ -360,7 +360,7 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
         int totalAttempts = 0;
 
         // Tạo map để thống kê phân phối điểm số theo tỷ lệ phần trăm so với điểm tối đa
-        Map<String, Integer> scoreDistributionCount = new HashMap<>();
+        Map<String, Integer> scoreDistributionCount = new LinkedHashMap<>();
         scoreDistributionCount.put("0-20%", 0);  // 0-20% điểm tối đa
         scoreDistributionCount.put("20-40%", 0); // 20-40% điểm tối đa
         scoreDistributionCount.put("40-60%", 0); // 40-60% điểm tối đa
@@ -410,7 +410,7 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
         }
 
         // Chuyển đếm thành phần trăm cho phân phối
-        Map<String, Double> scoreDistribution = new HashMap<>();
+        Map<String, Double> scoreDistribution = new LinkedHashMap<>();
         if (totalAttempts > 0) {
             for (String key : scoreDistributionCount.keySet()) {
                 int count = scoreDistributionCount.get(key);
@@ -447,7 +447,7 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
         int totalAttempts = 0;
 
         // Tạo map để thống kê phân phối điểm số theo tỷ lệ phần trăm so với điểm tối đa
-        Map<String, Integer> scoreDistributionCount = new HashMap<>();
+        Map<String, Integer> scoreDistributionCount = new LinkedHashMap<>();
         scoreDistributionCount.put("0-20%", 0);  // 0-20% điểm tối đa
         scoreDistributionCount.put("20-40%", 0); // 20-40% điểm tối đa
         scoreDistributionCount.put("40-60%", 0); // 40-60% điểm tối đa
@@ -497,7 +497,7 @@ public class CompetitionStatsServiceImpl implements CompetitionStatsService {
         }
 
         // Chuyển đếm thành phần trăm cho phân phối
-        Map<String, Double> scoreDistribution = new HashMap<>();
+        Map<String, Double> scoreDistribution = new LinkedHashMap<>();
         if (totalAttempts > 0) {
             for (String key : scoreDistributionCount.keySet()) {
                 int count = scoreDistributionCount.get(key);
