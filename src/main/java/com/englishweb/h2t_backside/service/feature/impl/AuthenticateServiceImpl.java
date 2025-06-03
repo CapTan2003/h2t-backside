@@ -129,7 +129,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                     .build();
 
         } catch (Exception e) {
-            throw new AuthenticateException("Failed to verify Google ID Token", SeverityEnum.HIGH,
+            throw new AuthenticateException("Failed to verify Google ID Token", SeverityEnum.LOW,
                     new HashMap<String, Object>() {{
                         put("ggLoginData", request);
                     }});
@@ -142,7 +142,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
 
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthenticateException("Invalid refresh token.", SeverityEnum.HIGH,
+                .orElseThrow(() -> new AuthenticateException("Invalid refresh token.", SeverityEnum.LOW,
                         new HashMap<String, Object>() {{
                             put("refreshToken", refreshToken);
                         }}));
@@ -159,7 +159,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         // Kiểm tra token hợp lệ
         if (!jwtUtil.validateToken(refreshToken, false)) {
-            throw new AuthenticateException("Invalid or expired refresh token.", SeverityEnum.HIGH,
+            throw new AuthenticateException("Invalid or expired refresh token.", SeverityEnum.LOW,
                     new HashMap<String, Object>() {{
                         put("refreshToken", refreshToken);
                     }});
@@ -167,7 +167,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
         // Kiểm tra xem refresh token có trong DB không
         User user = repository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new AuthenticateException("Refresh token is invalid or already used.", SeverityEnum.HIGH,
+                .orElseThrow(() -> new AuthenticateException("Refresh token is invalid or already used.", SeverityEnum.LOW,
                         new HashMap<String, Object>() {{
                             put("refreshToken", refreshToken);
                         }}));
