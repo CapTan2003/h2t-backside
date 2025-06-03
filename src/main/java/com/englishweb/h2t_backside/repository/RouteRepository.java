@@ -14,7 +14,7 @@ public interface RouteRepository extends JpaRepository<Route, Long>, JpaSpecific
     @Query("SELECT r FROM Route r LEFT JOIN r.routeNodes nodes WHERE r.status = true GROUP BY r ORDER BY COUNT(nodes) DESC")
     List<Route> findTop5ByOrderByRouteNodeCountDesc(Pageable pageable);
 
-    default List<Route> findTop5ByOrderByRouteNodeCountDesc() {
-        return findTop5ByOrderByRouteNodeCountDesc(PageRequest.of(0, 5));
+    default List<Route> findTop3ByOrderByRouteNodeCountDesc() {
+        return findTop5ByOrderByRouteNodeCountDesc(PageRequest.of(0, 3));
     }
 }
