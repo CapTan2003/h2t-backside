@@ -38,4 +38,6 @@ public class TestDTO extends AbstractBaseDTO {
 
     private Double scoreLastOfTest;
 
+    private Long routeNodeId;
+
 }
