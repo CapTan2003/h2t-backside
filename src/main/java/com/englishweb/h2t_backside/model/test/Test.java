@@ -2,10 +2,8 @@ package com.englishweb.h2t_backside.model.test;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import com.englishweb.h2t_backside.model.enummodel.TestTypeEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.englishweb.h2t_backside.model.features.RouteNode;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.ColumnDefault;
@@ -37,5 +35,10 @@ public class Test extends AbstractBaseEntity {
     @Comment("Id part of the Test")
     @ColumnDefault("''")
     private String parts = "";
+
+    @OneToOne
+    @JoinColumn(name = "route_node_id", referencedColumnName = "id", nullable = true)
+    @Comment("Associated Route node for the Lesson")
+    private RouteNode routeNode;
 
 }

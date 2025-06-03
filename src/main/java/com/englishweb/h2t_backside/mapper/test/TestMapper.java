@@ -1,6 +1,7 @@
 package com.englishweb.h2t_backside.mapper.test;
 
 import com.englishweb.h2t_backside.dto.test.TestDTO;
+import com.englishweb.h2t_backside.model.features.RouteNode;
 import com.englishweb.h2t_backside.model.test.Test;
 import com.englishweb.h2t_backside.utils.ParseData;
 import org.mapstruct.*;
@@ -22,6 +23,7 @@ public interface TestMapper {
     @Mapping(target = "type", source = "dto.type")
     @Mapping(target = "parts", source = "dto.parts", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status", defaultValue = "true")
+    @Mapping(target = "routeNode", source = "dto.routeNodeId", qualifiedByName = "mapRouteNodeFromId")
     Test convertToEntity(TestDTO dto);
 
     // Entity → DTO
@@ -34,6 +36,7 @@ public interface TestMapper {
     @Mapping(target = "status", source = "entity.status")
     @Mapping(target = "createdAt", source = "entity.createdAt")
     @Mapping(target = "updatedAt", source = "entity.updatedAt")
+    @Mapping(target = "routeNodeId", source = "entity.routeNode.id")
     TestDTO convertToDTO(Test entity);
 
     // Patch DTO → Entity
@@ -43,6 +46,7 @@ public interface TestMapper {
     @Mapping(target = "type", source = "dto.type")
     @Mapping(target = "parts", source = "dto.parts", qualifiedByName = "longListToString")
     @Mapping(target = "status", source = "dto.status")
+    @Mapping(target = "routeNode", source = "dto.routeNodeId", qualifiedByName = "mapRouteNodeFromId")
     void patchEntityFromDTO(TestDTO dto, @MappingTarget Test entity);
 
     // Custom converters
@@ -54,5 +58,13 @@ public interface TestMapper {
     @Named("longListToString")
     default String longListToString(List<Long> list) {
         return ParseData.parseLongListToString(list);
+    }
+
+    @Named("mapRouteNodeFromId")
+    default RouteNode mapRouteNodeFromId(Long routeNodeId) {
+        if (routeNodeId == null) return null;
+        RouteNode node = new RouteNode();
+        node.setId(routeNodeId);
+        return node;
     }
 }

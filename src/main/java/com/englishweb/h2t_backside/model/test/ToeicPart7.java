@@ -21,8 +21,8 @@ public class ToeicPart7 extends AbstractBaseEntity {
     @Comment("Path to the DOCX file containing the TOEIC Part 7 passage")
     private String file;
 
-    @Column(nullable = false)
-    @ColumnDefault("''")
+
+
     @Comment("List of question IDs related to this passage")
     private String questions;
 }
