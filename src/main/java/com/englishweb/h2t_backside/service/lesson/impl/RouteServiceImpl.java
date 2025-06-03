@@ -133,7 +133,7 @@ public class RouteServiceImpl extends BaseServiceImpl<RouteDTO, Route, RouteRepo
 
     @Override
     public List<RouteDTO> findLongestRoutes() {
-        List<Route> longestRoutes = repository.findTop5ByOrderByRouteNodeCountDesc();
+        List<Route> longestRoutes = repository.findTop3ByOrderByRouteNodeCountDesc();
 
         return longestRoutes.stream()
                 .map(this::convertToDTO)

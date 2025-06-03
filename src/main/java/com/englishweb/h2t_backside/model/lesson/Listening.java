@@ -18,7 +18,8 @@ public class Listening extends AbstractLessonEntity {
     private String audio;
 
     @Lob
-    @Comment("Transcript of the audio, stored as a DOCX file")
+    @Column(columnDefinition = "LONGTEXT")
+    @Comment("Transcript of the audio")
     private String transcript;
 
     @Comment("Questions related to the Listening section")
