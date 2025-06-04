@@ -88,19 +88,9 @@ public class ScoreSpeakingController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<ConversationScoreDTO> evaluateMultipleFiles(
             @RequestParam("files") MultipartFile[] audioFiles,
-            @RequestParam("expectedTexts") String expectedTextsJson) {
+            @RequestParam("expectedTexts") String[] expectedTexts) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String[] expectedTexts;
         try {
-            // Kiểm tra xem dữ liệu có phải JSON array không
-            if (expectedTextsJson.trim().startsWith("[")) {
-                expectedTexts = objectMapper.readValue(expectedTextsJson, String[].class);
-            } else {
-                // Nếu không phải JSON array, xử lý như một chuỗi đơn
-                expectedTexts = new String[]{expectedTextsJson};
-            }
-
             List<MultipartFile> filesList = Arrays.asList(audioFiles);
             List<String> textsList = Arrays.asList(expectedTexts);
 
