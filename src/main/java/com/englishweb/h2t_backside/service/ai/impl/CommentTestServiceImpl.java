@@ -28,321 +28,429 @@ public class CommentTestServiceImpl implements CommentTestService {
 
     @Override
     public TestCommentResponseDTO comment(TestCommentRequestDTO request) {
-        log.info("Generating test comment");
+        log.info("Generating test comment with full content analysis");
 
         String prompt = buildPrompt(request);
-        log.info("Sending prompt to LLM service");
+        log.info("Generated prompt length: {} characters", prompt.length());
 
         try {
             String llmResponse = llmService.generateText(prompt);
-            log.debug("Received response from LLM: {}", llmResponse);
-
-            // Process the response to extract the JSON content
             String jsonContent = extractJsonFromResponse(llmResponse);
-            log.debug("Extracted JSON content: {}", jsonContent);
-
-            // Parse and normalize the JSON
             JsonNode rootNode = objectMapper.readTree(jsonContent);
             JsonNode normalizedJson = normalizeJsonKeys(rootNode);
-
-            // Convert the normalized JSON to JSON string
             String normalizedJsonString = objectMapper.writeValueAsString(normalizedJson);
-            log.debug("Normalized JSON: {}", normalizedJsonString);
 
-            // Parse the normalized JSON response into TestCommentResponseDTO
             TestCommentResponseDTO commentDTO = objectMapper.readValue(normalizedJsonString, TestCommentResponseDTO.class);
-            log.info("Successfully parsed response into TestCommentResponseDTO");
-
-            // Save AI Response to db
             saveAIResponse(request, commentDTO);
 
             return commentDTO;
         } catch (Exception e) {
             log.error("Error generating test comment: {}", e.getMessage(), e);
-            // Fallback response in case of error
-            return createFallbackResponse();
+            return createFallbackResponse(request);
         }
     }
 
-    /**
-     * Creates a fallback response in case of errors
-     */
-    private TestCommentResponseDTO createFallbackResponse() {
+    private TestCommentResponseDTO createFallbackResponse(TestCommentRequestDTO request) {
         TestCommentResponseDTO fallbackDTO = new TestCommentResponseDTO();
-        fallbackDTO.setFeedback("Excellent work! Your vocabulary shows depth and your grammar fundamentals are solid. Focus on complex sentence structures to elevate your writing further.");
+
+        List<String> availableSections = getAvailableSections(request);
+
+        if (availableSections.isEmpty()) {
+            fallbackDTO.setFeedback("Continue developing your English skills systematically. Focus on integrated practice combining vocabulary, grammar, and communication skills for comprehensive improvement.");
+        } else {
+            fallbackDTO.setFeedback("Your performance across " + String.join(", ", availableSections) +
+                    " demonstrates commitment to learning. Continue practicing with authentic materials and focus on accuracy-fluency integration for enhanced proficiency.");
+        }
+
         fallbackDTO.setStrengths(new ArrayList<>());
         fallbackDTO.setAreasToImprove(new ArrayList<>());
         return fallbackDTO;
     }
 
-    /**
-     * Saves the AI request and response to the database
-     */
+    private List<String> getAvailableSections(TestCommentRequestDTO request) {
+        List<String> sections = new ArrayList<>();
+
+        if (hasContent(request.getVocabulary())) sections.add("vocabulary");
+        if (hasContent(request.getGrammar())) sections.add("grammar");
+        if (hasContent(request.getReading())) sections.add("reading comprehension");
+        if (hasContent(request.getListening())) sections.add("listening comprehension");
+        if (hasContent(request.getSpeaking())) sections.add("speaking production");
+        if (hasContent(request.getWriting())) sections.add("writing production");
+
+        return sections;
+    }
+
+    private boolean hasContent(List<?> list) {
+        return list != null && !list.isEmpty();
+    }
+
     private void saveAIResponse(TestCommentRequestDTO request, TestCommentResponseDTO response) {
         try {
             AIResponseDTO aiResponse = new AIResponseDTO();
+            String actualPrompt = buildPrompt(request);
+            aiResponse.setRequest("FULL PROMPT SENT TO AI:\n" + truncateText(actualPrompt, 2000));
 
-            // Simplify request to avoid very large logs
-            String requestSummary = summarizeTestRequest(request);
-            aiResponse.setRequest("Generate test comment for test data: " + requestSummary);
-
-            // Format the response summary
             String responseSummary = String.format(
                     "{\n" +
-                            "  feedback: %s,\n" +
-                            "  strengths: %s,\n" +
-                            "  areasToImprove: %s\n" +
+                            "  \"feedback\": \"%s\",\n" +
+                            "  \"feedback_length\": %d,\n" +
+                            "  \"analysis_type\": \"comprehensive_content_analysis\"\n" +
                             "}",
-                    response.getFeedback(),
-                    response.getStrengths(),
-                    response.getAreasToImprove()
+                    truncateText(response.getFeedback(), 500),
+                    response.getFeedback() != null ? response.getFeedback().length() : 0
             );
 
             aiResponse.setResponse(responseSummary);
             aiResponseService.create(aiResponse);
         } catch (Exception e) {
-            // Just log the error but don't block the main process
             log.error("Error saving AI response to database: {}", e.getMessage());
         }
     }
 
-    /**
-     * Creates a summary of the test request to avoid storing very large objects
-     */
-    private String summarizeTestRequest(TestCommentRequestDTO request) {
-        StringBuilder summary = new StringBuilder("{\n");
-
-        if (request.getVocabulary() != null) {
-            summary.append("  vocabulary: ").append(request.getVocabulary().size()).append(" questions,\n");
-        }
-
-        if (request.getGrammar() != null) {
-            summary.append("  grammar: ").append(request.getGrammar().size()).append(" questions,\n");
-        }
-
-        if (request.getReading() != null) {
-            summary.append("  reading: ").append(request.getReading().size()).append(" passages,\n");
-        }
-
-        if (request.getListening() != null) {
-            summary.append("  listening: ").append(request.getListening().size()).append(" sections,\n");
-        }
-
-        if (request.getSpeaking() != null) {
-            summary.append("  speaking: ").append(request.getSpeaking().size()).append(" questions,\n");
-        }
-
-        if (request.getWriting() != null) {
-            summary.append("  writing: ").append(request.getWriting().size()).append(" tasks\n");
-        }
-
-        summary.append("}");
-        return summary.toString();
-    }
-
-    /**
-     * Normalizes JSON keys to match the expected DTO structure
-     * This handles variations in the LLM's response format
-     */
     private JsonNode normalizeJsonKeys(JsonNode jsonNode) {
         ObjectNode normalizedNode = objectMapper.createObjectNode();
 
-        // Handle feedback field with various possible keys
         List<String> feedbackKeys = Arrays.asList(
                 "feedback", "comment", "overall_comment", "overall_feedback",
                 "assessment", "evaluation", "summary", "general_feedback",
-                "overall_assessment", "test_feedback", "complete_feedback"
+                "overall_assessment", "test_feedback", "complete_feedback",
+                "analysis", "comprehensive_feedback", "detailed_feedback"
         );
 
-        String feedbackValue = "";
-        for (String key : feedbackKeys) {
-            if (jsonNode.has(key) && jsonNode.get(key).isTextual()) {
-                feedbackValue = jsonNode.get(key).asText();
-                break;
-            }
-        }
+        String feedbackValue = extractFieldValue(jsonNode, feedbackKeys);
 
-        // If no feedback field was found or it's empty, create a specific, targeted fallback
         if (feedbackValue.isEmpty()) {
-            feedbackValue = "Your vocabulary shows strong precision. Your grammar is solid with occasional tense inconsistencies. Focus on complex structures and transitions to elevate your writing further.";
+            feedbackValue = "Your language performance shows consistent development. Continue focusing on accuracy and fluency integration to enhance overall communicative competence.";
         }
 
         normalizedNode.put("feedback", feedbackValue);
-
-        // Set empty arrays for strengths and areasToImprove
         normalizedNode.putArray("strengths");
         normalizedNode.putArray("areasToImprove");
 
         return normalizedNode;
     }
 
-    /**
-     * Extracts valid JSON from a response that might contain markdown formatting or other text
-     */
+    private String extractFieldValue(JsonNode jsonNode, List<String> possibleKeys) {
+        for (String key : possibleKeys) {
+            if (jsonNode.has(key) && jsonNode.get(key).isTextual()) {
+                String value = jsonNode.get(key).asText().trim();
+                if (!value.isEmpty()) {
+                    return value;
+                }
+            }
+        }
+        return "";
+    }
+
     private String extractJsonFromResponse(String response) {
-        // Remove markdown code block indicators if present
-        if (response.contains("```json")) {
-            response = response.replaceAll("```json", "").replaceAll("```", "");
-        } else if (response.contains("```")) {
-            response = response.replaceAll("```", "");
+        if (response == null || response.trim().isEmpty()) {
+            return createMinimalValidJson("No response received from AI service.");
         }
 
-        // Trim to handle any whitespace
+        String[] markdownPatterns = {"```json", "```JSON", "```"};
+        for (String pattern : markdownPatterns) {
+            if (response.contains(pattern)) {
+                response = response.replaceAll(pattern, "");
+            }
+        }
+
         response = response.trim();
 
-        // If the response starts with a JSON object indicator and ends with a JSON object closure
-        if (response.startsWith("{") && response.endsWith("}")) {
-            return response;
-        }
-
-        // Try to find the JSON object in the response - look for the first '{' and last '}'
         int startIndex = response.indexOf('{');
         int endIndex = response.lastIndexOf('}');
 
         if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-            return response.substring(startIndex, endIndex + 1);
+            String potentialJson = response.substring(startIndex, endIndex + 1);
+
+            try {
+                objectMapper.readTree(potentialJson);
+                return potentialJson;
+            } catch (Exception e) {
+                log.warn("Extracted JSON is not valid: {}", e.getMessage());
+            }
         }
 
-        // If we can't find valid JSON, construct a minimal valid JSON with the response as feedback
+        return createMinimalValidJson(truncateText(response, 1000));
+    }
+
+    private String createMinimalValidJson(String feedbackContent) {
         ObjectNode fallbackNode = objectMapper.createObjectNode();
-
-        // Take at most the first 1000 characters of the response as feedback
-        String shortenedFeedback = response;
-        if (response.length() > 1000) {
-            shortenedFeedback = response.substring(0, 1000) + "...";
-        }
-
-        fallbackNode.put("feedback", shortenedFeedback);
+        fallbackNode.put("feedback", feedbackContent);
         fallbackNode.putArray("strengths");
         fallbackNode.putArray("areasToImprove");
 
         try {
             return objectMapper.writeValueAsString(fallbackNode);
         } catch (Exception e) {
-            // If all else fails, throw an exception
-            throw new RuntimeException("Could not extract or create valid JSON from response: " + response);
+            throw new RuntimeException("Failed to create minimal valid JSON", e);
         }
     }
 
-    /**
-     * Builds the prompt for the LLM based on the test data to generate insightful, concise feedback
-     */
     private String buildPrompt(TestCommentRequestDTO request) {
         StringBuilder prompt = new StringBuilder();
 
-        // System instruction - establish expert persona
-        prompt.append("You are an expert language teacher who specializes in precise, insightful feedback. Your task is to provide a targeted assessment in about 50 words that identifies specific patterns and gives actionable guidance.\n\n");
+        prompt.append("# EXPERT LANGUAGE ASSESSMENT SPECIALIST\n\n");
+        prompt.append("You are a certified language assessment expert with 15+ years of experience in comprehensive English proficiency evaluation. ");
+        prompt.append("Your expertise spans CEFR framework, academic English assessment, and evidence-based feedback delivery.\n\n");
 
-        // Response format instructions with emphasis on specificity and brevity
-        prompt.append("INSTRUCTIONS:\n");
-        prompt.append("1. Return a JSON object with a 'feedback' field containing your assessment (~50 words)\n");
-        prompt.append("2. Be specific about observed strengths and concrete improvement areas\n");
-        prompt.append("3. Use precise language focusing on observable patterns, not vague generalizations\n");
-        prompt.append("4. Include one actionable recommendation tied directly to their performance\n");
-        prompt.append("5. The feedback must feel personalized, not generic\n\n");
+        prompt.append("## PRIMARY OBJECTIVE\n");
+        prompt.append("Analyze the student's actual test responses and provide a precise, evidence-based assessment (45-55 words) that:\n");
+        prompt.append("1. References specific linguistic patterns observed in their responses\n");
+        prompt.append("2. Identifies one concrete strength with supporting evidence from their work\n");
+        prompt.append("3. Pinpoints one targeted improvement area based on response analysis\n");
+        prompt.append("4. Provides one actionable, specific practice recommendation\n\n");
 
-        // Test data summary with analysis focus
-        prompt.append("TEST SECTIONS AND ANALYSIS FOCUS:\n");
+        prompt.append("## STUDENT PERFORMANCE ANALYSIS\n\n");
 
-        // Build a list of completed sections
-        List<String> completedSections = new ArrayList<>();
-        List<String> analysisPoints = new ArrayList<>();
+        analyzeVocabularySection(prompt, request);
+        analyzeGrammarSection(prompt, request);
+        analyzeReadingSection(prompt, request);
+        analyzeListeningSection(prompt, request);
+        analyzeSpeakingSection(prompt, request);
+        analyzeWritingSection(prompt, request);
 
-        if (request.getVocabulary() != null && !request.getVocabulary().isEmpty()) {
-            completedSections.add("vocabulary");
-            analysisPoints.add("precision of word choice");
-            analysisPoints.add("range of lexical items");
-            prompt.append("- Vocabulary (").append(request.getVocabulary().size()).append(" questions): Analyze word choice precision and lexical range\n");
-        }
+        prompt.append("## ASSESSMENT FRAMEWORK\n\n");
+        prompt.append("### Analysis Approach:\n");
+        prompt.append("1. **Pattern Recognition**: Identify recurring linguistic behaviors across responses\n");
+        prompt.append("2. **Error Analysis**: Categorize mistakes to understand underlying competence gaps\n");
+        prompt.append("3. **Strength Identification**: Recognize areas of demonstrated proficiency\n");
+        prompt.append("4. **Targeted Feedback**: Connect observations to specific improvement strategies\n\n");
 
-        if (request.getGrammar() != null && !request.getGrammar().isEmpty()) {
-            completedSections.add("grammar");
-            analysisPoints.add("structural accuracy");
-            analysisPoints.add("tense consistency");
-            prompt.append("- Grammar (").append(request.getGrammar().size()).append(" questions): Evaluate structural accuracy and tense consistency\n");
-        }
+        prompt.append("### Quality Standards:\n");
+        prompt.append("- **Specificity**: Reference actual student responses, not generic patterns\n");
+        prompt.append("- **Evidence-Based**: Every claim must be supported by observable data\n");
+        prompt.append("- **Actionable**: Provide concrete practice activities\n");
+        prompt.append("- **Professional**: Use appropriate linguistic terminology\n");
+        prompt.append("- **Encouraging**: Maintain positive, growth-oriented tone\n\n");
 
-        if (request.getReading() != null && !request.getReading().isEmpty()) {
-            completedSections.add("reading");
-            analysisPoints.add("comprehension depth");
-            analysisPoints.add("inference ability");
-            prompt.append("- Reading (").append(request.getReading().size()).append(" passages): Assess comprehension depth and inference skills\n");
-        }
-
-        if (request.getListening() != null && !request.getListening().isEmpty()) {
-            completedSections.add("listening");
-            analysisPoints.add("auditory discrimination");
-            analysisPoints.add("contextual understanding");
-            prompt.append("- Listening (").append(request.getListening().size()).append(" sections): Evaluate auditory discrimination and context interpretation\n");
-        }
-
-        if (request.getSpeaking() != null && !request.getSpeaking().isEmpty()) {
-            completedSections.add("speaking");
-            analysisPoints.add("fluency");
-            analysisPoints.add("pronunciation clarity");
-            prompt.append("- Speaking (").append(request.getSpeaking().size()).append(" tasks): Focus on fluency and pronunciation clarity\n");
-        }
-
-        if (request.getWriting() != null && !request.getWriting().isEmpty()) {
-            completedSections.add("writing");
-            analysisPoints.add("idea development");
-            analysisPoints.add("organizational coherence");
-            prompt.append("- Writing (").append(request.getWriting().size()).append(" tasks): Evaluate idea development and organizational coherence\n");
-        }
-
-        prompt.append("\n");
-
-        // Targeted feedback framework
-        prompt.append("TARGETED FEEDBACK FRAMEWORK:\n");
-
-        // Add specific analytical focus points from completed sections
-        if (!analysisPoints.isEmpty()) {
-            prompt.append("1. Core Analysis: Focus on ");
-            for (int i = 0; i < Math.min(3, analysisPoints.size()); i++) {
-                if (i > 0) prompt.append(i == analysisPoints.size() - 1 ? " and " : ", ");
-                prompt.append(analysisPoints.get(i));
-            }
-            prompt.append("\n");
-        }
-
-        prompt.append("2. Strengths: Identify ONE specific strength with concrete evidence\n");
-        prompt.append("3. Growth Area: Pinpoint ONE precise area for improvement with clear rationale\n");
-        prompt.append("4. Action Step: Recommend ONE specific practice activity that directly addresses the growth area\n\n");
-
-        // Examples of specific vs. generic feedback
-        prompt.append("SPECIFICITY EXAMPLES:\n");
-        prompt.append("- GENERIC: \"Your vocabulary is good.\" ❌\n");
-        prompt.append("- SPECIFIC: \"Your academic vocabulary shows precision in technical terms but needs expansion in transition phrases.\" ✅\n\n");
-
-        prompt.append("- GENERIC: \"Work on your grammar.\" ❌\n");
-        prompt.append("- SPECIFIC: \"Your complex sentences show strong clause management, but tense consistency wavers in hypothetical scenarios.\" ✅\n\n");
-
-        // Response format
-        prompt.append("RESPONSE FORMAT:\n");
+        prompt.append("## REQUIRED OUTPUT FORMAT\n");
+        prompt.append("Based on your analysis of the student's actual responses, provide:\n\n");
+        prompt.append("```json\n");
         prompt.append("{\n");
-        prompt.append("  \"feedback\": \"Your precise, targeted feedback focusing on specific patterns observed (~50 words)...\"\n");
-        prompt.append("}\n\n");
+        prompt.append("  \"feedback\": \"Your evidence-based assessment referencing specific response patterns (45-55 words)...\"\n");
+        prompt.append("}\n");
+        prompt.append("```\n\n");
 
-        // Example of excellent feedback
-        prompt.append("EXAMPLE OF EXCELLENT FEEDBACK:\n");
-        prompt.append("\"Your vocabulary demonstrates strong precision in technical terms while your grammar shows mastery of complex structures. Focus on developing more varied transitional phrases between paragraphs to strengthen your writing's cohesion and flow.\"\n\n");
+        prompt.append("### Excellence Example:\n");
+        prompt.append("\"Your vocabulary choices in reading responses demonstrate strong academic register awareness. Grammar shows consistent complex sentence control, though conditional structures need refinement as seen in question 3. Practice 'if-then' scenarios with mixed conditionals for enhanced accuracy.\"\n\n");
 
-        // Final reminders
-        prompt.append("CRITICAL REMINDERS:\n");
-        prompt.append("1. BE SPECIFIC - avoid vague comments that could apply to anyone\n");
-        prompt.append("2. BE CONCRETE - reference observable patterns, not generalities\n");
-        prompt.append("3. BE ACTIONABLE - provide guidance that can be immediately applied\n");
-        prompt.append("4. BE PRECISE - use approximately 50 words to maintain impact\n");
-        prompt.append("5. BE INSIGHTFUL - show analytical depth that reveals expert understanding\n");
+        prompt.append("### Critical Requirements:\n");
+        prompt.append("✓ Reference specific aspects of student responses\n");
+        prompt.append("✓ Use precise linguistic terminology\n");
+        prompt.append("✓ Provide concrete improvement strategies\n");
+        prompt.append("✓ Maintain 45-55 word count\n");
+        prompt.append("✓ Follow exact JSON format\n\n");
+
+        prompt.append("**Generate your evidence-based assessment now:**\n");
 
         return prompt.toString();
     }
 
-    /**
-     * Helper method to truncate text to a specified length
-     */
+    private void analyzeVocabularySection(StringBuilder prompt, TestCommentRequestDTO request) {
+        if (!hasContent(request.getVocabulary())) return;
+
+        prompt.append("### VOCABULARY ANALYSIS\n");
+        prompt.append(String.format("**Section Overview**: %d vocabulary questions completed\n\n", request.getVocabulary().size()));
+
+        int questionNum = 1;
+        for (TestCommentRequestDTO.ChoiceQuestion question : request.getVocabulary()) {
+            prompt.append(String.format("**Question %d**:\n", questionNum++));
+            prompt.append(String.format("- Question: %s\n", question.getQuestion() != null ? question.getQuestion() : "[No question content]"));
+            prompt.append("- Answer Choices: ");
+            if (question.getChoices() != null && !question.getChoices().isEmpty()) {
+                prompt.append("A) ").append(question.getChoices().get(0));
+                for (int i = 1; i < question.getChoices().size(); i++) {
+                    prompt.append(" | ").append((char)('A' + i)).append(") ").append(question.getChoices().get(i));
+                }
+            } else {
+                prompt.append("[No choices provided]");
+            }
+            prompt.append("\n");
+            prompt.append(String.format("- Student Selected: %s\n\n", question.getUserAnswer() != null ? question.getUserAnswer() : "[No answer selected]"));
+        }
+
+        prompt.append("**Analysis Focus**: Examine word choice precision, semantic understanding, and lexical range demonstration.\n\n");
+    }
+
+    private void analyzeGrammarSection(StringBuilder prompt, TestCommentRequestDTO request) {
+        if (!hasContent(request.getGrammar())) return;
+
+        prompt.append("### GRAMMAR ANALYSIS\n");
+        prompt.append(String.format("**Section Overview**: %d grammar questions completed\n\n", request.getGrammar().size()));
+
+        int questionNum = 1;
+        for (TestCommentRequestDTO.ChoiceQuestion question : request.getGrammar()) {
+            prompt.append(String.format("**Question %d**:\n", questionNum++));
+            prompt.append(String.format("- Question: %s\n", question.getQuestion() != null ? question.getQuestion() : "[No question content]"));
+            prompt.append("- Answer Choices: ");
+            if (question.getChoices() != null && !question.getChoices().isEmpty()) {
+                prompt.append("A) ").append(question.getChoices().get(0));
+                for (int i = 1; i < question.getChoices().size(); i++) {
+                    prompt.append(" | ").append((char)('A' + i)).append(") ").append(question.getChoices().get(i));
+                }
+            } else {
+                prompt.append("[No choices provided]");
+            }
+            prompt.append("\n");
+            prompt.append(String.format("- Student Selected: %s\n\n", question.getUserAnswer() != null ? question.getUserAnswer() : "[No answer selected]"));
+        }
+
+        prompt.append("**Analysis Focus**: Evaluate structural accuracy, tense consistency, and complex grammar mastery.\n\n");
+    }
+
+    private void analyzeReadingSection(StringBuilder prompt, TestCommentRequestDTO request) {
+        if (!hasContent(request.getReading())) return;
+
+        prompt.append("### READING COMPREHENSION ANALYSIS\n");
+
+        int totalQuestions = request.getReading().stream()
+                .mapToInt(section -> section.getQuestions() != null ? section.getQuestions().size() : 0)
+                .sum();
+
+        prompt.append(String.format("**Section Overview**: %d passages with %d total questions\n\n",
+                request.getReading().size(), totalQuestions));
+
+        int passageNum = 1;
+        for (TestCommentRequestDTO.ReadingSection section : request.getReading()) {
+            prompt.append(String.format("**Passage %d**:\n", passageNum++));
+
+            if (section.getPassage() != null && !section.getPassage().trim().isEmpty()) {
+                prompt.append(String.format("- Passage Content URL: %s\n", section.getPassage()));
+                prompt.append("- [AI should analyze the passage content from this URL to understand reading context]\n\n");
+            } else {
+                prompt.append("- [No passage content provided]\n\n");
+            }
+
+            if (section.getQuestions() != null && !section.getQuestions().isEmpty()) {
+                int questionNum = 1;
+                for (TestCommentRequestDTO.ChoiceQuestion question : section.getQuestions()) {
+                    prompt.append(String.format("  **Question %d**:\n", questionNum++));
+                    prompt.append(String.format("  - Question: %s\n",
+                            question.getQuestion() != null ? question.getQuestion() : "[No question content]"));
+
+                    prompt.append("  - Answer Choices: ");
+                    if (question.getChoices() != null && !question.getChoices().isEmpty()) {
+                        prompt.append("A) ").append(question.getChoices().get(0));
+                        for (int i = 1; i < question.getChoices().size(); i++) {
+                            prompt.append(" | ").append((char)('A' + i)).append(") ").append(question.getChoices().get(i));
+                        }
+                    } else {
+                        prompt.append("[No choices provided]");
+                    }
+                    prompt.append("\n");
+
+                    prompt.append(String.format("  - Student Selected: %s\n\n",
+                            question.getUserAnswer() != null ? question.getUserAnswer() : "[No answer selected]"));
+                }
+            }
+        }
+
+        prompt.append("**Analysis Focus**: Assess comprehension depth, inference ability, and critical thinking skills demonstrated through answer choices.\n\n");
+    }
+
+    private void analyzeListeningSection(StringBuilder prompt, TestCommentRequestDTO request) {
+        if (!hasContent(request.getListening())) return;
+
+        prompt.append("### LISTENING COMPREHENSION ANALYSIS\n");
+
+        int totalQuestions = request.getListening().stream()
+                .mapToInt(section -> section.getQuestions() != null ? section.getQuestions().size() : 0)
+                .sum();
+
+        prompt.append(String.format("**Section Overview**: %d listening sections with %d total questions\n\n",
+                request.getListening().size(), totalQuestions));
+
+        int sectionNum = 1;
+        for (TestCommentRequestDTO.ListeningSection section : request.getListening()) {
+            prompt.append(String.format("**Listening Section %d**:\n", sectionNum++));
+
+            if (section.getTranscript() != null && !section.getTranscript().trim().isEmpty()) {
+                prompt.append("- Audio Transcript:\n");
+                prompt.append("\"").append(section.getTranscript()).append("\"\n\n");
+            } else {
+                prompt.append("- [No transcript provided]\n\n");
+            }
+
+            if (section.getQuestions() != null && !section.getQuestions().isEmpty()) {
+                int questionNum = 1;
+                for (TestCommentRequestDTO.ChoiceQuestion question : section.getQuestions()) {
+                    prompt.append(String.format("  **Question %d**:\n", questionNum++));
+                    prompt.append(String.format("  - Question: %s\n", question.getQuestion() != null ? question.getQuestion() : "[No question content]"));
+                    prompt.append("  - Answer Choices: ");
+                    if (question.getChoices() != null && !question.getChoices().isEmpty()) {
+                        prompt.append("A) ").append(question.getChoices().get(0));
+                        for (int i = 1; i < question.getChoices().size(); i++) {
+                            prompt.append(" | ").append((char)('A' + i)).append(") ").append(question.getChoices().get(i));
+                        }
+                    } else {
+                        prompt.append("[No choices provided]");
+                    }
+                    prompt.append("\n");
+                    prompt.append(String.format("  - Student Selected: %s\n\n", question.getUserAnswer() != null ? question.getUserAnswer() : "[No answer selected]"));
+                }
+            }
+        }
+
+        prompt.append("**Analysis Focus**: Evaluate auditory discrimination, context interpretation, and information processing accuracy.\n\n");
+    }
+
+    private void analyzeSpeakingSection(StringBuilder prompt, TestCommentRequestDTO request) {
+        if (!hasContent(request.getSpeaking())) return;
+
+        prompt.append("### SPEAKING PRODUCTION ANALYSIS\n");
+        prompt.append(String.format("**Section Overview**: %d speaking tasks completed\n\n", request.getSpeaking().size()));
+
+        int taskNum = 1;
+        for (TestCommentRequestDTO.SpeakingQuestion question : request.getSpeaking()) {
+            prompt.append(String.format("**Speaking Task %d**:\n", taskNum++));
+
+            if (question.getQuestion() != null && !question.getQuestion().trim().isEmpty()) {
+                prompt.append(String.format("- Speaking Prompt: %s\n", question.getQuestion()));
+            } else {
+                prompt.append("- [No speaking prompt provided]\n");
+            }
+
+            if (question.getTranscript() != null && !question.getTranscript().trim().isEmpty()) {
+                prompt.append("- Student Response Transcript:\n");
+                prompt.append("\"").append(question.getTranscript()).append("\"\n\n");
+            } else {
+                prompt.append("- [No response transcript provided]\n\n");
+            }
+        }
+
+        prompt.append("**Analysis Focus**: Assess fluency, pronunciation patterns, grammatical accuracy, vocabulary usage, and communicative effectiveness from transcribed responses.\n\n");
+    }
+
+    private void analyzeWritingSection(StringBuilder prompt, TestCommentRequestDTO request) {
+        if (!hasContent(request.getWriting())) return;
+
+        prompt.append("### WRITING PRODUCTION ANALYSIS\n");
+        prompt.append(String.format("**Section Overview**: %d writing tasks completed\n\n", request.getWriting().size()));
+
+        int taskNum = 1;
+        for (TestCommentRequestDTO.WritingQuestion question : request.getWriting()) {
+            prompt.append(String.format("**Writing Task %d**:\n", taskNum++));
+
+            if (question.getTopic() != null && !question.getTopic().trim().isEmpty()) {
+                prompt.append(String.format("- Writing Topic/Prompt: %s\n", question.getTopic()));
+            } else {
+                prompt.append("- [No writing topic provided]\n");
+            }
+
+            if (question.getUserAnswer() != null && !question.getUserAnswer().trim().isEmpty()) {
+                prompt.append("- Student Written Response:\n");
+                prompt.append("\"").append(question.getUserAnswer()).append("\"\n\n");
+            } else {
+                prompt.append("- [No written response provided]\n\n");
+            }
+        }
+
+        prompt.append("**Analysis Focus**: Evaluate idea development, organizational coherence, language accuracy, vocabulary sophistication, and task fulfillment.\n\n");
+    }
+
     private String truncateText(String text, int maxLength) {
-        if (text == null) return "";
-        return text.length() <= maxLength ? text : text.substring(0, maxLength);
+        if (text == null) return "[No content provided]";
+        if (text.trim().isEmpty()) return "[Empty response]";
+        return text.length() <= maxLength ? text : text.substring(0, maxLength - 3) + "...";
     }
 }
