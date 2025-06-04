@@ -171,7 +171,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
     @Override
     public ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception {
-        log.info("Starting evaluation of multiple files, count: {}", audioFiles.size());
+        log.info("Starting evaluation of multiple files, audio count: {}, expected text count: {}", audioFiles.size(), expectedTexts.size());
 
         // Validate input
         if (audioFiles == null || audioFiles.isEmpty()) {
