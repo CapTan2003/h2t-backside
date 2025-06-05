@@ -366,7 +366,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
             ConversationScoreDTO scoreDTO = new ConversationScoreDTO();
-            int score = rootNode.path("score").asInt();
+            double score = rootNode.path("score").asDouble();
             scoreDTO.setScore(String.valueOf(score * 10));
 
             // For multiple files, collect the transcripts
