@@ -136,12 +136,13 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
                     "Score speaking in topic: " + audioFile.getOriginalFilename() + "\n" +
                             "{\n" +
                                 "Topic: " + topic + ",\n" +
-                                "Transcript: " + scoreResult.getTranscript() + "\n" +
+                                "Audio: " + audioFile.getOriginalFilename() + "\n" +
                             "}"
             );
             aiResponse.setResponse(
                     "{\n" +
                             "Score: " + scoreResult.getScore() + ",\n" +
+                            "Transcript: " + scoreResult.getTranscript() + "\n" +
                             "Strengths: " + scoreResult.getStrengths() + ",\n" +
                             "Areas to improve: " + scoreResult.getAreas_to_improve() + ",\n" +
                             "Feedback: " + scoreResult.getFeedback()+ "\n" +
@@ -160,7 +161,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
                     .collect(Collectors.toList()));
             scoreResult.setFeedback(scoreResult.getFeedback() + "\n"+ writingScore.getFeedback());
 
-            scoreResult.setScore(((Double.parseDouble(scoreResult.getScore()) * 10 + Double.parseDouble(writingScore.getScore())) / 2) + "");
+            scoreResult.setScore(((Double.parseDouble(scoreResult.getScore()) + Double.parseDouble(writingScore.getScore())) / 2) + "");
 
             return scoreResult;
         } catch (RestClientException e) {
@@ -316,7 +317,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
             // Map fields from API response to DTO
             // Based on the API response structure in api.py
-            scoreDTO.setScore(rootNode.path("score").asText());
+            scoreDTO.setScore(String.valueOf(rootNode.path("score").asInt() * 10));
             scoreDTO.setTranscript(rootNode.path("transcript").asText());
 
             // The API returns "feedback" but our DTO expects "detailedFeedback"
@@ -365,7 +366,8 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
             ConversationScoreDTO scoreDTO = new ConversationScoreDTO();
-            scoreDTO.setScore(rootNode.path("score").asText());
+            int score = rootNode.path("score").asInt();
+            scoreDTO.setScore(String.valueOf(score * 10));
 
             // For multiple files, collect the transcripts
             List<String> transcripts = new ArrayList<>();
