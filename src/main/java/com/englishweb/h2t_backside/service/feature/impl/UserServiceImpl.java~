@@ -146,7 +146,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDTO, User, UserReposito
         if (user != null) {
             List<RouteNode> routeNodes = user.getRouteNodes();
             RouteNode newNode = routeNodeRepository.findById(routeNodeId).orElseThrow(() -> new ResourceNotFoundException(routeNodeId, "RouteNode not found when complete route node", SeverityEnum.MEDIUM));
-            if (routeNodes.contains(newNode)) return;
             routeNodes.add(newNode);
             user.setRouteNodes(routeNodes);
             repository.save(user);
