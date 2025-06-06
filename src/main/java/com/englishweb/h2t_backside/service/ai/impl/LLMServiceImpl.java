@@ -1,17 +1,20 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
+import com.englishweb.h2t_backside.exception.OpenRouterException;
+import com.englishweb.h2t_backside.exception.UnauthorizedOpenRouterException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.ai.LLMService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -49,9 +52,9 @@ public class LLMServiceImpl implements LLMService {
                     generatedText != null ? generatedText.length() : 0);
 
             return generatedText;
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             log.error("Error generating text from LLM: {}", e.getMessage(), e);
-            throw new RuntimeException("Error generating text from LLM: " + e.getMessage(), e);
+            throw new RuntimeException("Error when parse response from LLM: " + e.getMessage(), e);
         }
     }
 
@@ -114,8 +117,12 @@ public class LLMServiceImpl implements LLMService {
 
             return response;
         } catch (Exception e) {
+            if (((HttpServerErrorException) e).getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                log.error("Unauthorized access: {}", e.getMessage());
+                throw new UnauthorizedOpenRouterException("Unauthorized access: " + e.getMessage(), SeverityEnum.HIGH);
+            }
             log.error("Exception occurred during API request: {}", e.getMessage(), e);
-            throw e;
+            throw new OpenRouterException("Unexpected exception occurred during API request to OpenRouter: " + e.getMessage(), SeverityEnum.HIGH);
         }
     }
 
