@@ -11,15 +11,15 @@ public interface ScoreSpeakingService {
     /**
      * Evaluate a single audio file with expected text
      */
-    SpeakingScoreDTO evaluateSpeaking(MultipartFile audioFile, String expectedText) throws Exception;
+    SpeakingScoreDTO evaluateSpeaking(MultipartFile audioFile, String expectedText);
 
     /**
      * Evaluate pronunciation only (no topic/expected text comparison)
      */
-    SpeakingScoreDTO evaluateSpeechInTopic(MultipartFile audioFile, String topic) throws Exception;
+    SpeakingScoreDTO evaluateSpeechInTopic(MultipartFile audioFile, String topic);
 
     /**
      * Evaluate multiple audio files with their corresponding expected texts
      */
-    ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception;
+    ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts);
 }

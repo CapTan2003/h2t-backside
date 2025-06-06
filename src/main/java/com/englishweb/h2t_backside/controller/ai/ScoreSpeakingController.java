@@ -31,27 +31,13 @@ public class ScoreSpeakingController {
             @RequestParam("audio") MultipartFile audioFile,
             @RequestParam("expectedText") String expectedText) {
 
-        try {
-            SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeaking(audioFile, expectedText);
+        SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeaking(audioFile, expectedText);
 
-            return ResponseDTO.<SpeakingScoreDTO>builder()
-                    .status(ResponseStatusEnum.SUCCESS)
-                    .data(scoreResult)
-                    .message("Speaking evaluation completed successfully")
-                    .build();
-        } catch (IOException e) {
-            log.error("Error reading audio file: {}", e.getMessage());
-            return ResponseDTO.<SpeakingScoreDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Error reading audio file: " + e.getMessage())
-                    .build();
-        } catch (Exception e) {
-            log.error("Error evaluating speaking: {}", e.getMessage());
-            return ResponseDTO.<SpeakingScoreDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Error evaluating speaking: " + e.getMessage())
-                    .build();
-        }
+        return ResponseDTO.<SpeakingScoreDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(scoreResult)
+                .message("Speaking evaluation completed successfully")
+                .build();
     }
 
     @PostMapping(path = "/speech-in-topic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -60,28 +46,13 @@ public class ScoreSpeakingController {
             @RequestParam("audio") MultipartFile audioFile,
             @RequestParam("topic") String topic
     ) {
+        SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeechInTopic(audioFile, topic);
 
-        try {
-            SpeakingScoreDTO scoreResult = scoreSpeakingService.evaluateSpeechInTopic(audioFile, topic);
-
-            return ResponseDTO.<SpeakingScoreDTO>builder()
-                    .status(ResponseStatusEnum.SUCCESS)
-                    .data(scoreResult)
-                    .message("Pronunciation evaluation completed successfully")
-                    .build();
-        } catch (IOException e) {
-            log.error("Error reading audio file: {}", e.getMessage());
-            return ResponseDTO.<SpeakingScoreDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Error reading audio file: " + e.getMessage())
-                    .build();
-        } catch (Exception e) {
-            log.error("Error evaluating pronunciation: {}", e.getMessage());
-            return ResponseDTO.<SpeakingScoreDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Error evaluating pronunciation: " + e.getMessage())
-                    .build();
-        }
+        return ResponseDTO.<SpeakingScoreDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(scoreResult)
+                .message("Pronunciation evaluation completed successfully")
+                .build();
     }
 
     @PostMapping(path = "/multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -90,23 +61,15 @@ public class ScoreSpeakingController {
             @RequestParam("files") MultipartFile[] audioFiles,
             @RequestParam("expectedTexts") String[] expectedTexts) {
 
-        try {
-            List<MultipartFile> filesList = Arrays.asList(audioFiles);
-            List<String> textsList = Arrays.asList(expectedTexts);
+        List<MultipartFile> filesList = Arrays.asList(audioFiles);
+        List<String> textsList = Arrays.asList(expectedTexts);
 
-            ConversationScoreDTO scoreResult = scoreSpeakingService.evaluateMultipleFiles(filesList, textsList);
+        ConversationScoreDTO scoreResult = scoreSpeakingService.evaluateMultipleFiles(filesList, textsList);
 
-            return ResponseDTO.<ConversationScoreDTO>builder()
-                    .status(ResponseStatusEnum.SUCCESS)
-                    .data(scoreResult)
-                    .message("Multiple files evaluation completed successfully")
-                    .build();
-        } catch (Exception e) {
-            log.error("Error processing request: {}", e.getMessage());
-            return ResponseDTO.<ConversationScoreDTO>builder()
-                    .status(ResponseStatusEnum.FAIL)
-                    .message("Error processing request: " + e.getMessage())
-                    .build();
-        }
+        return ResponseDTO.<ConversationScoreDTO>builder()
+                .status(ResponseStatusEnum.SUCCESS)
+                .data(scoreResult)
+                .message("Multiple files evaluation completed successfully")
+                .build();
     }
 }
