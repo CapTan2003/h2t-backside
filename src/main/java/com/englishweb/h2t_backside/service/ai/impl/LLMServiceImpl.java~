@@ -91,7 +91,9 @@ public class LLMServiceImpl implements LLMService {
 
             ObjectNode requestBody = objectMapper.createObjectNode();
             requestBody.put("model", model);
-            requestBody.put("route", "fallback");
+
+            // Add OpenRouter specific parameters
+            requestBody.put("route", "fallback");  // Use fallback routing if preferred model is unavailable
 
             ArrayNode messagesArray = requestBody.putArray("messages");
             ObjectNode userMessage = messagesArray.addObject();
