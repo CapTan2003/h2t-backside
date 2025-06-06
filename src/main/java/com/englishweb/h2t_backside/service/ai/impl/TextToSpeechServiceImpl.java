@@ -1,6 +1,8 @@
 package com.englishweb.h2t_backside.service.ai.impl;
 
 import com.englishweb.h2t_backside.dto.feature.VoiceDTO;
+import com.englishweb.h2t_backside.exception.TextToSpeechException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.ai.TextToSpeechService;
 import com.englishweb.h2t_backside.utils.VoiceData;
 import lombok.extern.slf4j.Slf4j;
@@ -55,11 +57,11 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
                 return new InputStreamResource(inputStream);
             } else {
                 log.error("No audio data received");
-                return null;
+                throw new TextToSpeechException("No audio data received from KoKoRo API: Check status of the API" , SeverityEnum.MEDIUM);
             }
         } catch (HttpStatusCodeException e) {
             log.error("Error converting text to speech: {}", e.getMessage(), e);
-            return null;
+            throw new TextToSpeechException("Error converting text to speech: " + e.getMessage(), SeverityEnum.HIGH);
         }
     }
 
@@ -79,6 +81,7 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
                 voiceDTOs.add(voiceDTO);
             } catch (IOException e) {
                 log.error("Error reading file: {}", filePath, e);
+                throw new TextToSpeechException("Error reading file: " + filePath + ". Check file status in the server", SeverityEnum.LOW);
             }
         }
 

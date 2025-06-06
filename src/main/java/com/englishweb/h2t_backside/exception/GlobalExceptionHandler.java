@@ -354,7 +354,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.JSON_PROCESSING_EXCEPTION)
                 .data(ex.getMessage())
-                .severity(SeverityEnum.LOW)
+                .severity(SeverityEnum.MEDIUM)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
         return ResponseDTO.<String>builder()
@@ -377,6 +377,30 @@ public class GlobalExceptionHandler {
                 .instance(request.getMethod() + " " + request.getRequestURI())
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.SPEECH_PROCESSING_EXCEPTION)
+                .data(ex.getMessage())
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(TextToSpeechException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleTextToSpeechException(TextToSpeechException ex, HttpServletRequest request) {
+        log.error("TextToSpeechException: {}", ex.getMessage());
+        String errorMessage = "TextToSpeech Exception: Text to Speech API maybe down or something when wrong, check logs for more information";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.TEXT_TO_SPEECH_EXCEPTION)
                 .data(ex.getMessage())
                 .severity(ex.getSeverityEnum())
                 .build();

@@ -61,4 +61,5 @@ public class ErrorApiCodeContent {
     public static final String OPEN_ROUTER_EXCEPTION = "613";
     public static final String JSON_PROCESSING_EXCEPTION = "614";
     public static final String SPEECH_PROCESSING_EXCEPTION = "615";
+    public static final String TEXT_TO_SPEECH_EXCEPTION = "616";
 }

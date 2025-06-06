@@ -24,7 +24,7 @@ public class TextToSpeechController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public InputStreamResource textToSpeech(@RequestBody TextToSpeechDTO dto) throws IOException {
+    public InputStreamResource textToSpeech(@RequestBody TextToSpeechDTO dto) {
         return service.convertTextToSpeech(dto.getText(), dto.getVoice());
     }
 
