@@ -41,6 +41,8 @@ public class ErrorApiCodeContent {
     public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học
 
     // Lỗi liên quan đến gọi api bên ngoài
+    public static final String ERROR_LOG_CREATED_FAIL = "301";
+    public static final String ERROR_LOG_UPDATED_FAIL = "302";
 
     // Các lỗi khác
     public static final String RESOURCE_NOT_FOUND = "404";
