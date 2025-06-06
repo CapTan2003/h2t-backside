@@ -3,9 +3,12 @@ package com.englishweb.h2t_backside.service.ai.impl;
 import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.ai.TestCommentRequestDTO;
 import com.englishweb.h2t_backside.dto.ai.TestCommentResponseDTO;
+import com.englishweb.h2t_backside.exception.CommentTestException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.ai.LLMService;
 import com.englishweb.h2t_backside.service.ai.CommentTestService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,27 +47,13 @@ public class CommentTestServiceImpl implements CommentTestService {
             saveAIResponse(request, commentDTO);
 
             return commentDTO;
+        } catch (JsonProcessingException e) {
+            log.error("Error generating test comment: {}", e.getMessage(), e);
+            throw new CommentTestException("Error when parsing LLM response in test comment: " + e.getMessage(), SeverityEnum.MEDIUM);
         } catch (Exception e) {
             log.error("Error generating test comment: {}", e.getMessage(), e);
-            return createFallbackResponse(request);
+            throw new CommentTestException("Unexpected error when generating test comment: " + e.getMessage(), SeverityEnum.HIGH);
         }
-    }
-
-    private TestCommentResponseDTO createFallbackResponse(TestCommentRequestDTO request) {
-        TestCommentResponseDTO fallbackDTO = new TestCommentResponseDTO();
-
-        List<String> availableSections = getAvailableSections(request);
-
-        if (availableSections.isEmpty()) {
-            fallbackDTO.setFeedback("Continue developing your English skills systematically. Focus on integrated practice combining vocabulary, grammar, and communication skills for comprehensive improvement.");
-        } else {
-            fallbackDTO.setFeedback("Your performance across " + String.join(", ", availableSections) +
-                    " demonstrates commitment to learning. Continue practicing with authentic materials and focus on accuracy-fluency integration for enhanced proficiency.");
-        }
-
-        fallbackDTO.setStrengths(new ArrayList<>());
-        fallbackDTO.setAreasToImprove(new ArrayList<>());
-        return fallbackDTO;
     }
 
     private List<String> getAvailableSections(TestCommentRequestDTO request) {

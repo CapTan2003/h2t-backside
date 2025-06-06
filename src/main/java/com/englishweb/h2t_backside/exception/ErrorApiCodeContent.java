@@ -38,9 +38,12 @@ public class ErrorApiCodeContent {
     public static final String LESSON_QUESTION_UPDATED_FAIL = "215"; // Cập nhật câu hoi cho bài học thất bại
 
     // Lỗi liên quan đến bài kiểm tra
-    public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học
+    public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài kiểm tra
+    public static final String COMMENT_TEST_EXCEPTION = "305";
 
     // Lỗi liên quan đến gọi api bên ngoài
+    public static final String ERROR_LOG_CREATED_FAIL = "301";
+    public static final String ERROR_LOG_UPDATED_FAIL = "302";
 
     // Các lỗi khác
     public static final String RESOURCE_NOT_FOUND = "404";
@@ -61,4 +64,5 @@ public class ErrorApiCodeContent {
     public static final String OPEN_ROUTER_EXCEPTION = "613";
     public static final String JSON_PROCESSING_EXCEPTION = "614";
     public static final String SPEECH_PROCESSING_EXCEPTION = "615";
+    public static final String TEXT_TO_SPEECH_EXCEPTION = "616";
 }

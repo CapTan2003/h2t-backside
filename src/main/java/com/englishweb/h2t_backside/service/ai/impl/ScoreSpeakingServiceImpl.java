@@ -22,6 +22,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,32 +49,32 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
     }
 
     @Override
-    public SpeakingScoreDTO evaluateSpeaking(MultipartFile audioFile, String expectedText) throws Exception {
+    public SpeakingScoreDTO evaluateSpeaking(MultipartFile audioFile, String expectedText) {
         log.info("Starting speech evaluation for expectedText: {}", expectedText);
 
-        // Create a HttpHeaders object
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        // Create MultiValueMap to hold the multipart request
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-        // Add the audio file - using "file" as the parameter name expected by the API
-        ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
-            @Override
-            public String getFilename() {
-                return audioFile.getOriginalFilename();
-            }
-        };
-        body.add("file", resource);
-
-        // Add topic parameter as expected by the API
-        body.add("topic", expectedText);
-
-        // Create the HTTP entity with headers and body
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
         try {
+            // Create a HttpHeaders object
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            // Create MultiValueMap to hold the multipart request
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+            // Add the audio file - using "file" as the parameter name expected by the API
+            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return audioFile.getOriginalFilename();
+                }
+            };
+            body.add("file", resource);
+
+            // Add topic parameter as expected by the API
+            body.add("topic", expectedText);
+
+            // Create the HTTP entity with headers and body
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
             // Send POST request to the API
             ResponseEntity<String> response = restTemplate.exchange(
                     BASE_API_URL + "/predict",
@@ -90,35 +91,38 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
         } catch (RestClientException e) {
             log.error("Error calling speech API: {}", e.getMessage(), e);
             throw new SpeechProcessingException("Failed to communicate with speech processing API: " + e.getMessage(), SeverityEnum.HIGH);
+        } catch (IOException e) {
+            log.error("Error reading audio file: {}", e.getMessage(), e);
+            throw new SpeechProcessingException("Failed to read audio file: " + e.getMessage(), SeverityEnum.MEDIUM);
         } catch (Exception e) {
             log.error("Error processing speech evaluation: {}", e.getMessage(), e);
-            throw new Exception("Error evaluating speech: " + e.getMessage());
+            throw new RuntimeException("Error evaluating speech: " + e.getMessage());
         }
     }
 
     @Override
-    public SpeakingScoreDTO evaluateSpeechInTopic(MultipartFile audioFile, String topic) throws Exception {
+    public SpeakingScoreDTO evaluateSpeechInTopic(MultipartFile audioFile, String topic) {
         log.info("Starting speech evaluation in topic for file: {}", audioFile.getOriginalFilename());
 
-        // Create HttpHeaders object
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        // Create MultiValueMap for the request body
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-        // Add the audio file - using "file" as the parameter name expected by the API
-        ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
-            @Override
-            public String getFilename() {
-                return audioFile.getOriginalFilename();
-            }
-        };
-        body.add("file", resource);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
         try {
+            // Create HttpHeaders object
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            // Create MultiValueMap for the request body
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+            // Add the audio file - using "file" as the parameter name expected by the API
+            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return audioFile.getOriginalFilename();
+                }
+            };
+            body.add("file", resource);
+
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
             // Send POST request to the regular predict API with topic
             ResponseEntity<String> response = restTemplate.exchange(
                     BASE_API_URL + "/predict_pronunciation",
@@ -169,51 +173,56 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
         } catch (RestClientException e) {
             log.error("Error calling speech API: {}", e.getMessage(), e);
             throw new SpeechProcessingException("Failed to communicate with speech API in function evaluateSpeechInTopic: " + e.getMessage(), SeverityEnum.HIGH);
+        } catch (IOException e) {
+            log.error("Error reading audio file: {}", e.getMessage(), e);
+            throw new SpeechProcessingException("Failed to read audio file in function evaluateSpeechInTopic: " + e.getMessage(), SeverityEnum.MEDIUM);
+        } catch (Exception e) {
+            log.error("Unexpected error processing speech evaluation: {}", e.getMessage(), e);
+            throw new SpeechProcessingException("Unexpected error evaluating speech in topic: " + e.getMessage(), SeverityEnum.HIGH);
         }
     }
 
     @Override
-    public ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) throws Exception {
+    public ConversationScoreDTO evaluateMultipleFiles(List<MultipartFile> audioFiles, List<String> expectedTexts) {
         log.info("Starting evaluation of multiple files, audio count: {}, expected text count: {}", audioFiles.size(), expectedTexts.size());
-
-        // Validate input
-        if (audioFiles == null || audioFiles.isEmpty()) {
-            throw new Exception("No audio files provided");
-        }
-
-        if (expectedTexts == null || expectedTexts.isEmpty()) {
-            log.warn("No expected texts provided, defaulting to empty strings");
-            expectedTexts = new ArrayList<>();
-            for (int i = 0; i < audioFiles.size(); i++) {
-                expectedTexts.add("");
-            }
-        }
-
-        // Create HttpHeaders object
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        // Create MultiValueMap for the request body
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-        // Add all audio files - using "files" as expected by the API, not "files[]"
-        for (MultipartFile audioFile : audioFiles) {
-            ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return audioFile.getOriginalFilename();
-                }
-            };
-            body.add("files", resource);
-        }
-
-        // Add all topics - using "topics" as expected by the API (will be split by \n in API)
-        body.add("topics", String.join("\n", expectedTexts));
-
-        // Create the HTTP entity
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
         try {
+            // Validate input
+            if (audioFiles == null || audioFiles.isEmpty()) {
+                throw new Exception("No audio files provided");
+            }
+
+            if (expectedTexts == null || expectedTexts.isEmpty()) {
+                log.warn("No expected texts provided, defaulting to empty strings");
+                expectedTexts = new ArrayList<>();
+                for (int i = 0; i < audioFiles.size(); i++) {
+                    expectedTexts.add("");
+                }
+            }
+
+            // Create HttpHeaders object
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            // Create MultiValueMap for the request body
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+            // Add all audio files - using "files" as expected by the API, not "files[]"
+            for (MultipartFile audioFile : audioFiles) {
+                ByteArrayResource resource = new ByteArrayResource(audioFile.getBytes()) {
+                    @Override
+                    public String getFilename() {
+                        return audioFile.getOriginalFilename();
+                    }
+                };
+                body.add("files", resource);
+            }
+
+            // Add all topics - using "topics" as expected by the API (will be split by \n in API)
+            body.add("topics", String.join("\n", expectedTexts));
+
+            // Create the HTTP entity
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
             // Send POST request to the multiple files API
             ResponseEntity<String> response = restTemplate.exchange(
                     BASE_API_URL + "/predict_multiple",
@@ -229,11 +238,13 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
         } catch (RestClientException e) {
             log.error("Error calling multiple files API: {}", e.getMessage(), e);
-
             throw new SpeechProcessingException("Failed to communicate with processing multiple files API: " + e.getMessage(), SeverityEnum.HIGH);
+        } catch (IOException e) {
+            log.error("Error reading audio file: {}", e.getMessage(), e);
+            throw new SpeechProcessingException("Failed to read audio file in function evaluateMultipleFiles: " + e.getMessage(), SeverityEnum.MEDIUM);
         } catch (Exception e) {
             log.error("Unexpected error evaluating multiple files: {}", e.getMessage(), e);
-            throw new Exception("Unexpected error when evaluating multiple files: " + e.getMessage());
+            throw new SpeechProcessingException("Unexpected error when evaluating multiple files: " + e.getMessage(), SeverityEnum.HIGH);
         }
     }
 

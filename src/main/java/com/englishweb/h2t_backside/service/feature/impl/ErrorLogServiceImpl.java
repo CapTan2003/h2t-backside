@@ -2,6 +2,8 @@ package com.englishweb.h2t_backside.service.feature.impl;
 
 import com.englishweb.h2t_backside.dto.feature.ErrorLogDTO;
 import com.englishweb.h2t_backside.dto.filter.ErrorLogFilterDTO;
+import com.englishweb.h2t_backside.exception.CreateResourceException;
+import com.englishweb.h2t_backside.exception.ErrorApiCodeContent;
 import com.englishweb.h2t_backside.exception.ResourceNotFoundException;
 import com.englishweb.h2t_backside.mapper.ErrorLogMapper;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
@@ -12,6 +14,7 @@ import com.englishweb.h2t_backside.utils.ErrorLogPagination;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +46,7 @@ public class ErrorLogServiceImpl implements ErrorLogService {
             return convertToDTO(created);
         } catch (Exception e) {
             log.error("Error when creating error log: {}", e.getMessage());
-            return null;
+            throw new CreateResourceException(dto, e.getMessage(), ErrorApiCodeContent.ERROR_LOG_CREATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
         }
     }
 
@@ -64,7 +67,7 @@ public class ErrorLogServiceImpl implements ErrorLogService {
             return savedDTO;
         } catch (Exception e) {
             log.error("Error updating error log with ID {}: {}", id, e.getMessage());
-            return null;
+            throw new CreateResourceException(dto, e.getMessage(), ErrorApiCodeContent.ERROR_LOG_UPDATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
         }
     }
 

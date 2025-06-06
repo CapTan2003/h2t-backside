@@ -3,9 +3,12 @@ package com.englishweb.h2t_backside.service.test.impl;
 import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.ai.TestCommentResponseDTO;
 import com.englishweb.h2t_backside.dto.ai.ToeicCommentRequestDTO;
+import com.englishweb.h2t_backside.exception.CommentTestException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.ai.LLMService;
 import com.englishweb.h2t_backside.service.ai.ToeicCommentTestService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,23 +59,14 @@ public class ToeicCommentTestServiceImpl implements ToeicCommentTestService {
             saveAIResponse(request, commentDTO);
 
             return commentDTO;
+        } catch (JsonProcessingException e) {
+            log.error("Error generating TOEIC test comment: {}", e.getMessage(), e);
+            throw new CommentTestException("Error when parsing response from llm in generating TOEIC test comment: " + e.getMessage(), SeverityEnum.MEDIUM);
         } catch (Exception e) {
             log.error("Error generating TOEIC test comment: {}", e.getMessage(), e);
-            // Fallback response in case of error
-            return createToeicFallbackResponse();
+            throw new CommentTestException("Unexpected error when generating TOEIC test comment: " + e.getMessage(), SeverityEnum.HIGH);
         }
-    }
 
-    /**
-     * Creates a fallback response specifically designed for TOEIC test feedback
-     */
-    private TestCommentResponseDTO createToeicFallbackResponse() {
-        TestCommentResponseDTO fallbackDTO = new TestCommentResponseDTO();
-        fallbackDTO.setFeedback("Your TOEIC performance shows strong listening comprehension in Parts 1-2. Focus on improving reading speed for Part 7 and review grammatical structures for Parts 5-6 to enhance your overall score. Practice timed reading of business documents to build both speed and accuracy.");
-        // Không sử dụng strengths và areasToImprove theo yêu cầu
-        fallbackDTO.setStrengths(new ArrayList<>());
-        fallbackDTO.setAreasToImprove(new ArrayList<>());
-        return fallbackDTO;
     }
 
     /**

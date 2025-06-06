@@ -271,7 +271,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDTO<String>> handleIOException(IOException ex, HttpServletRequest request) {
         log.error("IOException: {}", ex.getMessage());
 
-        String errorMessage = "IO Exception";
+        String errorMessage = "IO Exception: Unexpected error when reading/writing file or parser data, check logs in discord server for more information";
         ErrorDTO errorDTO = ErrorDTO.builder()
                 .message(errorMessage)
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -354,7 +354,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.JSON_PROCESSING_EXCEPTION)
                 .data(ex.getMessage())
-                .severity(SeverityEnum.LOW)
+                .severity(SeverityEnum.MEDIUM)
                 .build();
         discordNotifier.buildErrorAndSend(errorDTO);
         return ResponseDTO.<String>builder()
@@ -388,12 +388,61 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(TextToSpeechException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleTextToSpeechException(TextToSpeechException ex, HttpServletRequest request) {
+        log.error("TextToSpeechException: {}", ex.getMessage());
+        String errorMessage = "TextToSpeech Exception: Text to Speech API maybe down or something when wrong, check logs for more information";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.TEXT_TO_SPEECH_EXCEPTION)
+                .data(ex.getMessage())
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(CommentTestException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleCommentTestException(CommentTestException ex, HttpServletRequest request) {
+        log.error("CommentTestException: {}", ex.getMessage());
+        String errorMessage = "Comment Test Exception: Error when try to generate comment for test, " +
+                "check logs for more information";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.COMMENT_TEST_EXCEPTION)
+                .data(ex.getMessage())
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseDTO<String> handleException(Exception ex, HttpServletRequest request) {
         log.error("Exception: {}", ex.getMessage());
-        String errorMessage = "Internal Server Error";
+        String errorMessage = "Unexpected Exception: Unexpected error, check logs in discord server for more information";
         ErrorDTO errorDTO = ErrorDTO.builder()
                 .message(errorMessage)
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
