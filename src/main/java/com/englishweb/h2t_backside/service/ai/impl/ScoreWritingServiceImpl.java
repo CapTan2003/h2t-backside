@@ -102,7 +102,7 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
             return scoreDTO;
         } catch (Exception e) {
             log.error("Error in enhanced writing scoring: {}", e.getMessage(), e);
-            return createFallbackResponse(e.getMessage());
+            throw new RuntimeException("Unexpected error when scoring writing essay: " + e.getMessage(), e);
         }
     }
 

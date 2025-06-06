@@ -50,11 +50,15 @@ public class ErrorApiCodeContent {
     public static final String PAGE_SIZE_INVALID = "603";
     public static final String SORT_FIELD_INVALID = "604";
     public static final String ARGUMENT_TYPE_MISMATCH = "605";
-    public static final String MISSING_REQUEST_PARAMETER = "606";
+    public static final String MISSING_REQUEST_PARAMETER = "606"; // Thieu tham so
     public static final String IO_EXCEPTION = "607";
-    public static final String BUCKET_CREATED_FAIL = "608";
-    public static final String FILE_UPLOAD_FAIL = "609";
-    public static final String URL_GENERATION_FAIL = "610";
-    public  static final String FILE_DOWNLOAD_FAIL = "611";
-    public static final String FILE_DELETE_FAIL = "612";
+    public static final String BUCKET_CREATED_FAIL = "608"; // Tạo bucket minio that bai
+    public static final String FILE_UPLOAD_FAIL = "609"; // Tạo file minio that bai
+    public static final String URL_GENERATION_FAIL = "610"; // Tạo url minio that bai
+    public  static final String FILE_DOWNLOAD_FAIL = "611";  // Tải file tu minio that bai
+    public static final String FILE_DELETE_FAIL = "612"; // Xóa file tu minio that bai
+    public static final String UNAUTHORIZED = "401";  // Xác thực thất bại
+    public static final String OPEN_ROUTER_EXCEPTION = "613";
+    public static final String JSON_PROCESSING_EXCEPTION = "614";
+    public static final String SPEECH_PROCESSING_EXCEPTION = "615";
 }

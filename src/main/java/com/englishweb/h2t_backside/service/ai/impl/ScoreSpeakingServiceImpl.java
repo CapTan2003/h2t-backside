@@ -4,6 +4,8 @@ import com.englishweb.h2t_backside.dto.ai.AIResponseDTO;
 import com.englishweb.h2t_backside.dto.ai.ConversationScoreDTO;
 import com.englishweb.h2t_backside.dto.ai.SpeakingScoreDTO;
 import com.englishweb.h2t_backside.dto.ai.WritingScoreDTO;
+import com.englishweb.h2t_backside.exception.SpeechProcessingException;
+import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.ai.AIResponseService;
 import com.englishweb.h2t_backside.service.ai.ScoreSpeakingService;
 import com.englishweb.h2t_backside.service.ai.ScoreWritingService;
@@ -87,7 +89,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
 
         } catch (RestClientException e) {
             log.error("Error calling speech API: {}", e.getMessage(), e);
-            throw new Exception("Failed to communicate with speech processing API: " + e.getMessage());
+            throw new SpeechProcessingException("Failed to communicate with speech processing API: " + e.getMessage(), SeverityEnum.HIGH);
         } catch (Exception e) {
             log.error("Error processing speech evaluation: {}", e.getMessage(), e);
             throw new Exception("Error evaluating speech: " + e.getMessage());
@@ -166,7 +168,7 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             return scoreResult;
         } catch (RestClientException e) {
             log.error("Error calling speech API: {}", e.getMessage(), e);
-            throw new Exception("Failed to communicate with speech API: " + e.getMessage());
+            throw new SpeechProcessingException("Failed to communicate with speech API in function evaluateSpeechInTopic: " + e.getMessage(), SeverityEnum.HIGH);
         }
     }
 
@@ -228,80 +230,10 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
         } catch (RestClientException e) {
             log.error("Error calling multiple files API: {}", e.getMessage(), e);
 
-            // Fall back to individual processing if batch processing fails
-            log.info("Falling back to individual file processing");
-
-            List<SpeakingScoreDTO> scores = new ArrayList<>();
-
-            for (int i = 0; i < audioFiles.size(); i++) {
-                String expectedText = i < expectedTexts.size() ? expectedTexts.get(i) : "";
-                scores.add(evaluateSpeaking(audioFiles.get(i), expectedText));
-            }
-
-            ConversationScoreDTO scoreResult = new ConversationScoreDTO();
-
-            // Calculate average score
-            double averageScore = scores.stream()
-                    .mapToDouble(score -> Double.parseDouble(score.getScore()))
-                    .average()
-                    .orElse(0);
-            scoreResult.setScore(String.valueOf(averageScore));
-
-            // Collect transcripts in order
-            List<String> transcripts = scores.stream()
-                    .map(SpeakingScoreDTO::getTranscript)
-                    .collect(Collectors.toList());
-            scoreResult.setTranscripts(transcripts);
-
-            // Collect unique strengths
-            Set<String> uniqueStrengths = new HashSet<>();
-            scores.forEach(score -> {
-                if (score.getStrengths() != null) {
-                    uniqueStrengths.addAll(score.getStrengths());
-                }
-            });
-            scoreResult.setStrengths(new ArrayList<>(uniqueStrengths));
-
-            // Collect unique areas to improve
-            Set<String> uniqueAreasToImprove = new HashSet<>();
-            scores.forEach(score -> {
-                if (score.getAreas_to_improve() != null) {
-                    uniqueAreasToImprove.addAll(score.getAreas_to_improve());
-                }
-            });
-            scoreResult.setAreas_to_improve(new ArrayList<>(uniqueAreasToImprove));
-
-            // Collect unique feedback
-            Set<String> uniqueFeedback = new HashSet<>();
-            scores.forEach(score -> {
-                if (score.getFeedback() != null && !score.getFeedback().isEmpty()) {
-                    uniqueFeedback.add(score.getFeedback());
-                }
-            });
-            scoreResult.setFeedback(String.join("\n\n", uniqueFeedback));
-
-            // Save AI Response to db
-            AIResponseDTO aiResponse = new AIResponseDTO();
-            aiResponse.setRequest(
-                    "Score speaking in conversation: " + "\n" +
-                     "{\n" +
-                            "Transcripts: " + scoreResult.getTranscripts() + "\n" +
-                     "}"
-            );
-            aiResponse.setResponse(
-                    "{\n" +
-                            "Score: " + scoreResult.getScore() + ",\n" +
-                            "Strengths: " + scoreResult.getStrengths() + ",\n" +
-                            "Areas_to_improve: " + scoreResult.getAreas_to_improve() + ",\n" +
-                            "Feedback: " + scoreResult.getFeedback()+ "\n" +
-                    "}"
-            );
-            aiResponseService.create(aiResponse);
-
-            return scoreResult;
+            throw new SpeechProcessingException("Failed to communicate with processing multiple files API: " + e.getMessage(), SeverityEnum.HIGH);
         } catch (Exception e) {
-            log.error("Error evaluating multiple files: {}", e.getMessage(), e);
-            throw new Exception("Error evaluating multiple files: " + e.getMessage());
+            log.error("Unexpected error evaluating multiple files: {}", e.getMessage(), e);
+            throw new Exception("Unexpected error when evaluating multiple files: " + e.getMessage());
         }
     }
 
@@ -345,15 +277,13 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             // Handle potential error case
             if (rootNode.has("error")) {
                 log.warn("API returned an error: {}", rootNode.path("error").asText());
-                if (scoreDTO.getFeedback() == null || scoreDTO.getFeedback().isEmpty()) {
-                    scoreDTO.setFeedback("Error: " + rootNode.path("error").asText());
-                }
+                throw new SpeechProcessingException("Speech Evaluation API returned an error: " + rootNode.path("error").asText(), SeverityEnum.MEDIUM);
             }
 
             return scoreDTO;
         } else {
             log.error("API returned non-successful status: {}", response.getStatusCode());
-            throw new Exception("Failed to process audio: " + response.getStatusCode());
+            throw new SpeechProcessingException("Speech Evaluation API returned non-successful status: " + response.getStatusCode().value(), SeverityEnum.HIGH);
         }
     }
 
@@ -406,15 +336,13 @@ public class ScoreSpeakingServiceImpl implements ScoreSpeakingService {
             // Handle potential error case
             if (rootNode.has("error")) {
                 log.warn("API returned an error: {}", rootNode.path("error").asText());
-                if (scoreDTO.getFeedback() == null || scoreDTO.getFeedback().isEmpty()) {
-                    scoreDTO.setFeedback("Error: " + rootNode.path("error").asText());
-                }
+                throw new SpeechProcessingException("Speech Evaluation API returned an error: " + rootNode.path("error").asText(), SeverityEnum.MEDIUM);
             }
 
             return scoreDTO;
         } else {
             log.error("API returned non-successful status: {}", response.getStatusCode());
-            throw new Exception("Failed to process multiple audio files: " + response.getStatusCode());
+            throw new SpeechProcessingException("Speech Evaluation API returned non-successful status: " + response.getStatusCode().value(), SeverityEnum.HIGH);
         }
     }
 }

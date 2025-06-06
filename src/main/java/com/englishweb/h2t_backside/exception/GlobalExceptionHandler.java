@@ -5,6 +5,7 @@ import com.englishweb.h2t_backside.dto.response.ErrorDTO;
 import com.englishweb.h2t_backside.dto.response.ResponseDTO;
 import com.englishweb.h2t_backside.model.enummodel.SeverityEnum;
 import com.englishweb.h2t_backside.service.feature.DiscordNotifier;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -289,6 +290,102 @@ public class GlobalExceptionHandler {
                 .data(ex.getMessage())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UnauthorizedOpenRouterException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleUnauthorizedOpenRouterException(UnauthorizedOpenRouterException ex, HttpServletRequest request) {
+        log.error("UnauthorizedOpenRouterException: {}", ex.getMessage());
+        String errorMessage = "Unauthorized OpenRouter Exception. Please check apiKey for openRouter";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.UNAUTHORIZED)
+                .data(ex.getMessage())
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(OpenRouterException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleOpenRouterException(OpenRouterException ex, HttpServletRequest request) {
+        log.error("OpenRouterException: {}", ex.getMessage());
+        String errorMessage = "OpenRouter Exception: Unexpected error, check logs for more information";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.OPEN_ROUTER_EXCEPTION)
+                .data(ex.getMessage())
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleJsonProcessingException(JsonProcessingException ex, HttpServletRequest request) {
+        log.error("JsonProcessingException: {}", ex.getMessage());
+        String errorMessage = "JsonProcessing Exception: Unexpected parse data, check logs for more information";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.JSON_PROCESSING_EXCEPTION)
+                .data(ex.getMessage())
+                .severity(SeverityEnum.LOW)
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(SpeechProcessingException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseDTO<String> handleSpeechProcessingException(SpeechProcessingException ex, HttpServletRequest request) {
+        log.error("SpeechProcessingException: {}", ex.getMessage());
+        String errorMessage = "SpeechProcessing Exception: Speech Evaluation API maybe down, check logs for more information";
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .message(errorMessage)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .instance(request.getMethod() + " " + request.getRequestURI())
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
+                .errorCode(ErrorApiCodeContent.SPEECH_PROCESSING_EXCEPTION)
+                .data(ex.getMessage())
+                .severity(ex.getSeverityEnum())
+                .build();
+        discordNotifier.buildErrorAndSend(errorDTO);
+        return ResponseDTO.<String>builder()
+                .status(ResponseStatusEnum.FAIL)
+                .message(errorMessage)
+                .data(ex.getMessage())
+                .build();
     }
 
     @ExceptionHandler(Exception.class)
