@@ -396,23 +396,4 @@ public class ScoreWritingServiceImpl implements ScoreWritingService {
         // Save to database
         aiResponseService.create(aiResponse);
     }
-
-    private WritingScoreDTO createFallbackResponse(String errorMessage) {
-        log.warn("Creating fallback response due to error: {}", errorMessage);
-
-        WritingScoreDTO fallbackDTO = new WritingScoreDTO();
-        fallbackDTO.setScore("0");
-
-        List<String> strengths = new ArrayList<>();
-        strengths.add("Unable to determine strengths due to processing error");
-        fallbackDTO.setStrengths(strengths);
-
-        List<String> areasToImprove = new ArrayList<>();
-        areasToImprove.add("Please try submitting your writing again");
-        fallbackDTO.setAreas_to_improve(areasToImprove);
-
-        fallbackDTO.setFeedback("Error processing writing sample: " + errorMessage);
-
-        return fallbackDTO;
-    }
 }

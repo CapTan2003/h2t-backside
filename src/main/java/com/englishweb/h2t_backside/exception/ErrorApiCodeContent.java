@@ -38,7 +38,8 @@ public class ErrorApiCodeContent {
     public static final String LESSON_QUESTION_UPDATED_FAIL = "215"; // Cập nhật câu hoi cho bài học thất bại
 
     // Lỗi liên quan đến bài kiểm tra
-    public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài học
+    public static final String TEST_NOT_FOUND = "304"; // Không tìm thấy bài kiểm tra
+    public static final String COMMENT_TEST_EXCEPTION = "305";
 
     // Lỗi liên quan đến gọi api bên ngoài
     public static final String ERROR_LOG_CREATED_FAIL = "301";
