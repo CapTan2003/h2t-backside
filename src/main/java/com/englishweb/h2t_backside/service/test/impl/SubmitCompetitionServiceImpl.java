@@ -134,11 +134,7 @@ public class SubmitCompetitionServiceImpl extends BaseServiceImpl<SubmitCompetit
     @Override
     public SubmitCompetitionDTO findByTestIdAndUserIdAndStatus(Long testId, Long userId, Boolean status) {
         SubmitCompetition submitTest = repository.findByTestIdAndUserIdAndStatus(testId, userId,status)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        testId,
-                        String.format("Submit Comeptition with test ID '%d', userId '%d' and status=false not found.", testId, userId),
-                        SeverityEnum.LOW
-                ));
+                .orElse(null);
         return convertToDTO(submitTest);
     }
     @Override

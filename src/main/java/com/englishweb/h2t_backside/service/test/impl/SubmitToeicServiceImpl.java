@@ -121,11 +121,7 @@ public class SubmitToeicServiceImpl extends BaseServiceImpl<SubmitToeicDTO, Subm
     @Override
     public SubmitToeicDTO findByToeicIdAndUserIdAndStatusFalse(Long toeicId, Long userId) {
         SubmitToeic submitToeic = repository.findByToeicIdAndUserIdAndStatusFalse(toeicId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        toeicId,
-                        String.format("SubmitToeic with test ID '%d', userId '%d' and status=false not found.", toeicId, userId),
-                        SeverityEnum.LOW
-                ));
+                .orElse(null);
         return convertToDTO(submitToeic);
     }
 
