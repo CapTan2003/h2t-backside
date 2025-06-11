@@ -62,7 +62,7 @@ public class SubmitCompetitionSpeakingServiceImpl extends BaseServiceImpl<Submit
     protected void createError(SubmitCompetitionSpeakingDTO dto, Exception ex) {
         log.error("Error creating submit competition speaking: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating submit competition speaking: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_COMPETITION_SPEAKING_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -70,7 +70,7 @@ public class SubmitCompetitionSpeakingServiceImpl extends BaseServiceImpl<Submit
     protected void updateError(SubmitCompetitionSpeakingDTO dto, Long id, Exception ex) {
         log.error("Error updating submit competition speaking: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating submit competition speaking: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_COMPETITION_SPEAKING_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {

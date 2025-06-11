@@ -65,7 +65,7 @@ public class SubmitToeicServiceImpl extends BaseServiceImpl<SubmitToeicDTO, Subm
     protected void createError(SubmitToeicDTO dto, Exception ex) {
         log.error("Error creating submit toeic: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating submit toeic: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_TOEIC_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -73,7 +73,7 @@ public class SubmitToeicServiceImpl extends BaseServiceImpl<SubmitToeicDTO, Subm
     protected void updateError(SubmitToeicDTO dto, Long id, Exception ex) {
         log.error("Error updating submit toeic: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating submit toeic: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_TOEIC_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {

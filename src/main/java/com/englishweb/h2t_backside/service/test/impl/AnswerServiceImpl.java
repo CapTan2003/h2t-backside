@@ -39,7 +39,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerDTO, Answer, Answer
     protected void createError(AnswerDTO dto, Exception ex) {
         log.error("Error creating answer: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating answer: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.ANSWER_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 

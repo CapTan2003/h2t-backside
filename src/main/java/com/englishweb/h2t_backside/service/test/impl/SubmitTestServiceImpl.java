@@ -57,7 +57,7 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
     protected void createError(SubmitTestDTO dto, Exception ex) {
         log.error("Error creating submit test: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating submit test: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_TEST_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -65,7 +65,7 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
     protected void updateError(SubmitTestDTO dto, Long id, Exception ex) {
         log.error("Error updating submit test: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating submit test: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_TEST_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {

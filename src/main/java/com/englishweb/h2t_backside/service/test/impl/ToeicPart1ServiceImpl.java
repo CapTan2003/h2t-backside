@@ -42,7 +42,7 @@ public class ToeicPart1ServiceImpl extends BaseServiceImpl<ToeicPart1DTO, ToeicP
     protected void createError(ToeicPart1DTO dto, Exception ex) {
         log.error("Error creating ToeicPart1: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating ToeicPart1: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.TOEIC_PART1_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -50,7 +50,7 @@ public class ToeicPart1ServiceImpl extends BaseServiceImpl<ToeicPart1DTO, ToeicP
     protected void updateError(ToeicPart1DTO dto, Long id, Exception ex) {
         log.error("Error updating ToeicPart1: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating ToeicPart1: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.TOEIC_PART1_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {
