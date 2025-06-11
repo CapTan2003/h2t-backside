@@ -42,7 +42,7 @@ public class ToeicAnswerServiceImpl extends BaseServiceImpl<ToeicAnswerDTO, Toei
     protected void createError(ToeicAnswerDTO dto, Exception ex) {
         log.error("Error creating ToeicAnswer: {}", ex.getMessage());
         throw new CreateResourceException(dto, "Failed to create ToeicAnswer: " + ex.getMessage(),
-                ErrorApiCodeContent.LESSON_CREATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
+                ErrorApiCodeContent.TOEIC_ANSWER_CREATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ToeicAnswerServiceImpl extends BaseServiceImpl<ToeicAnswerDTO, Toei
         log.error("Error updating ToeicAnswer: {}", ex.getMessage());
         HttpStatus status = this.isExist(id) ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.NOT_FOUND;
         throw new UpdateResourceException(dto, "Failed to update ToeicAnswer: " + ex.getMessage(),
-                ErrorApiCodeContent.LESSON_UPDATED_FAIL, status, SeverityEnum.MEDIUM);
+                ErrorApiCodeContent.TOEIC_ANSWER_UPDATED_FAIL, status, SeverityEnum.MEDIUM);
     }
     public List<ToeicAnswerDTO> findByQuestionId(Long questionId) {
         List<ToeicAnswer> answers = repository.findByQuestionId(questionId);

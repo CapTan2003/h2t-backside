@@ -53,7 +53,7 @@ public class TestReadingServiceImpl extends BaseServiceImpl<TestReadingDTO, Test
     protected void createError(TestReadingDTO dto, Exception ex) {
         log.error("Error creating test reading: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating test reading: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.TEST_READING_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -61,7 +61,7 @@ public class TestReadingServiceImpl extends BaseServiceImpl<TestReadingDTO, Test
     protected void updateError(TestReadingDTO dto, Long id, Exception ex) {
         log.error("Error updating test reading: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating test reading: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.TEST_READING_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {

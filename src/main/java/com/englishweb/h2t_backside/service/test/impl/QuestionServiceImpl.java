@@ -50,7 +50,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
     protected void createError(QuestionDTO dto, Exception ex) {
         log.error("Error creating question: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating question: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.QUESTION_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -58,7 +58,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<QuestionDTO, Question, 
     protected void updateError(QuestionDTO dto, Long id, Exception ex) {
         log.error("Error updating question: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating question: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.QUESTION_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {

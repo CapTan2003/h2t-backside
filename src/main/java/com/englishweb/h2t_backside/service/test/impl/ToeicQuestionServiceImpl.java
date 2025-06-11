@@ -45,13 +45,13 @@ public class ToeicQuestionServiceImpl extends BaseServiceImpl<ToeicQuestionDTO, 
     @Override
     protected void createError(ToeicQuestionDTO dto, Exception ex) {
         throw new CreateResourceException(dto, "Error creating ToeicQuestion: " + ex.getMessage(),
-                ErrorApiCodeContent.LESSON_CREATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
+                ErrorApiCodeContent.TOEIC_QUESTION_CREATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
     @Override
     protected void updateError(ToeicQuestionDTO dto, Long id, Exception ex) {
         throw new UpdateResourceException(dto, "Error updating ToeicQuestion: " + ex.getMessage(),
-                ErrorApiCodeContent.LESSON_UPDATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
+                ErrorApiCodeContent.TOEIC_QUESTION_UPDATED_FAIL, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
 

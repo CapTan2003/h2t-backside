@@ -64,7 +64,7 @@ public class SubmitCompetitionAnswerServiceImpl extends BaseServiceImpl<SubmitCo
     protected void createError(SubmitCompetitionAnswerDTO dto, Exception ex) {
         log.error("Error creating submit competition answer: {}", ex.getMessage());
         String errorMessage = "Unexpected error creating submit competition answer: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_CREATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_COMPETITION_ANSWER_CREATED_FAIL;
         throw new CreateResourceException(dto, errorMessage, errorCode, HttpStatus.INTERNAL_SERVER_ERROR, SeverityEnum.HIGH);
     }
 
@@ -72,7 +72,7 @@ public class SubmitCompetitionAnswerServiceImpl extends BaseServiceImpl<SubmitCo
     protected void updateError(SubmitCompetitionAnswerDTO dto, Long id, Exception ex) {
         log.error("Error updating submit competition answer: {}", ex.getMessage());
         String errorMessage = "Unexpected error updating submit competition answer: " + ex.getMessage();
-        String errorCode = ErrorApiCodeContent.LESSON_UPDATED_FAIL;
+        String errorCode = ErrorApiCodeContent.SUBMIT_COMPETITION_ANSWER_UPDATED_FAIL;
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (!this.isExist(id)) {
