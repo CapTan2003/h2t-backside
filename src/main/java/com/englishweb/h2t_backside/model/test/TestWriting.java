@@ -3,6 +3,7 @@ package com.englishweb.h2t_backside.model.test;
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,9 +16,9 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestWriting extends AbstractBaseEntity {
-
-    @Column(nullable = false)
-    @Comment("Writing topic or question")
+    
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String topic;
 
     @Column(nullable = false)

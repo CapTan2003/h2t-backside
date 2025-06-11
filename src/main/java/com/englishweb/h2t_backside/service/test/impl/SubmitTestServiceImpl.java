@@ -136,14 +136,11 @@ public class SubmitTestServiceImpl extends BaseServiceImpl<SubmitTestDTO, Submit
     }
     @Override
     public SubmitTestDTO findByTestIdAndUserIdAndStatusFalse(Long testId, Long userId) {
-        SubmitTest submitTest = repository.findByTestIdAndUserIdAndStatusFalse(testId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        testId,
-                        String.format("SubmitTest with test ID '%d', userId '%d' and status=false not found.", testId, userId),
-                        SeverityEnum.LOW
-                ));
-        return convertToDTO(submitTest);
+        return repository.findByTestIdAndUserIdAndStatusFalse(testId, userId)
+                .map(this::convertToDTO)
+                .orElse(null);
     }
+
 
 
     @Override
