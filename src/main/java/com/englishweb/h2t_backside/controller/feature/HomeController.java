@@ -248,7 +248,7 @@ public class HomeController {
     public ResponseDTO<List<ToeicDTO>> findRecentToeics() {
         ToeicFilterDTO filterDTO = new ToeicFilterDTO();
         filterDTO.setStatus(true);
-        List<ToeicDTO> result = toeicService.searchWithFilters(0, 3, "-createdAt", filterDTO, null, null).getContent();
+        List<ToeicDTO> result = toeicService.searchWithFilters(0, 4, "-createdAt", filterDTO, null, null).getContent();
         return ResponseDTO.<List<ToeicDTO>>builder()
                 .status(ResponseStatusEnum.SUCCESS)
                 .data(result)
