@@ -82,6 +82,8 @@ public class FeatureLessonServiceImpl implements FeatureLessonService {
         // For most viewed lessons, sort by views
         if ("views".equals(sortBy)) {
             allLessons.sort(Comparator.comparing(LessonDTO::getViews).reversed());
+        } else if ("-createdAt".equals(sortBy)) {
+            allLessons.sort(Comparator.comparing(LessonDTO::getCreatedAt).reversed());
         }
 
         return allLessons.stream()
