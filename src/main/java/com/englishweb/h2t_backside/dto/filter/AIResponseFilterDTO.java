@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AIResponseFilterDTO extends BaseFilterDTO{
+public class AIResponseFilterDTO extends BaseFilterDTO {
     private Long userId;
+    private Boolean status;
 }

@@ -31,8 +31,14 @@ public class AIResponsePagination {
 
         Specification<T> specification = Specification.where(BaseFilterSpecification.applyBaseFilters(filter));
 
+        // Apply userId filter
         if (filter.getUserId() != null) {
             specification = specification.and(AIResponseSpecification.findByUserId(filter.getUserId()));
+        }
+
+        // THÊM STATUS FILTER
+        if (filter.getStatus() != null) {
+            specification = specification.and(AIResponseSpecification.findByStatus(filter.getStatus()));
         }
 
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
@@ -46,5 +52,4 @@ public class AIResponsePagination {
 
         return repository.findAll(specification, pageable);
     }
-
 }
