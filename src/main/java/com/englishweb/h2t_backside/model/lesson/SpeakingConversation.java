@@ -21,7 +21,8 @@ public class SpeakingConversation extends AbstractBaseEntity {
     @Comment("Serial number indicating the order of the conversation")
     private int serial;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @Comment("Content of the conversation")
     private String content;
 

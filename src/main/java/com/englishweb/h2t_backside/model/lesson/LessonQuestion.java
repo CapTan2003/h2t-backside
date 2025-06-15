@@ -1,10 +1,7 @@
 package com.englishweb.h2t_backside.model.lesson;
 
 import com.englishweb.h2t_backside.model.abstractmodel.AbstractBaseEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
@@ -22,7 +19,8 @@ public class LessonQuestion extends AbstractBaseEntity {
     @Comment("Content of the question")
     private String content;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @Comment("Explanation of the question")
     private String explanation;
 

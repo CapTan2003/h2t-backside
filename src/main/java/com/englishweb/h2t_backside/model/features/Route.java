@@ -23,7 +23,8 @@ public class Route extends AbstractBaseEntity {
     @Comment("Image url for Route")
     private String image;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @Comment("Description for route")
     private String description;
 
