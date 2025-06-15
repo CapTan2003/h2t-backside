@@ -12,7 +12,8 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LessonAnswer extends AbstractBaseEntity {
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @Comment("Content of the answer")
     private String content;
 

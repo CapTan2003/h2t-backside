@@ -23,7 +23,8 @@ public abstract class AbstractLessonEntity extends AbstractBaseEntity implements
     @Comment("Image associated with the Lesson")
     private String image;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @Comment("Description of the Lesson")
     private String description;
 
