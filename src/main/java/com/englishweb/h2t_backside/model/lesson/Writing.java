@@ -24,7 +24,7 @@ public class Writing extends AbstractLessonEntity {
     private String file;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @Comment("Paragraph content related to the writing lesson")
     private String paragraph;
 
