@@ -66,6 +66,11 @@ public class AIResponseOrPagination {
         // Parse sort
         List<Sort.Order> orders = ParseData.parseStringToSortOrderList(sortFields);
 
+        if (orders.isEmpty()) {
+            orders.add(Sort.Order.desc("createdAt")); // Mới nhất trước
+            System.out.println("Teacher view - Applied default sort: createdAt DESC (newest first)");
+        }
+
         if (!ValidationData.isValidFieldInSortList(entityClass, orders)) {
             throw new InvalidArgumentException("Invalid sort field.", sortFields,
                     ErrorApiCodeContent.SORT_FIELD_INVALID, SeverityEnum.LOW);
