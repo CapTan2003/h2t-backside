@@ -49,7 +49,16 @@ public class TextToSpeechServiceImpl implements TextToSpeechService {
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<byte[]> response = restTemplate.exchange(apiUrl + "/speech", HttpMethod.POST, entity, byte[].class);
+            log.info("Sending TTS request to {}", apiUrl + "/speech");
+
+            ResponseEntity<byte[]> response = restTemplate.exchange(
+                    apiUrl + "/speech",
+                    HttpMethod.POST,
+                    entity,
+                    byte[].class);
+
+            log.info("Received response: status={}, bodyLength={}",
+                    response.getStatusCode(), response.getBody() != null ? response.getBody().length : -1);
 
             byte[] audioBytes = response.getBody();
             if (audioBytes != null) {
