@@ -19,4 +19,4 @@ COPY --from=build /home/app/voiceAudio/ /app/voiceAudio/
 ENV WORDNET_DICTIONARY_PATH=/app/wordnet
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dwordnet.dictionary.path=/app/wordnet", "-jar", "app.jar"]
