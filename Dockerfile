@@ -1,18 +1,22 @@
-# create .jar file
 FROM maven:3.8.6-openjdk-18-slim AS build
 WORKDIR /home/app
 
-COPY ./pom.xml /home/app/pom.xml
-COPY ./src/main/java/com/englishweb/h2t_backside/H2tBacksideApplication.java /home/app/src/main/java/com/englishweb/h2t_backside/H2tBacksideApplication.java
+COPY . .
 
-RUN mvn -f /home/app/pom.xml clean package
+RUN mvn clean package -DskipTests
 
-COPY . /home/app
-RUN mvn -f /home/app/pom.xml clean package
-
-# create docker image
 FROM openjdk:18-slim
-EXPOSE 8080
-COPY --from=build /home/app/target/*.jar /app.jar
+WORKDIR /app
 
-ENTRYPOINT ["sh", "-c", "java -jar /app.jar"]
+RUN mkdir -p /app/wordnet /app/voiceAudio
+
+COPY --from=build /home/app/target/*.jar app.jar
+
+COPY --from=build /home/app/src/main/resources/wordnet/ /app/wordnet/
+
+COPY --from=build /home/app/voiceAudio/ /app/voiceAudio/
+
+ENV WORDNET_DICTIONARY_PATH=/app/wordnet
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

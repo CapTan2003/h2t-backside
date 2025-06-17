@@ -19,7 +19,7 @@ public class LanguageToolServiceImpl implements LanguageToolService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    @Value("${languagetool.api.url:http://13.250.44.105:8081/v2/check}")
+    @Value("${languagetool.api.url:http://localhost:8081/v2/check}")
     private String apiUrl;
 
     public LanguageToolServiceImpl() {
