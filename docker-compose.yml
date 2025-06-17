@@ -4,32 +4,65 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql-study
-    restart: always
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: study-english
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
-      - ./database:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p123456"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  languagetool:
+    image: erikvl87/languagetool
+    container_name: languagetool-service
+    restart: unless-stopped
+    ports:
+      - "8081:8010"
+
+  speech-evaluation:
+    image: trunghauad02/speech-evaluation-app
+    container_name: vosk-evaluation-app
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+
+  kokoro-tts:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
+    container_name: kokoro-tts-service
+    restart: unless-stopped
+    ports:
+      - "8880:8880"
+
   backend:
     build: .
     container_name: h2t-backend
-    restart: always
+    restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/study-english
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456
     ports:
       - "8080:8080"
+
+  init-data:
+    image: mysql:8.0
+    container_name: init-data
+    depends_on:
+      backend:
+        condition: service_started
+    volumes:
+      - ./init-sql:/init-sql
+      - ./database:/init-sql-ro
+    entrypoint: ["bash", "/init-sql/run.sh"]
+
+volumes:
+  mysql_data:
