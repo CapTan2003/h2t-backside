@@ -58,7 +58,7 @@ services:
 
   init-data:
     image: mysql:8.0
-    platform: linux/amd64  # ← Thêm dòng này!
+    platform: linux/amd64
     container_name: init-data
     depends_on:
       - backend
@@ -67,9 +67,8 @@ services:
     command: >
       bash -c "
         sleep 60 &&
-        mysql -h mysql-study -u root -p123456 study-english < /database/data.sql &&
+        mysql -h mysql-study -u root -p123456 study-english < /database/mysql_extended_insert.sql &&
         echo 'Data imported successfully!'
       "
-
 volumes:
   mysql_data:
