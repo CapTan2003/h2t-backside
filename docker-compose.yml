@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: mysql-study
     restart: unless-stopped
     environment:
@@ -20,6 +19,7 @@ services:
 
   languagetool:
     image: erikvl87/languagetool
+    platform: linux/amd64
     container_name: languagetool-service
     restart: unless-stopped
     ports:
@@ -27,6 +27,7 @@ services:
 
   speech-evaluation:
     image: trunghauad02/speech-evaluation-app
+    platform: linux/amd64
     container_name: vosk-evaluation-app
     restart: unless-stopped
     ports:
@@ -34,6 +35,7 @@ services:
 
   kokoro-tts:
     image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
+    platform: linux/amd64
     container_name: kokoro-tts-service
     restart: unless-stopped
     ports:
@@ -41,6 +43,7 @@ services:
 
   backend:
     build: .
+    platform: linux/amd64
     container_name: h2t-backend
     restart: unless-stopped
     depends_on:
@@ -55,14 +58,17 @@ services:
 
   init-data:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: init-data
     depends_on:
-      backend:
-        condition: service_started
+      - backend
     volumes:
-      - ./init-sql:/init-sql
-      - ./database:/init-sql-ro
-    entrypoint: ["bash", "/init-sql/run.sh"]
-
+      - ./database:/database
+    command: >
+      bash -c "
+        sleep 60 &&
+        mysql -h mysql-study -u root -p123456 study-english < /database/mysql_extended_insert.sql &&
+        echo 'Data imported successfully!'
+      "
 volumes:
   mysql_data:
