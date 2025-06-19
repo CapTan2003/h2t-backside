@@ -35,7 +35,7 @@ public class SubmitTestSpeaking extends AbstractBaseEntity {
 
 
     @Comment("Score given for the speaking response")
-    private Integer score;
+    private Double score;
 
     @Lob
     @Column(columnDefinition = "TEXT")
