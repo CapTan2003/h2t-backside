@@ -56,7 +56,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             log.warn("Invalid password for email: {}", dto.getEmail());
             throw new AuthenticateException("Invalid email or password.", SeverityEnum.LOW,
                     new HashMap<String, Object>() {{
-                        put("password", dto.getPassword());
+                        put("email", dto.getEmail());
                     }});
         }
 
@@ -82,58 +82,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 .role(user.getRole())
                 .userId(user.getId())
                 .build();
-    }
-
-    public AuthenticateDTO loginWithGoogle(GoogleLoginDTO request) {
-        String idTokenString = request.getIdToken();
-
-        try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList(ggClientId))
-                    .build();
-
-            GoogleIdToken idToken = verifier.verify(idTokenString);
-            if (idToken == null) {
-                throw new IllegalArgumentException("Invalid Google ID token.");
-            }
-
-            GoogleIdToken.Payload payload = idToken.getPayload();
-
-            String email = payload.getEmail();
-            String name = (String) payload.get("name");
-            String avatar = (String) payload.get("picture");
-
-            User user = repository.findAllByEmail(email).orElseGet(() -> {
-                User newUser = new User();
-                newUser.setEmail(email);
-                newUser.setName(name);
-                newUser.setAvatar(avatar);
-                newUser.setRole(RoleEnum.STUDENT);  // default role
-                newUser.setPassword(""); // Không có mật khẩu
-                return repository.save(newUser);
-            });
-
-            // Sinh token cho user
-            String accessToken = jwtUtil.generateAccessToken(user);
-            String refreshToken = jwtUtil.generateRefreshToken(user);
-
-            user.setRefreshToken(refreshToken);
-            repository.save(user);
-
-            return AuthenticateDTO.builder()
-                    .authenticated(true)
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .role(user.getRole())
-                    .userId(user.getId())
-                    .build();
-
-        } catch (Exception e) {
-            throw new AuthenticateException("Failed to verify Google ID Token", SeverityEnum.LOW,
-                    new HashMap<String, Object>() {{
-                        put("ggLoginData", request);
-                    }});
-        }
     }
 
     public void logout(String refreshToken) {
