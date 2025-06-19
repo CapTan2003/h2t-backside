@@ -66,7 +66,6 @@ public class ToeicCommentTestServiceImpl implements ToeicCommentTestService {
             log.error("Error generating TOEIC test comment: {}", e.getMessage(), e);
             throw new CommentTestException("Unexpected error when generating TOEIC test comment: " + e.getMessage(), SeverityEnum.HIGH);
         }
-
     }
 
     /**
@@ -97,39 +96,35 @@ public class ToeicCommentTestServiceImpl implements ToeicCommentTestService {
     }
 
     /**
-     * Creates a summary of the TOEIC test request to avoid storing very large objects
+     * Creates a summary of the TOEIC test request for logging purposes
      */
     private String summarizeToeicTestRequest(ToeicCommentRequestDTO request) {
-        StringBuilder summary = new StringBuilder("{\n");
+        StringBuilder summary = new StringBuilder("TOEIC Performance Analysis:\n");
 
-        summary.append("  submitToeicId: ").append(request.getSubmitToeicId()).append(",\n");
-        summary.append("  toeicId: ").append(request.getToeicId()).append(",\n");
-        summary.append("  totalScore: ").append(request.getTotalScore()).append(",\n");
-        summary.append("  listeningScore: ").append(request.getListeningScore()).append(",\n");
-        summary.append("  readingScore: ").append(request.getReadingScore()).append(",\n");
-        summary.append("  correctAnswers: ").append(request.getCorrectAnswers()).append(" / ").append(request.getAnsweredQuestions()).append(",\n");
+        summary.append("Overall Score: ").append(request.getTotalScore()).append("/990\n");
+        summary.append("Listening: ").append(request.getListeningScore()).append("/495\n");
+        summary.append("Reading: ").append(request.getReadingScore()).append("/495\n");
+        summary.append("Accuracy: ").append(request.getCorrectAnswers()).append("/").append(request.getAnsweredQuestions()).append("\n");
 
         if (request.getPartAccuracy() != null) {
             ToeicCommentRequestDTO.PartAccuracyInfo accuracy = request.getPartAccuracy();
-            summary.append("  partAccuracy: {\n");
+            summary.append("Part Breakdown:\n");
             if (accuracy.getPart1Accuracy() != null)
-                summary.append("    part1: ").append(String.format("%.1f", accuracy.getPart1Accuracy())).append("%,\n");
+                summary.append("  Part 1: ").append(String.format("%.1f", accuracy.getPart1Accuracy())).append("%\n");
             if (accuracy.getPart2Accuracy() != null)
-                summary.append("    part2: ").append(String.format("%.1f", accuracy.getPart2Accuracy())).append("%,\n");
+                summary.append("  Part 2: ").append(String.format("%.1f", accuracy.getPart2Accuracy())).append("%\n");
             if (accuracy.getPart3Accuracy() != null)
-                summary.append("    part3: ").append(String.format("%.1f", accuracy.getPart3Accuracy())).append("%,\n");
+                summary.append("  Part 3: ").append(String.format("%.1f", accuracy.getPart3Accuracy())).append("%\n");
             if (accuracy.getPart4Accuracy() != null)
-                summary.append("    part4: ").append(String.format("%.1f", accuracy.getPart4Accuracy())).append("%,\n");
+                summary.append("  Part 4: ").append(String.format("%.1f", accuracy.getPart4Accuracy())).append("%\n");
             if (accuracy.getPart5Accuracy() != null)
-                summary.append("    part5: ").append(String.format("%.1f", accuracy.getPart5Accuracy())).append("%,\n");
+                summary.append("  Part 5: ").append(String.format("%.1f", accuracy.getPart5Accuracy())).append("%\n");
             if (accuracy.getPart6Accuracy() != null)
-                summary.append("    part6: ").append(String.format("%.1f", accuracy.getPart6Accuracy())).append("%,\n");
+                summary.append("  Part 6: ").append(String.format("%.1f", accuracy.getPart6Accuracy())).append("%\n");
             if (accuracy.getPart7Accuracy() != null)
-                summary.append("    part7: ").append(String.format("%.1f", accuracy.getPart7Accuracy())).append("%\n");
-            summary.append("  }\n");
+                summary.append("  Part 7: ").append(String.format("%.1f", accuracy.getPart7Accuracy())).append("%");
         }
 
-        summary.append("}");
         return summary.toString();
     }
 
@@ -139,82 +134,96 @@ public class ToeicCommentTestServiceImpl implements ToeicCommentTestService {
     private String buildToeicPrompt(ToeicCommentRequestDTO request) {
         StringBuilder prompt = new StringBuilder();
 
-        // System instruction - establish expert persona
-        prompt.append("You are an expert TOEIC instructor who specializes in precise, insightful feedback. Your task is to provide a targeted assessment in about 80-100 words that identifies specific patterns in TOEIC test performance and gives actionable guidance.\n\n");
+        // Expert persona establishment
+        prompt.append("You are a seasoned TOEIC expert with over 10 years of experience teaching and analyzing TOEIC test performance. You have helped thousands of students improve their scores through precise diagnostic feedback and targeted learning strategies. Your expertise lies in identifying performance patterns and providing actionable improvement plans.\n\n");
 
-        // Response format instructions
-        prompt.append("INSTRUCTIONS:\n");
-        prompt.append("1. Return a JSON object with the following structure:\n");
+        // Response format requirements
+        prompt.append("TASK: Analyze the following TOEIC test results and provide expert feedback.\n\n");
+
+        prompt.append("RESPONSE FORMAT:\n");
+        prompt.append("Return ONLY a JSON object with this exact structure:\n");
         prompt.append("{\n");
-        prompt.append("  \"feedback\": \"Your precise, targeted feedback on TOEIC performance (80-100 words)\"\n");
+        prompt.append("  \"feedback\": \"Your professional analysis and recommendations (90-120 words)\"\n");
         prompt.append("}\n\n");
-        prompt.append("2. The feedback must include:\n");
-        prompt.append("   - A clear assessment of strengths in specific TOEIC parts\n");
-        prompt.append("   - Identification of weak areas in specific TOEIC parts\n");
-        prompt.append("   - 2-3 concrete, actionable improvement strategies\n");
-        prompt.append("   - Focus on TOEIC-specific skills and test strategies\n\n");
 
-        // Test data summary
-        prompt.append("TOEIC TEST PERFORMANCE DATA:\n");
+        // Content requirements
+        prompt.append("FEEDBACK REQUIREMENTS:\n");
+        prompt.append("• Identify the strongest and weakest TOEIC sections with specific part numbers\n");
+        prompt.append("• Analyze listening vs reading balance and what it reveals about the test-taker\n");
+        prompt.append("• Provide 3 specific, actionable improvement strategies tailored to the weak areas\n");
+        prompt.append("• Reference actual accuracy percentages from the data\n");
+        prompt.append("• Use professional TOEIC instructor tone but remain encouraging\n\n");
 
-        // Add overall score if available
-        prompt.append("- Total Score: ").append(request.getTotalScore()).append(" / 990\n");
-        prompt.append("- Listening Score: ").append(request.getListeningScore()).append(" / 495\n");
-        prompt.append("- Reading Score: ").append(request.getReadingScore()).append(" / 495\n");
-        prompt.append("- Total Correct Answers: ").append(request.getCorrectAnswers()).append(" / ").append(request.getAnsweredQuestions()).append("\n");
+        // Test performance data
+        prompt.append("═══ TOEIC TEST RESULTS ANALYSIS ═══\n\n");
 
-        // Add performance by part
-        prompt.append("\nPERFORMANCE BY SECTION:\n");
+        prompt.append("OVERALL PERFORMANCE:\n");
+        prompt.append("• Total Score: ").append(request.getTotalScore()).append(" / 990 points\n");
+        prompt.append("• Listening Score: ").append(request.getListeningScore()).append(" / 495 points\n");
+        prompt.append("• Reading Score: ").append(request.getReadingScore()).append(" / 495 points\n");
+        prompt.append("• Questions Answered Correctly: ").append(request.getCorrectAnswers())
+                .append(" out of ").append(request.getAnsweredQuestions()).append(" attempted\n\n");
 
-        // Listening sections
-        prompt.append("LISTENING SECTION:\n");
-
+        // Section-by-section breakdown
         ToeicCommentRequestDTO.PartAccuracyInfo accuracy = request.getPartAccuracy();
         if (accuracy != null) {
+            prompt.append("DETAILED SECTION PERFORMANCE:\n\n");
+
+            prompt.append("LISTENING SKILLS ASSESSMENT:\n");
             if (accuracy.getPart1Accuracy() != null)
-                prompt.append("- Part 1 (Photographs): ").append(String.format("%.1f", accuracy.getPart1Accuracy())).append("% accuracy\n");
-
+                prompt.append("• Part 1 (Photographs): ").append(String.format("%.1f", accuracy.getPart1Accuracy())).append("% correct\n");
             if (accuracy.getPart2Accuracy() != null)
-                prompt.append("- Part 2 (Question-Response): ").append(String.format("%.1f", accuracy.getPart2Accuracy())).append("% accuracy\n");
-
+                prompt.append("• Part 2 (Question-Response): ").append(String.format("%.1f", accuracy.getPart2Accuracy())).append("% correct\n");
             if (accuracy.getPart3Accuracy() != null)
-                prompt.append("- Part 3 (Conversations): ").append(String.format("%.1f", accuracy.getPart3Accuracy())).append("% accuracy\n");
-
+                prompt.append("• Part 3 (Conversations): ").append(String.format("%.1f", accuracy.getPart3Accuracy())).append("% correct\n");
             if (accuracy.getPart4Accuracy() != null)
-                prompt.append("- Part 4 (Short Talks): ").append(String.format("%.1f", accuracy.getPart4Accuracy())).append("% accuracy\n");
+                prompt.append("• Part 4 (Short Talks): ").append(String.format("%.1f", accuracy.getPart4Accuracy())).append("% correct\n");
 
-            // Reading sections
-            prompt.append("\nREADING SECTION:\n");
-
+            prompt.append("\nREADING SKILLS ASSESSMENT:\n");
             if (accuracy.getPart5Accuracy() != null)
-                prompt.append("- Part 5 (Incomplete Sentences): ").append(String.format("%.1f", accuracy.getPart5Accuracy())).append("% accuracy\n");
-
+                prompt.append("• Part 5 (Grammar & Vocabulary): ").append(String.format("%.1f", accuracy.getPart5Accuracy())).append("% correct\n");
             if (accuracy.getPart6Accuracy() != null)
-                prompt.append("- Part 6 (Text Completion): ").append(String.format("%.1f", accuracy.getPart6Accuracy())).append("% accuracy\n");
-
+                prompt.append("• Part 6 (Text Completion): ").append(String.format("%.1f", accuracy.getPart6Accuracy())).append("% correct\n");
             if (accuracy.getPart7Accuracy() != null)
-                prompt.append("- Part 7 (Reading Comprehension): ").append(String.format("%.1f", accuracy.getPart7Accuracy())).append("% accuracy\n");
+                prompt.append("• Part 7 (Reading Comprehension): ").append(String.format("%.1f", accuracy.getPart7Accuracy())).append("% correct\n");
         }
 
-        // Analysis guidance
-        prompt.append("\nCOMPREHENSIVE FEEDBACK GUIDELINES:\n");
-        prompt.append("1. Analyze the balance between listening and reading performance\n");
-        prompt.append("2. Identify specific part(s) with strongest performance\n");
-        prompt.append("3. Identify specific part(s) needing most improvement\n");
-        prompt.append("4. Suggest 2-3 concrete strategies that address the weakest areas\n");
+        // Analysis framework
+        prompt.append("\n═══ EXPERT ANALYSIS FRAMEWORK ═══\n\n");
+        prompt.append("As a TOEIC specialist, analyze this performance using these criteria:\n\n");
 
-        // Examples of good TOEIC-specific feedback
-        prompt.append("\nEXAMPLES OF EXCELLENT TOEIC FEEDBACK:\n");
-        prompt.append("1. \"Your strong performance in Part 1 (90%) and Part 2 (85%) shows excellent listening comprehension of basic content, while your struggle with Part 7 (65%) indicates difficulty with complex reading passages. Focus on skimming techniques for main ideas and practicing timed reading of business articles to improve overall performance.\"\n\n");
-        prompt.append("2. \"Your reading section (395/495) significantly outperforms your listening (310/495), with particular strength in grammar (Part 5: 92%). To balance your TOEIC profile, focus on Part 4 talks (62%) by practicing note-taking for key details and numbers in business presentations.\"\n\n");
+        prompt.append("1. STRENGTH IDENTIFICATION:\n");
+        prompt.append("   - Which parts show mastery (>80% accuracy)?\n");
+        prompt.append("   - Is this student stronger in listening or reading?\n");
+        prompt.append("   - What skills are already well-developed?\n\n");
 
-        // Final reminders
-        prompt.append("CRITICAL REMINDERS:\n");
-        prompt.append("1. BE SPECIFIC TO TOEIC - reference specific TOEIC parts and skills\n");
-        prompt.append("2. BE CONCRETE - reference observable patterns in test performance\n");
-        prompt.append("3. BE ACTIONABLE - provide guidance specific to TOEIC test improvement\n");
-        prompt.append("4. BE CONCISE - use approximately 80-100 words for the feedback\n");
-        prompt.append("5. FOCUS ON TEST STRATEGY - highlight approaches that will improve scores on future TOEIC tests\n");
+        prompt.append("2. WEAKNESS DIAGNOSIS:\n");
+        prompt.append("   - Which parts need immediate attention (<70% accuracy)?\n");
+        prompt.append("   - Are there specific skill gaps (grammar, vocabulary, comprehension)?\n");
+        prompt.append("   - What's preventing score improvement?\n\n");
+
+        prompt.append("3. STRATEGIC RECOMMENDATIONS:\n");
+        prompt.append("   - Prioritize the 2-3 most impactful areas for improvement\n");
+        prompt.append("   - Suggest specific study methods for weak parts\n");
+        prompt.append("   - Recommend time allocation for maximum score gains\n\n");
+
+        // Professional examples
+        prompt.append("EXPERT FEEDBACK EXAMPLES:\n\n");
+        prompt.append("Example 1: \"Your listening foundation is solid with Part 1 at 85% and Part 2 at 80%, demonstrating strong basic comprehension skills. However, Part 7 reading at 58% is significantly limiting your overall score. Focus on daily timed reading practice with business articles, develop skimming strategies for main ideas, and build academic vocabulary. Your grammar strength (Part 5: 75%) suggests you can quickly improve Part 6 through targeted practice.\"\n\n");
+
+        prompt.append("Example 2: \"Strong reading performance (385/495) versus weaker listening (295/495) indicates excellent analytical skills but limited audio exposure. Your Part 5 dominance (88%) shows solid grammar foundation. To balance your profile, dedicate 60% of study time to Parts 3-4 listening through dictation exercises, note-taking practice, and exposure to various English accents in business contexts.\"\n\n");
+
+        // Final instructions
+        prompt.append("═══ FINAL INSTRUCTIONS ═══\n\n");
+        prompt.append("Provide your expert analysis with:\n");
+        prompt.append("✓ Specific part numbers and percentages from the actual data\n");
+        prompt.append("✓ Clear identification of strongest and weakest areas\n");
+        prompt.append("✓ Three concrete, actionable improvement strategies\n");
+        prompt.append("✓ Professional but encouraging tone\n");
+        prompt.append("✓ 90-120 words total\n");
+        prompt.append("✓ Focus on practical steps the student can implement immediately\n\n");
+
+        prompt.append("Remember: Your goal is to provide insights that lead to measurable score improvement on the next TOEIC attempt.");
 
         return prompt.toString();
     }
