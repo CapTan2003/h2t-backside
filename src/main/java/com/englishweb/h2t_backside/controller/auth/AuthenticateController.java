@@ -36,17 +36,6 @@ public class AuthenticateController {
                 .build();
     }
 
-    @PostMapping("/login-with-google")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseDTO<AuthenticateDTO> loginWithGoogle(@RequestBody GoogleLoginDTO request) {
-        AuthenticateDTO authData = service.loginWithGoogle(request);
-        return ResponseDTO.<AuthenticateDTO>builder()
-                .status(ResponseStatusEnum.SUCCESS)
-                .message("Google login successful.")
-                .data(authData)
-                .build();
-    }
-
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO<Boolean> logout(@RequestBody Map<String, String> request) {
