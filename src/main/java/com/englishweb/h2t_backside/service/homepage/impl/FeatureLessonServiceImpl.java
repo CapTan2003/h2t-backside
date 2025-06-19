@@ -33,7 +33,7 @@ public class FeatureLessonServiceImpl implements FeatureLessonService {
     @Override
     public List<RouteNodeDTO> getMostViewedLessons(Integer limit) {
         log.info("Fetching {} most viewed lessons", limit != null ? limit : DEFAULT_LIMIT);
-        return getFilteredLessons(limit, "views");
+        return getFilteredLessons(limit, "-views");
     }
     @Override
     public List<RouteNodeDTO> getMostRecentLessons(Integer limit) {
@@ -80,7 +80,7 @@ public class FeatureLessonServiceImpl implements FeatureLessonService {
                 .collect(Collectors.toList());
 
         // For most viewed lessons, sort by views
-        if ("views".equals(sortBy)) {
+        if ("-views".equals(sortBy)) {
             allLessons.sort(Comparator.comparing(LessonDTO::getViews).reversed());
         } else if ("-createdAt".equals(sortBy)) {
             allLessons.sort(Comparator.comparing(LessonDTO::getCreatedAt).reversed());
