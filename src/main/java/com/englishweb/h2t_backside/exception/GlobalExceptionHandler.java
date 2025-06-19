@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -267,28 +268,60 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ResponseDTO<String>> handleIOException(IOException ex, HttpServletRequest request) {
-        log.error("IOException: {}", ex.getMessage());
+        String errorMessage = ex.getMessage();
 
-        String errorMessage = "IO Exception: Unexpected error when reading/writing file or parser data, check logs in discord server for more information";
+        // Danh sách các pattern cho connection errors
+        boolean isConnectionError = errorMessage != null &&
+                (errorMessage.contains("Broken pipe") ||
+                        errorMessage.contains("Connection reset") ||
+                        errorMessage.contains("connection was aborted") ||
+                        errorMessage.contains("ServletOutputStream failed to write") ||
+                        errorMessage.contains("Connection timed out") ||
+                        errorMessage.contains("Connection refused") ||
+                        errorMessage.contains("Socket closed"));
+
+        if (isConnectionError) {
+            log.warn("Client connection interrupted: {} {} - {}",
+                    request.getMethod(), request.getRequestURI(), errorMessage);
+
+            // Không gửi notification cho loại lỗi này
+            log.debug("Skipping Discord notification for client disconnection");
+
+            // Response đơn giản
+            ResponseDTO<String> response = ResponseDTO.<String>builder()
+                    .status(ResponseStatusEnum.SUCCESS) // SUCCESS vì không phải lỗi server
+                    .message("Request processed but client disconnected")
+                    .data("Response was prepared but client closed connection")
+                    .build();
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        // Các IOException thực sự nghiêm trọng khác
+        log.error("Serious IOException occurred: {}", errorMessage, ex);
+
+        String seriousErrorMessage = "IO Exception: Serious file/data processing error occurred";
         ErrorDTO errorDTO = ErrorDTO.builder()
-                .message(errorMessage)
+                .message(seriousErrorMessage)
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .detail(ex.getMessage())
+                .detail(errorMessage)
                 .instance(request.getMethod() + " " + request.getRequestURI())
                 .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                 .errorCode(ErrorApiCodeContent.IO_EXCEPTION)
-                .data(ex.getMessage())
+                .data(errorMessage)
                 .severity(SeverityEnum.HIGH)
                 .build();
 
+        // Chỉ gửi Discord notification cho lỗi nghiêm trọng
         discordNotifier.buildErrorAndSend(errorDTO);
+
         ResponseDTO<String> response = ResponseDTO.<String>builder()
                 .status(ResponseStatusEnum.FAIL)
-                .message(errorMessage)
-                .data(ex.getMessage())
+                .message(seriousErrorMessage)
+                .data(errorMessage)
                 .build();
+
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -435,6 +468,15 @@ public class GlobalExceptionHandler {
                 .message(errorMessage)
                 .data(ex.getMessage())
                 .build();
+    }
+
+    @ExceptionHandler(ClientAbortException.class)
+    @ResponseBody
+    public void handleClientAbortException(ClientAbortException ex, HttpServletRequest request) {
+        log.warn("Client aborted connection: {} - {}", request.getMethod(), request.getRequestURI());
+
+        // Không return response vì client đã đóng kết nối
+        // Không gửi Discord notification vì đây là lỗi quá phổ biến
     }
 
     @ExceptionHandler(Exception.class)
