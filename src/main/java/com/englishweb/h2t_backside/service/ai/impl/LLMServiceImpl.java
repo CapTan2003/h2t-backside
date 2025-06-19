@@ -116,7 +116,7 @@ public class LLMServiceImpl implements LLMService {
 
             return response;
         } catch (Exception e) {
-            if (((HttpClientErrorException.Unauthorized) e).getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            if (e instanceof HttpClientErrorException.Unauthorized) {
                 log.error("Unauthorized access: {}", e.getMessage());
                 throw new UnauthorizedOpenRouterException("Unauthorized access: " + e.getMessage(), SeverityEnum.HIGH);
             }
