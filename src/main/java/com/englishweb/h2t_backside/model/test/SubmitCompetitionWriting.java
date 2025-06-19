@@ -30,5 +30,5 @@ public class SubmitCompetitionWriting extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @Comment("Score given for the writing submission")
-    private Integer score;
+    private Double score;
 }

@@ -25,12 +25,13 @@ public class SubmitCompetitionSpeaking extends AbstractBaseEntity {
     @Comment("Question associated with this speaking submission")
     private Question question;
 
-
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String transcript;
 
     private String file;
 
     @Column(nullable = false)
     @Comment("Score given for the speaking submission")
-    private Integer score;
+    private Double score;
 }

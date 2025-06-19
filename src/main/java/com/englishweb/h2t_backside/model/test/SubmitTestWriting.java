@@ -29,7 +29,7 @@ public class SubmitTestWriting extends AbstractBaseEntity {
     private String content;
 
     @Comment("Score given for the writing")
-    private Integer score;
+    private Double score;
 
     @Lob
     @Column( columnDefinition = "TEXT")
