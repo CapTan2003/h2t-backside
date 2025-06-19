@@ -123,4 +123,5 @@ public class ErrorApiCodeContent {
     public static final String JSON_PROCESSING_EXCEPTION = "614";
     public static final String SPEECH_PROCESSING_EXCEPTION = "615";
     public static final String TEXT_TO_SPEECH_EXCEPTION = "616";
+    public static final String CLIENT_DISCONNECTED = "617";
 }
